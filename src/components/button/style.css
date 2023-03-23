@@ -1,0 +1,50 @@
+.default-btn {
+    max-height: 45px;
+    max-width: 150px;
+    box-sizing: border-box;
+    margin: 0px 4px 0px 0px;
+    min-width: 0px;
+    appearance: none;
+    display: inline-block;
+    text-align: center;
+    line-height: inherit;
+    text-decoration: none;
+    border-radius: 24px;
+    cursor: pointer;
+    outline: none;
+    font-size: 14px;
+    padding: 8px 16px;
+    color: var(--theme-ui-colors-text);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    border-width: 1px;
+    border-style: solid;
+    border-image: initial;
+    background-color: var(--theme-ui-colors-surface);
+    border-color: var(--theme-ui-colors-secondary);
+}
+
+.default-btn:hover {
+    cursor: pointer;
+    border-color: var(--toastify-color-dark);
+}
+
+.lightgreen-btn {
+    box-sizing: border-box;
+    display: inline-block;
+    text-align: center;
+    line-height: inherit;
+    border-radius: 24px;
+    cursor: pointer;
+    outline: none;
+    font-size: 14px;
+    color: var(--theme-ui-colors-onPrimary);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    border: 1px solid;
+    background-color: var(--theme-ui-colors-primary);
+    width: 135px;
+    max-width: 135px;
+    height: 45px;
+    font-weight: 600;
+}

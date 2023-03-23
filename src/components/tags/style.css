@@ -1,0 +1,20 @@
+.characteristic {
+    width: fit-content;
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    background-color: var(--theme-ui-colors-tagColorSeventeenBg);
+    border-radius: 12px;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    color: var(--theme-ui-colors-tagColorSeventeen);
+}
+
+.characteristic span {
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    font-size: 14px;
+    line-height: 2rem;
+}

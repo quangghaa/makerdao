@@ -11,3 +11,158 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@import url("./variables.css");
+
+.App {
+  box-sizing: border-box;
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding-top: 64px;
+  overflow-x: hidden;
+}
+
+.app-container {
+  box-sizing: border-box;
+  margin: 0;
+  min-width: 0;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.head-bg {
+  top: 0px;
+    left: 0px;
+    padding-top: 100%;
+    width: 100%;
+    z-index: -1;
+    position: absolute;
+    background-image: url('./assets/images/bg_medium.jpeg');
+    background-position: center top;
+    background-repeat: no-repeat;
+}
+
+.main {
+  width: 100%;
+  display: flex;
+  max-width: 1200px;
+  flex: 1 1 auto;
+  /* background: antiquewhite; */
+  margin: 0 auto;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.head-sec {
+  display: flex;
+  width: 100%;
+}
+
+.hs-left {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding: 1rem;
+}
+
+.hs-left h1 {
+  box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu;
+    line-height: 1.125;
+    font-weight: 500;
+    color: var(--theme-ui-colors-text);
+    font-size: 2rem;
+}
+
+.hs-left p {
+  box-sizing: border-box;
+    margin: 16px 0px;
+    min-width: 0px;
+    font-weight: 500;
+    width: 100%;
+}
+
+.hs-right {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.hsr-head {
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  display: flex;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  align-items: center;
+}
+
+.hsr-head h2 {
+  box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu;
+    line-height: 1.125;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--theme-ui-colors-text);
+}
+
+.hsr-head a {
+  box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
+    text-decoration: none;
+    color: inherit;
+}
+
+.hsr-head a span:first-child {
+  margin-right: 0.5rem;
+}
+
+.lightgreen {
+  color: var(--theme-ui-colors-primary);
+}
+
+.governance-sec {
+  
+}
+
+.list-stats {
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  display: flex;
+  padding-left: 64px;
+  padding-right: 64px;
+  padding-bottom: 16px;
+  background-color: var(--theme-ui-colors-background);
+  border-radius: 4px;
+}
+
+@media screen and (min-width: 40em) {
+  .app-container {
+    padding: 0 32px;
+  }
+  .hs-left h1 {
+    font-size: 3rem;
+  }
+
+  .governance-sec {
+    padding-top: 128px;
+  }
+}
+
+@media screen and (min-width: 52em) {
+    .hs-left p {
+      width: 80%;
+    }
+}

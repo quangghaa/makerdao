@@ -1,0 +1,45 @@
+.account-btn {
+    border: none;
+    box-shadow: 0px 20px 40px var(--theme-ui-colors-shadowFloater),0px 1px 3px #bebebe40;
+    padding: 8px;
+    border-radius: 24px;
+    background-color: var(--theme-ui-colors-surface);
+    color: var(--theme-ui-colors-textSecondary);
+    cursor: pointer;
+    height: 37px;
+    width: 37px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.account-popover-content {
+    /* background-color: antiquewhite; */
+    padding: 0;
+}
+
+.account-popover-content li {
+    list-style-type: none;
+    font-size: 16px;
+    margin: 4px;
+    cursor: pointer;
+    display: block;
+    text-decoration: initial;
+    padding: 5px 20px;
+    color: inherit;
+    border-radius: 24px;
+}
+
+.account-popover-content li:hover {
+    cursor: pointer;
+    background-color: var(--theme-ui-colors-onSurfaceAlt);
+}
+
+.account-popover-content li a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.account-popover-content li a span:first-child {
+    margin-right: 8px;
+}

@@ -1,0 +1,66 @@
+.progress {
+    margin: 0;
+    min-width: 0;
+}
+
+.percentage {
+    min-width: 0px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.agree-per {
+    margin: 0px 4px 0px 0px;
+    min-width: 0px;
+    color: var(--theme-ui-colors-primary);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.disagree-per {
+    margin: 0px 0px 0px 4px;
+    min-width: 0px;
+    color: var(--theme-ui-colors-notice);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.neutral-per {
+    margin: 0px 4px;
+    min-width: 0px;
+    color: var(--theme-ui-colors-secondaryEmphasis);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.pro-bar {
+    margin: 8px 0px;
+    min-width: 0px;
+    display: flex;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.agree-pro {
+    margin: 0px;
+    min-width: 0px;
+    background-color: var(--theme-ui-colors-primary);
+    height: 4px;
+    width: 50%;
+}
+
+.disagree-pro {
+    margin: 0px;
+    min-width: 0px;
+    background-color: var(--theme-ui-colors-notice);
+    height: 4px;
+    width: 50%;
+}
+
+.neutral-pro {
+    margin: 0px;
+    min-width: 0px;
+    background-color: var(--theme-ui-colors-secondaryEmphasis);
+    height: 4px;
+    width: 0%;
+}

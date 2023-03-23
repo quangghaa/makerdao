@@ -1,0 +1,121 @@
+.nav-header {
+    margin: 0;
+    min-width: 0;
+    padding-top: 16px;
+    padding-bottom: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100% - 32px);
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--theme-ui-colors-background);
+}
+
+.left {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    text-decoration: none;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav a {
+    margin: 0;
+    min-width: 0;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.4px;
+    color: var(--theme-ui-colors-text);
+    cursor: pointer;
+    padding: 0;
+    display: block;
+}
+
+.nav a:hover {
+    color: var(--theme-ui-colors-success);
+}
+
+.nav-btn {
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    appearance: none;
+    display: inline-block;
+    text-align: center;
+    line-height: inherit;
+    text-decoration: none;
+    outline: none;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    border: none;
+    box-shadow: 0px 20px 40px var(--theme-ui-colors-shadowFloater),0px 1px 3px #bebebe40;
+    padding: 8px;
+    border-radius: 24px;
+    background: transparent;
+    color: var(--theme-ui-colors-textSecondary);
+    cursor: pointer;
+}
+
+.nav-btn:hover {
+    color: var(--toastify-color-dark)
+}
+
+.nav-btn:disabled {
+    color: var(--theme-ui-colors-textSecondary);
+    border-color: var(--theme-ui-colors-secondary);
+    background-color: var(--theme-ui-colors-surface);
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.nav-btn-text {
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.nav-btn-text span:first-child {
+   margin-right: 4px;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+@media screen and (min-width: 40em) {
+    .nav a {
+        margin-left: 32px;
+    }
+
+    .nav-btn {
+        padding: 0.5rem 1rem;
+    }
+}
+
+@media screen and (min-width: 52em) {
+    .nav a {
+        margin-left: 32px;
+    }
+}
+
+@media screen and (min-width: 64em) {
+    .nav a {
+        margin-left: 64px;
+    }
+}
