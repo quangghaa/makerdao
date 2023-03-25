@@ -21,3 +21,43 @@ export interface ICharacteristic {
     tipe: 'yellow' | 'orange' | 'yellow-pink' | 'pink' | 'green' | 'blue-green' | 'blue' | 'gray';
     text: string;
 }
+
+export interface IDelegate {
+    img?: string;
+    status: 'green-check' | 'unknown';
+    name: string;
+    address: string;
+    charateristic?: ICharacteristic[];
+    totalMkrDelegated: number;
+    pollParticipation: number;
+    executiveParticipation: number;
+    communication: number;
+}
+
+export interface IStepDetail {
+    title: string;
+    titleHighlight: string;
+    description: string;
+    links?: string[]
+}
+
+export interface IStep {
+    id: string;
+    title: string;
+    detail: IStepDetail;
+}
+
+export interface IResources {
+    tipe: 'Governance' | 'Products & Tools' | "Developers",
+    name: string;
+    iconNumber: number;
+    description: string;
+    link: string;
+}
+
+export interface IBrowseForum {
+    img?: string;
+    title: string;
+    description: string;
+    link: string;
+}

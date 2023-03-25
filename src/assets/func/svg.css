@@ -23,6 +23,11 @@
     height: 40px;
 }
 
+.size-64 {
+    width: 64px;
+    height: 64px;
+}
+
 .translate-3px {
     transform: translateY(3px);
 }
@@ -33,4 +38,16 @@
 
 .ml-4px {
     margin-left: 4px;
+}
+
+.round {
+    border-radius: 100%;
+}
+
+.forum-img {
+    margin: 0px;
+    max-width: 100%;
+    min-width: 282px;
+    width: 282px;
+    height: 207px;
 }
