@@ -1,8 +1,9 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import { Clock, Info, Message } from "../../assets/func/svg";
 import { mapCharacterristic } from "../../common/common";
 import { ICharacteristic, IPoll } from "../../types/types";
 import { DefaultButton } from "../button/buttons";
+import { InfoModal } from "../modals/infoModal";
 import { Progress } from "../progress/progress";
 import { Characteristic } from "../tags/Characteristic";
 import './style.css';
@@ -12,7 +13,27 @@ interface Props {
 }
 
 export const PollItem: React.FC<Props> = ({ poll }) => {
-    let state = 'active'
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const showModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const handleOk = () => {
+      setIsModalOpen(false);
+    };
+  
+    const handleCancel = () => {
+      setIsModalOpen(false);
+    };
+
+    const modalTitle = "Poll types"
+
+    const modalContent = [
+      "- Ranked-choice polls: require multiple-choice ballots in ranked order, and determine the winning vote option by finding the one with an absolute majority in MKR voting weight (as in >50% of the total participating MKR, excluding abstains). In the first round of IRV, only first-choice votes are counted. In case no vote option meets the victory requirements, the least popular vote option (except abstain) is eliminated and the votes applied to that option are instead applied to the voters’ next ranked option. This repeats until the victory conditions have been met by one vote option. If no winning option can be found, tally results are shown as if no IRV rounds were run.",
+      "- Plurality polls: require single-choice ballots and determines the winning vote option by finding the one with the highest MKR voting weight in relative terms.",
+      "- Approval polls: require multiple-choice ballots in unranked order, and determines the winning vote option by finding the one with a relative majority in MKR voting weight. When used in situations where no winner is required, an absolute majority (ie. >50% of the total participating MKR excluding abstains) victory condition may also be applied as opposed to a relative majority.",
+    ] as string[]
 
     return (
         <div className="poll">
@@ -73,7 +94,7 @@ export const PollItem: React.FC<Props> = ({ poll }) => {
                                 <span>
                                     plurality poll
                                 </span>
-                                <span className="lightgreen"><Info /></span>
+                                <span className="plurality-info-icon lightgreen" onClick={showModal}><Info /></span>
                             </div>
                             <Progress id={888} agree={poll.agreePercentage ? poll.agreePercentage : 0} disagree={poll.disagreePercentage ? poll.disagreePercentage : 0} neutral={poll.neutralPercentage ? poll.neutralPercentage : 0} />
                         </div>}
@@ -91,6 +112,8 @@ export const PollItem: React.FC<Props> = ({ poll }) => {
                     </span>
                 </div>
             </div>
+
+            <InfoModal title={modalTitle} isOpen={isModalOpen} handleCancel={handleCancel} content={modalContent} />
         </div>
     )
 }

@@ -61,3 +61,21 @@ export interface IBrowseForum {
     description: string;
     link: string;
 }
+
+export interface IParticipationChart {
+    month: string;
+    totalMkr: number;
+    color?: string;
+}
+
+export interface IFilter {
+    id: number;
+    state: 'checked' | 'unchecked';
+    name: string;
+    totalValue: number;
+}
+
+export interface ISort {
+    id: number;
+    name: string;
+}

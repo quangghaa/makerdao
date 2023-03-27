@@ -11,15 +11,15 @@ export const NavHeader: React.FC<Props> = () => {
     return (
         <div className="nav-header">
             <div className="left">
-                <a className="logo">
+                <a href="/" className="logo">
                     <DAO />
                 </a>
 
                 <div className="nav">
-                    <a className="nav-item" href="#">Polling</a>
-                    <a className="nav-item" href="#">Executive</a>
-                    <a className="nav-item" href="#">Delegates</a>
-                    <a className="nav-item" href="#">ES Module</a>
+                    <a className="nav-item" href="/polling">Polling</a>
+                    <a className="nav-item" href="/executive">Executive</a>
+                    <a className="nav-item" href="/delegate">Delegates</a>
+                    <a className="nav-item" href="/es-module">ES Module</a>
                 </div>
             </div>
 

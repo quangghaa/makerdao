@@ -1,0 +1,36 @@
+.modal-wrapper {
+
+}
+
+.modal-content {
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content h2{
+    box-sizing: border-box;
+    margin: 0px 0px 16px;
+    min-width: 0px;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu;
+    line-height: 1.125;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--theme-ui-colors-text);
+}
+
+.modal-content p {
+    box-sizing: border-box;
+    margin: 0px 0px 16px;
+    min-width: 0px;
+}
+
+@media screen and (min-width: 40em) {
+    .modal-content h2 {
+        font-size: 1.5rem;
+    }
+}

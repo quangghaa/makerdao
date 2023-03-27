@@ -1,0 +1,227 @@
+.polling-main {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.filter {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-option {
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-reset {
+    margin: 8px;
+}
+
+.option-wrapper {
+    margin: 8px;
+}
+
+.polling-body {
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
+    display: grid;
+    grid-gap: 32px;
+    grid-template-columns: auto;
+    margin-top: 16px;
+}
+
+.polling-list {
+    margin: 0;
+    min-width: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: nowrap;
+}
+
+.polling-title {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+    min-width: 0px;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu;
+    line-height: 1.125;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--theme-ui-colors-text);
+}
+
+.polling-sub-title {
+    box-sizing: border-box;
+    margin: 0px 0px 8px;
+    min-width: 0px;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--theme-ui-colors-textSecondary);
+}
+
+.polling-items {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.view-more-btn-wrapper {
+    width: 100%;
+    margin: 32px 0px 64px;
+}
+
+.polling-extra-info {
+    margin: 0;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: nowrap;
+}
+
+.system-info {
+    display: block;
+}
+
+.polling-faq {
+    margin-top: 1rem;
+}
+
+.general-resources {
+    margin-top: 1rem;
+}
+
+.extra-head {
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    margin-top: 16px;
+}
+
+.eh-title {
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu;
+    line-height: 1.125;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--theme-ui-colors-text);
+}
+
+.extra-link {
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
+    text-decoration: none;
+    color: var(--theme-ui-colors-accentBlue);
+    font-size: 16px;
+}
+
+.extra-body {
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
+    border: none;
+    box-shadow: 0px 20px 40px var(--theme-ui-colors-shadowFloater),0px 1px 3px #bebebe40;
+    padding: 16px;
+    border-radius: 6px;
+    background-color: var(--theme-ui-colors-surface);
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: nowrap;
+}
+
+.extra-body-item {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.ebi-left {
+    display: flex;
+    align-items: center;
+}
+
+.ebi-left-info-icon:hover {
+    cursor: pointer;
+}
+
+.ebi-left span:first-child {
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
+    font-size: 16px;
+    color: var(--theme-ui-colors-textSecondary);
+}
+
+.ebi-left span:last-child {
+    cursor: pointer;
+    color: var(--theme-ui-colors-primaryAlt);
+}
+
+.mt-0 {
+    margin-top: 0;
+}
+
+@media screen and (min-width: 40em) {
+    .eh-title {
+        font-size: 20px;
+    }
+
+    .polling-title {
+        font-size: 1.5rem;
+    }
+
+    .polling-body {
+        grid-template-columns: auto;
+    }
+
+    .filter-option {
+        justify-content: center;
+    }
+}
+
+@media screen and (min-width: 52em) {
+    .polling-body {
+        grid-template-columns: auto;
+    }
+
+    .filter-option {
+        justify-content: center;
+    }
+}
+
+@media screen and (min-width: 64em) {
+    .polling-body {
+        grid-template-columns: 1fr 400px;
+    }
+
+    .filter-option {
+        justify-content: flex-start;
+    }
+}

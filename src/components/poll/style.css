@@ -93,6 +93,10 @@
     text-align: right;
 }
 
+.plurality-info-icon:hover {
+    cursor: pointer;
+}
+
 .mkr {
     display: block;
 }
