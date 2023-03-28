@@ -65,6 +65,13 @@
     color: var(--theme-ui-colors-primary);
 }
 
+.yellow-question {
+    position: absolute;
+    right: -6px;
+    bottom: -6px;
+    color: var(--theme-ui-colors-voterYellow);
+}
+
 .breakdown-label {
     box-sizing: border-box;
     margin: 0px;

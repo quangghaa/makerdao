@@ -17,6 +17,7 @@ export const NavHeader: React.FC<Props> = () => {
 
                 <div className="nav">
                     <a className="nav-item" href="/polling">Polling</a>
+                    <a className="nav-item" href="/bidding">Bid</a>
                     <a className="nav-item" href="/executive">Executive</a>
                     <a className="nav-item" href="/delegate">Delegates</a>
                     <a className="nav-item" href="/es-module">ES Module</a>

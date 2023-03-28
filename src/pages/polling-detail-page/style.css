@@ -1,0 +1,125 @@
+.nav-btn-row {
+    display: flex;
+    justify-content: space-between;
+    min-width: 0;
+    margin-bottom: 8px;
+}
+
+.prev-and-next {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.detail-main-body {
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
+    border: none;
+    box-shadow: 0px 20px 40px var(--theme-ui-colors-shadowFloater),0px 1px 3px #bebebe40;
+    padding: 16px;
+    border-radius: 6px;
+    background-color: var(--theme-ui-colors-surface);
+    padding: 0;
+}
+
+.dmb-head {
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 16px 0 16px;
+}
+
+.poll-posted-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ppd-right {
+    display: flex;
+    gap: 8px;
+}
+
+.mt-1rem {
+    margin-top: 1rem;
+}
+
+.vbt-head {
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--theme-ui-colors-textSecondary);
+    letter-spacing: 0.05em;
+    text-align: center;
+    padding-left: 16px;
+    padding-right: 16px;
+    word-break: break-word;
+}
+
+.vote-breakdown {
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    padding: 16px;
+}
+
+.gray-bold {
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--theme-ui-colors-textSecondary);
+}
+
+.mb-1rem {
+    margin-bottom: 1rem;
+}
+
+.vote-breakdown .hsr-head .weight-500 {
+    font-weight: 500;
+}
+
+.vote-stats .hsr-head .weight-500 {
+    font-weight: 500;
+}
+
+.vote-stats {
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    display: flex;
+    padding: 16px;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.space-between-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.gray-text {
+    margin: 0px;
+    min-width: 0px;
+    color: var(--theme-ui-colors-textSecondary);
+}
+
+.vote-table-sec {
+    
+}
+
+@media screen and (min-width: 40em) {
+    .vote-breakdown,.vote-stats {
+        padding: 32px;
+    }
+    .dmb-head {
+        padding: 32px 32px 0 32px;
+    }
+    .detail-main-body {
+        padding: 0;
+    }
+}

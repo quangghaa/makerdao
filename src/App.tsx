@@ -2,10 +2,13 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Canny, DAO, FilledDiscord, FilledGithub, FilledPlay, FilledReddit, FilledTweeter, FilledYoutube, GreenCheck, HeadRight, HeadUP, HeadUpArrow, Immunefi, MediumDAO, MediumDAOWithFoot, Poll } from './assets/func/svg';
 import { NavHeader } from './components/header/header';
+import { BiddingDetailPage } from './pages/bidding-detail-page/biddingDetailPage';
+import { BiddingPage } from './pages/bidding-page/biddingPage';
 import { DelegatePage } from './pages/delegate-page/delegatePage';
 import { ESModulePage } from './pages/es-module-page/eSModulePage';
 import { ExecutivePage } from './pages/executive-page/executivePage';
 import { LandingPage } from './pages/landing-page/landingPage';
+import { PollingDetailPage } from './pages/polling-detail-page/pollingDetailPage';
 import { PollingPage } from './pages/polling-page/pollingPage';
 import { TestPage } from './pages/text';
 
@@ -20,10 +23,13 @@ function App() {
           <Routes>
             <Route path='/' element={<LandingPage />} />
             <Route path='/polling' element={<PollingPage />} />
+            <Route path='/bidding' element={<BiddingPage />} />
             <Route path='/delegate' element={<DelegatePage />} />
             <Route path='/executive' element={<ExecutivePage />} />
             <Route path='/es-module' element={<ESModulePage />} />
 
+            <Route path='/polling/:id' element={<PollingDetailPage />} />
+            <Route path='/bidding/:id' element={<BiddingDetailPage />} />
             <Route path='/test' element={<TestPage />} />
           </Routes>
         </BrowserRouter>
