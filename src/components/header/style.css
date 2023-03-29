@@ -99,6 +99,29 @@
     gap: 1rem;
 }
 
+.signed-in-account {
+    min-width: 150px;
+}
+
+.signed-in-account button {
+    width: 100%;
+}
+
+.wallet-btn {
+    display: flex;
+    box-shadow: 0px 20px 40px var(--theme-ui-colors-shadowFloater),0px 1px 3px #bebebe40;
+    border-radius: 24px;
+    width: auto;
+    /* height: 40px; */
+    /* border: 1px solid; */
+    align-items: center;
+    padding: 8px 16px;
+}
+
+.wallet-btn:hover {
+    cursor: pointer;
+}
+
 @media screen and (min-width: 40em) {
     .nav a {
         margin-left: 32px;

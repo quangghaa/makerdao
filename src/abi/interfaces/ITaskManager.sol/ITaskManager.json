@@ -1,0 +1,297 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "ITaskManager",
+  "sourceName": "contracts/interfaces/ITaskManager.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "taskId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "point",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "reward",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minReward",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "reporter",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "doer",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "reviewer",
+              "type": "address"
+            },
+            {
+              "internalType": "enum ITaskAuction.TASK_STATE",
+              "name": "taskState",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lowestBidAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "lowestBidder",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "duration",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "startTime",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct ITaskAuction.AuctionTask",
+          "name": "doneAuctionTask",
+          "type": "tuple"
+        }
+      ],
+      "name": "assignTask",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_batchTaskID",
+          "type": "uint256"
+        }
+      ],
+      "name": "getBatchTask",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "batchTaskId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "taskIds",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "enum ITaskManager.BATCH_TASK_STATE",
+              "name": "batchTaskState",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct ITaskManager.BatchTask",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_pollId",
+          "type": "uint256"
+        }
+      ],
+      "name": "initBatchTask",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_batchTaskId",
+          "type": "uint256"
+        }
+      ],
+      "name": "initBatchTaskAuction",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_pollOwner",
+          "type": "address"
+        }
+      ],
+      "name": "initPoll",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_batchTaskId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_point",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_reward",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_minReward",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_reporter",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_reviewer",
+          "type": "address"
+        }
+      ],
+      "name": "initTask",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_batchTaskID",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_auctionDuration",
+          "type": "uint256"
+        }
+      ],
+      "name": "openBatchTaskForAuction",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_pollId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_voteDuration",
+          "type": "uint256"
+        }
+      ],
+      "name": "openPollForVote",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_taskId",
+          "type": "uint256"
+        }
+      ],
+      "name": "receiveTask",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_taskId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "percentageDone",
+          "type": "uint256"
+        }
+      ],
+      "name": "submitReview",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_taskId",
+          "type": "uint256"
+        }
+      ],
+      "name": "submitTaskResult",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_taskId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_newPoint",
+          "type": "uint256"
+        }
+      ],
+      "name": "updateTask",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

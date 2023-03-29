@@ -95,3 +95,9 @@ export interface IVotingByAddress {
     verify: string
     verifyUrl?: string 
 }
+
+export interface IAuth {
+    account: string
+    chainId: string
+    status?: 'initializing' | 'unavailable' | 'notConnected' | 'connecting' | 'connected'
+}

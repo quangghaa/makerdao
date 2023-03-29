@@ -8,6 +8,7 @@ import { DelegatePage } from './pages/delegate-page/delegatePage';
 import { ESModulePage } from './pages/es-module-page/eSModulePage';
 import { ExecutivePage } from './pages/executive-page/executivePage';
 import { LandingPage } from './pages/landing-page/landingPage';
+import { MetamaskTest } from './pages/metamask-test';
 import { PollingDetailPage } from './pages/polling-detail-page/pollingDetailPage';
 import { PollingPage } from './pages/polling-page/pollingPage';
 import { TestPage } from './pages/text';
@@ -31,6 +32,7 @@ function App() {
             <Route path='/polling/:id' element={<PollingDetailPage />} />
             <Route path='/bidding/:id' element={<BiddingDetailPage />} />
             <Route path='/test' element={<TestPage />} />
+            <Route path='/metamask-test' element={<MetamaskTest />} />
           </Routes>
         </BrowserRouter>
 

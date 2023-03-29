@@ -59,6 +59,14 @@ export const DefaultButton:React.FC<Props> = ({icon, text, fontWeight, iconPosit
     )
 }
 
+export const GreenTextButton:React.FC<Props> = ({text, fontWeight}) => {
+    return (
+        <button className="green-text-btn">
+            <span style={{fontWeight: fontWeight}}>{text}</span>
+        </button> 
+    )
+}
+
 export const LightGreenButton:React.FC<Props> = ({text}) => {
     return (
         <button className="lightgreen-btn">
