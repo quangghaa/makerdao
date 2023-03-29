@@ -1,0 +1,31 @@
+.current-bit-label {
+    font-size: 0.875rem;
+    color: var(--theme-ui-colors-textSecondary);
+    margin-right: 4px;
+}
+
+.mkr .black-text {
+    color: black;
+}
+
+.bidding-body {
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
+    display: grid;
+    grid-gap: 32px;
+    grid-template-columns: auto;
+    margin-top: 16px;
+}
+
+@media screen and (min-width: 40em) {
+    .bidding-body {
+        grid-template-columns: auto;
+    }
+}
+
+@media screen and (min-width: 52em) {
+    .bidding-body {
+        grid-template-columns: auto auto;
+    }
+}

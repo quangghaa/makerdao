@@ -17,6 +17,13 @@ export interface IPoll {
     executedTime?: string;
 }
 
+export interface IBid {
+    id: number;
+    poll: IPoll;
+    timeLeft: string;
+    currentBid: number;
+}
+
 export interface ICharacteristic {
     tipe: 'yellow' | 'orange' | 'yellow-pink' | 'pink' | 'green' | 'blue-green' | 'blue' | 'gray';
     text: string;
@@ -78,4 +85,19 @@ export interface IFilter {
 export interface ISort {
     id: number;
     name: string;
+}
+
+export interface IVotingByAddress {
+    address?: IDelegate
+    option: 'Yes' | 'No'
+    votePercentage: number
+    mkr: number
+    verify: string
+    verifyUrl?: string 
+}
+
+export interface IAuth {
+    account: string
+    chainId: string
+    status?: 'initializing' | 'unavailable' | 'notConnected' | 'connecting' | 'connected'
 }

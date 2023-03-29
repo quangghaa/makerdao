@@ -25,6 +25,11 @@
     font-weight: 500;
 }
 
+.detail-progess-text {
+    color: var(--theme-ui-colors-textSecondary);
+    font-size: 1rem;
+}
+
 .neutral-per {
     margin: 0px 4px;
     min-width: 0px;

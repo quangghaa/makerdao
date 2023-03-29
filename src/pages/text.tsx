@@ -1,13 +1,15 @@
 import { Button } from "antd";
 import React, { useState } from "react";
 import { FilledPlay, HeadDown, HeadLeft, HeadRight, Search } from "../assets/func/svg";
+import { BidItem } from "../components/bid/bid";
 import { DateButton, DefaultButton, LightGreenButton, LinkButton, SearchButton, SelectButton, SortButton, ViewMoreButton } from "../components/button/buttons";
 import { InfoModal } from "../components/modals/infoModal";
 import { PollItem } from "../components/poll/poll";
 import { AccountPopover } from "../components/popover/account";
-import { Progress } from "../components/progress/progress";
+import { AbsProgress, NoProgress, YesProgress } from "../components/progress/progress";
+import { VotingAddressTable } from "../components/table/votingAddressTable";
 import { Characteristic } from "../components/tags/Characteristic";
-import { ICharacteristic, IFilter, IPoll, ISort } from "../types/types";
+import { IBid, ICharacteristic, IDelegate, IFilter, IPoll, ISort, IVotingByAddress } from "../types/types";
 
 const pollItem = {
     postedTime: 'mar 13 2023 16:00 UTC',
@@ -60,6 +62,13 @@ const pollItem = {
     supportingMkr: 115663
   } as IPoll
 
+const bidItem = {
+  id: 1,
+  poll: pollItem,
+  timeLeft: '2 days left',
+  currentBid: 9999
+} as IBid
+
 export const TestPage = () => {
     const tagFilter = [
       {id: 1, state: 'unchecked', name: 'Aution', totalValue: 27},
@@ -109,6 +118,49 @@ export const TestPage = () => {
       "- Approval polls: require multiple-choice ballots in unranked order, and determines the winning vote option by finding the one with a relative majority in MKR voting weight. When used in situations where no winner is required, an absolute majority (ie. >50% of the total participating MKR excluding abstains) victory condition may also be applied as opposed to a relative majority.",
     ] as string[]
 
+    const delegateItem = {
+      img: '',
+      status: 'green-check',
+      name: 'StableLab',
+      address: '0.4e324...2754',
+      totalMkrDelegated: 330,
+      pollParticipation: 100,
+      executiveParticipation: 100,
+      communication: 98.88
+    } as IDelegate
+
+    const votingByAddress = [
+      {
+        address: {img: '', status: 'green-check', name: 'StableLab', address:'0x4e324...2754', totalMkrDelegated: 300, pollParticipation: 100, executiveParticipation: 100, communication: 98.98} as IDelegate,
+        option: 'Yes',
+        votePercentage: 27.04,
+        mkr: 48612,
+        verify: 'Arbiscan',
+      },
+      {
+        address: {img: '', status: 'green-check', name: 'StableLab', address:'0x4e324...2754', totalMkrDelegated: 300, pollParticipation: 100, executiveParticipation: 100, communication: 98.98} as IDelegate,
+        option: 'Yes',
+        votePercentage: 27.04,
+        mkr: 48612,
+        verify: 'Arbiscan',
+      },
+      {
+        address: {img: '', status: 'unknown', name: 'StableLab', address:'0x4e324...2754', totalMkrDelegated: 300, pollParticipation: 100, executiveParticipation: 100, communication: 98.98} as IDelegate,
+        option: 'Yes',
+        votePercentage: 27.04,
+        mkr: 48612,
+        verify: 'Etherscan',
+      },
+      {
+        address: {img: '', status: 'green-check', name: 'StableLab', address:'0x4e324...2754', totalMkrDelegated: 300, pollParticipation: 100, executiveParticipation: 100, communication: 98.98} as IDelegate,
+        option: 'Yes',
+        votePercentage: 27.04,
+        mkr: 48612,
+        verify: 'Arbiscan',
+      },
+
+    ] as IVotingByAddress[]
+
     return (
         <div>
             <h1>DEMO components</h1>
@@ -140,6 +192,26 @@ export const TestPage = () => {
 
             <div>
               <DefaultButton text="NExt to" icon={<HeadRight />} fontWeight={600} iconPosition={'right'} />
+            </div>
+
+            <div style={{width: '500px'}}>
+              <YesProgress mkr={136757} percentage={76.04} />
+            </div>
+
+            <div>
+              <NoProgress mkr={136757} percentage={76.04} />
+            </div>
+
+            <div>
+              <AbsProgress mkr={136757} percentage={76.04} />
+            </div>
+
+            <div style={{width: '700px'}}>
+              <VotingAddressTable tableData={votingByAddress} />
+            </div>
+
+            <div style={{width: '500px'}}>
+              <BidItem bid={bidItem} />
             </div>
         </div>
     )
