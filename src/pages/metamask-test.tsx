@@ -7,6 +7,7 @@ import taskManagerAbi from '../abi/TaskManager.sol/TaskManager.json';
 import Web3 from "web3";
 import { useAppSelector } from "../redux/store";
 import { selectAuth } from "./auth/authSlice";
+import { EndVoteEventArgs } from "../types/types";
 
 interface Props {
     
@@ -19,8 +20,7 @@ export const MetamaskTest: React.FC<Props> = () => {
         if(window.ethereum && authState){
             let contract = (authState.auth?.taskManagerContract) as Contract
             let allPoll = await contract.getAllPoll();
-            console.log("all poll: ", allPoll[0].pollId)
-            console.log("all poll: ", allPoll[0].pollOwner)
+            console.log("all poll: ", allPoll[0])
         }
         else {
             console.log("Co gi do sai sai")
@@ -38,12 +38,61 @@ export const MetamaskTest: React.FC<Props> = () => {
         }
     }
 
+    const openVote = async () => {
+        if(window.ethereum && authState){
+            let contract = (authState.auth?.taskManagerContract) as Contract
+
+            console.log("check contract: ", contract)
+
+            try{
+                let batch = await contract.openPollForVote(1, 30);
+                console.log("open for vote: ", batch)
+
+                //Filter EndVote event
+                const filter = contract.filters.OpenPollForVote(1, null, null, null, null);
+                const results = await contract.queryFilter(filter);
+                console.log("results: ", results)
+
+            } catch(err) {
+                console.log("error: ", err)
+            }
+
+            // results.map((event) => {
+            //     if(!event || !event.args) {
+            //         console.log("undefined event")
+            //         return
+            //     }
+                
+            //     event = event.args;
+            //     let batchTaskVoted = {
+            //     pollId: event.pollId.toString(),
+            //     pollState: event.pollState,
+            //     batchTaskCanEnd: event.batchTaskCanEnd,
+            //     endTime: event.endTime,
+            //     };
+            //     console.log("batchTaskVoted", batchTaskVoted);
+            // });
+        }
+        else {
+            console.log("Co gi do sai sai")
+        }
+    }
+
     const voteBatch = async () => {
         if(window.ethereum && authState){
             let contract = (authState.auth?.batchVotingContract) as Contract
-            let batch = await contract.voteOnBatchTask(1, true);
-            // let batch2 = await contract.voteOnBatchTask(2, false);
-            console.log("thanh cong vote ca 2: ")
+            try{
+                let batch = await contract.voteOnBatchTask(1, 1);
+                console.log("thanh cong vote: ")
+
+                //Filter EndVote event
+                const filter = contract.filters.VoteOnBatchTask(1, null, null, null);
+                const results = await contract.queryFilter(filter);
+                console.log("results: ", results)
+
+            } catch(err) {
+                console.log("error: ", err)
+            }
         }
         else {
             console.log("Co gi do sai sai")
@@ -53,8 +102,30 @@ export const MetamaskTest: React.FC<Props> = () => {
     const endVote = async () => {
         if(window.ethereum && authState){
             let contract = (authState.auth?.batchVotingContract) as Contract
-            let batch = await contract.endVote();
-            console.log("thanh cong: ")
+            
+            try{
+                let batch = await contract.endVote();
+                console.log("thanh cong end vote: ")
+                //Filter EndVote event
+                const filter = contract.filters.EndVote(null, null, null, null);
+                const results = await contract.queryFilter(filter);
+                console.log("results: ", results)
+                let eventRs = [] as EndVoteEventArgs[]
+                results.forEach((r: ethers.Event) => {
+                    let e = {} as EndVoteEventArgs
+                    e.pollId = r.args?.pollId.toString()
+                    e.endTime = r.args?.endTime.toString()
+                    e.batchTaskId = r.args?.batchTaskCanEnd?.batchTaskId.toString()
+                    e.result = r.args?.batchTaskCanEnd?.result.toString()
+
+                    eventRs.push(e)
+                })
+
+                console.log("check eventRs: ", eventRs)
+                
+            } catch(err) {
+                console.log("error: ", err)
+            }
         }
         else {
             console.log("Co gi do sai sai")
@@ -75,8 +146,16 @@ export const MetamaskTest: React.FC<Props> = () => {
     const openBatchTaskForAuction = async () => {
         if(window.ethereum && authState){
             let contract = (authState.auth?.taskManagerContract) as Contract
-            let batch = await contract.openBatchTaskForAuction(1, 100);
-            console.log("thanh cong batch aution: ")
+            try{
+                let batch = await contract.openBatchTaskForAuction(1, 30);
+                console.log("thanh cong batch task for auction: ")
+                //Filter EndVote event
+                const filter = contract.filters.OpenBatchTaskForAuction(null, null, null, null);
+                const results = await contract.queryFilter(filter);
+                console.log("results: ", results)
+            } catch(err) {
+                console.log("error: ", err)
+            }
         }
         else {
             console.log("Co gi do sai sai")
@@ -86,8 +165,16 @@ export const MetamaskTest: React.FC<Props> = () => {
     const placeBid = async () => {
         if(window.ethereum && authState){
             let contract = (authState.auth?.autionContract) as Contract
-            let batch = await contract.placeBid(1, {value: 90});
-            console.log("thanh cong place bid: ")
+            try{
+                let batch = await contract.placeBid(1, 1, 90);
+                console.log("thanh cong place bid: ")
+                //Filter EndVote event
+                const filter = contract.filters.PlaceBid(null, null, null, null);
+                const results = await contract.queryFilter(filter);
+                console.log("results: ", results)
+            } catch(err) {
+                console.log("error: ", err)
+            }
         }
         else {
             console.log("Co gi do sai sai")
@@ -109,6 +196,10 @@ export const MetamaskTest: React.FC<Props> = () => {
         </div>
 
         <div style={{width: "800px", margin: '0 auto'}}>
+            <Button onClick={openVote}>Open vote</Button>
+        </div>
+
+        <div style={{width: "800px", margin: '0 auto'}}>
             <Button onClick={voteBatch}>Vote batch</Button>
         </div>
 
@@ -117,7 +208,7 @@ export const MetamaskTest: React.FC<Props> = () => {
         </div>
 
         <div style={{width: "800px", margin: '0 auto'}}>
-            <Button onClick={aution} disabled>Aution</Button>
+            <Button onClick={aution}>Aution</Button>
         </div>
 
         <div style={{width: "800px", margin: '0 auto'}}>

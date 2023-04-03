@@ -52,7 +52,7 @@ export const BidItem: React.FC<Props> = ({ bid }) => {
                 </a>
 
                 <div className="characteristic-list">
-                    {bid?.poll.charateristic.map((c: ICharacteristic) => {
+                    {bid?.poll.charateristic && bid?.poll.charateristic.map((c: ICharacteristic) => {
                         return <>
                             {mapCharacterristic(c)}
                         </>

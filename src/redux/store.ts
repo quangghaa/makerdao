@@ -3,11 +3,13 @@ import { useSelector } from 'react-redux'
 import { TypedUseSelectorHook, useDispatch } from 'react-redux'
 import authReducer from '../pages/auth/authSlice'
 import pollReducer from '../pages/polling-page/pollSlice'
+import requestReducer from '../pages/polling-page/requestSlice'
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     poll: pollReducer,
+    request: requestReducer,
   },
 })
 

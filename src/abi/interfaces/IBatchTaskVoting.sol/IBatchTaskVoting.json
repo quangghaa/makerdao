@@ -14,16 +14,21 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "_batchTaskID",
+          "name": "_pollId",
           "type": "uint256"
         },
         {
           "internalType": "uint256",
           "name": "_voteDuration",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_batchTaskids",
+          "type": "uint256[]"
         }
       ],
-      "name": "openForVote",
+      "name": "openPollForVote",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -49,9 +54,9 @@
           "type": "uint256"
         },
         {
-          "internalType": "bool",
-          "name": "_choice",
-          "type": "bool"
+          "internalType": "uint256",
+          "name": "_pollId",
+          "type": "uint256"
         }
       ],
       "name": "voteOnBatchTask",

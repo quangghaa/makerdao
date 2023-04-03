@@ -56,16 +56,6 @@
               "internalType": "address",
               "name": "lowestBidder",
               "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "duration",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "startTime",
-              "type": "uint256"
             }
           ],
           "internalType": "struct ITaskAuction.AuctionTask",
@@ -134,6 +124,11 @@
               "internalType": "uint256[]",
               "name": "batchTaskIds",
               "type": "uint256[]"
+            },
+            {
+              "internalType": "enum ITaskManager.POLL_STATE",
+              "name": "pollState",
+              "type": "uint8"
             }
           ],
           "internalType": "struct ITaskManager.Poll[]",
@@ -263,11 +258,16 @@
           "internalType": "uint256",
           "name": "_taskId",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_commitValue",
+          "type": "uint256"
         }
       ],
       "name": "receiveTask",
       "outputs": [],
-      "stateMutability": "payable",
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {

@@ -1,13 +1,19 @@
 import { Checkbox, DatePicker, DatePickerProps, Popover, Select } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React, { ReactNode } from "react";
-import { IFilter, ISort } from "../../types/types";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAuth } from "../../pages/auth/authSlice";
+import { pollVote, setPollState } from "../../pages/polling-page/pollSlice";
+import { selectRequest } from "../../pages/polling-page/requestSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { IContractRequest, IFilter, IPoll, ISelectedBatch, ISort } from "../../types/types";
 import "./style.css";
 
 interface Props {
     icon?: ReactNode;
     iconPosition?: 'right';
     text: string;
+    disable?: boolean;
     background?: 'gray';
     color?: 'green' | 'dark-green' | 'purple' | 'pink' | 'gray'; 
     fontWeight?: number;
@@ -20,7 +26,7 @@ interface Props {
     pollId?: number;
     optionId?: number;
 
-    submitVote?: (pollId: number, optionId: number) => void
+    submitVote?: (selectedBatch: ISelectedBatch) => void
 }
 
 const mapColor = (color: string) => {
@@ -73,13 +79,43 @@ export const GreenTextButton:React.FC<Props> = ({text, fontWeight}) => {
     )
 }
 
-export const LightGreenButton:React.FC<Props> = ({text, submitVote, pollId, optionId}) => {
+export const LightGreenButton:React.FC<Props> = ({text, disable, submitVote, pollId, optionId}) => {
+    const requestState = useSelector(selectRequest)
+    const dispatch = useAppDispatch()
+    const authState = useAppSelector(selectAuth)
+
+    const demo = () => {
+        console.log("Check request: ", requestState.request)
+        if(!requestState.request.selectedBatch) {
+            console.log("selected batch undefine")
+            return 
+        }
+        if(authState.auth?.batchVotingContract) {
+            console.log("Calling vote...")
+
+            if(Object.keys(requestState.request.selectedBatch).length === 0) {
+                console.log("Please select batch first")
+                return
+            }
+
+            let request = {
+                contract: authState.auth.batchVotingContract,
+                param: {pollId: requestState.request.selectedBatch.pollId, batchId: requestState.request.selectedBatch.batchId}
+            } as IContractRequest
+
+            console.log("Check request: ", request)
+            dispatch(pollVote(request))
+            
+            console.log("update poll state ...")
+            dispatch(setPollState({pollId: requestState.request.selectedBatch.pollId} as IPoll))
+        }
+    }
+
     return (
         <>
-        {pollId && optionId && submitVote && 
-        <button className="lightgreen-btn" onClick={() => submitVote(pollId, optionId)}>
-            {text}
-        </button>}
+            <button disabled={disable} className="lightgreen-btn" onClick={() => demo()}>
+                {text}
+            </button>
         </>
     )
 }

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { IContractRequest, IPoll, IUserVote } from '../../types/types';
+import { IContractRequest, IPoll, ISelectedBatch, IUserVote } from '../../types/types';
 import { RootState } from '../../redux/store';
 import { Contract } from 'ethers';
 
@@ -19,11 +19,16 @@ export const pollSlice = createSlice({
   name: 'poll',
   initialState,
   reducers: {
-    // pollVoted: (state, action: PayloadAction<IP>) => {
-    //   state.isLoggedIn = true
-    //   state.status = 'succeeded'
-    //   state.auth = action.payload
-    // },
+    setPollState: (state, action: PayloadAction<IPoll>) => {
+      console.log("SHOW polls: ", state.polls)
+      state.polls?.forEach((p: IPoll) => {
+        console.log("check polls stateeee: ", p, action.payload)
+        if(p.pollId === action.payload.pollId) {
+          p.pollState = 1
+          console.log("vao day: ", p.pollId)
+        } 
+      })
+    },
   },
   extraReducers(builder) {
     builder
@@ -45,23 +50,28 @@ export const pollSlice = createSlice({
 })
 
 export const getAllPoll = createAsyncThunk('poll/getAllPoll', async (contract: Contract) => {
-  const response = await contract.getAllPoll()
-  return response
+  try{
+    const response = await contract.getAllPoll()
+    return response
+  } catch(error) {
+    console.log("GetAllPoll error: ", error)
+    return
+  }
 })
 
 export const pollVote = createAsyncThunk('poll/pollVote', async (contractRequest: IContractRequest) => {
-  console.log("debug contract: ", contractRequest.contract)
-  console.log("debug request param: ", contractRequest.param)
-  const response = await contractRequest.contract?.voteOnBatchTask(contractRequest.param?.optionId, contractRequest.param.vote)
-  console.log("Voted done")
-  return response
+  try {
+    const response = await contractRequest.contract?.voteOnBatchTask(contractRequest.param.batchId, contractRequest.param.pollId)
+    return response
+  } catch(error) {
+    console.log("PollVote error: ", error)
+    return
+  }
 })
 
 // Action creators are generated for each case reducer function
-
-
 export const selectPolls = (state: RootState) => state.poll.polls
 
-// export const { fakeSignin } = authSlice.actions
+export const { setPollState } = pollSlice.actions
 
 export default pollSlice.reducer

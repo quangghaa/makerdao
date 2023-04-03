@@ -4,6 +4,19 @@
   "sourceName": "contracts/interfaces/ITaskAuction.sol",
   "abi": [
     {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_tokenAddress",
+          "type": "address"
+        }
+      ],
+      "name": "chooseToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "inputs": [],
       "name": "endAuction",
       "outputs": [],
@@ -60,13 +73,18 @@
               "type": "uint8"
             }
           ],
-          "internalType": "struct ITaskManager.Task",
-          "name": "_task",
-          "type": "tuple"
+          "internalType": "struct ITaskManager.Task[]",
+          "name": "_tasks",
+          "type": "tuple[]"
         },
         {
           "internalType": "uint256",
-          "name": "__auctionDuration",
+          "name": "_batchTaskId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_auctionDuration",
           "type": "uint256"
         }
       ],
@@ -81,11 +99,57 @@
           "internalType": "uint256",
           "name": "_taskID",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_batchTaskID",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amountBid",
+          "type": "uint256"
         }
       ],
       "name": "placeBid",
       "outputs": [],
-      "stateMutability": "payable",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "taskIds",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_batchTaskID",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_amountBids",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "placeMultipleBid",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_bankManagerAddress",
+          "type": "address"
+        }
+      ],
+      "name": "setBankManager",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {

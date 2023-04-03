@@ -1,23 +1,37 @@
 import { BigNumber, Contract } from "ethers";
 
+export interface IBatchVote {
+    key: React.Key;
+    pollId: number;
+    batchTitle: string;
+    reporter: string;
+    timeLeft: string;
+    totalReward: number;
+    totalParticipation: number;
+    approval: number;
+  }
+
 export interface IPoll {
-    id: number;
+    id?: number;
     pollId?: number;
     batchTaskIds?: BigNumber[];
+    batchVotes?: IBatchVote[];
     pollOwner?: string;
-    postedTime: string;
-    title: string;
-    description: string;
+    pollState?: 0 | 1 | 2; // created - open - voted
+
+    postedTime?: string;
+    title?: string;
+    description?: string;
     mkr?: number;
-    charateristic: ICharacteristic[];
+    charateristic?: ICharacteristic[];
     timeRemaining?: string;
     totalComments?: number;
     agreePercentage?: number;
     disagreePercentage?: number;
     neutralPercentage?: number;
-    leadingOption: 'YES' | 'NO';
-    supportingMkr: number;
-    status: 'active' | 'executive';
+    leadingOption?: 'YES' | 'NO';
+    supportingMkr?: number;
+    status?: 'active' | 'executive';
     passedTime?: string;
     executedTime?: string;
 }
@@ -143,7 +157,23 @@ export interface IUserVote {
     isSubmit?: boolean
 }
 
+export interface ISelectedBatch {
+    pollId: number
+    batchId: number
+}
+
+export interface IRequest {
+    selectedBatch?: ISelectedBatch
+}
+
 export interface IContractRequest {
     contract?: Contract
     param?: any
+}
+
+export interface EndVoteEventArgs {
+    pollId?: number
+    endTime?: string
+    batchTaskId?: number
+    result?: number
 }

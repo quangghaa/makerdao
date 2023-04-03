@@ -1,21 +1,22 @@
+import { BigNumber } from "ethers";
 import React, { ReactNode, useEffect, useState } from "react";
 import { Clock, Info, Message } from "../../assets/func/svg";
 import { mapCharacterristic } from "../../common/common";
-import { ICharacteristic, IPoll, IPollOption } from "../../types/types";
+import { IBatchVote, ICharacteristic, IPoll, IPollOption, ISelectedBatch } from "../../types/types";
 import { DefaultButton, LightGreenButton, VoteChoiceButton } from "../button/buttons";
 import { InfoModal } from "../modals/infoModal";
 import { CustomProgress } from "../progress/progress";
+import BatchVoteTable from "../table/batchVoteTable";
 import { Characteristic } from "../tags/Characteristic";
 import './style.css';
 
 interface Props {
     poll?: IPoll
-    pollOption?: IPollOption
     handleUserChoice?: (pollId: number, optionId: number, vote: string) => void
-    submitVote?: (pollId: number, optionId: number) => void
+    submitVote?: (selectedBatch: ISelectedBatch) => void
 }
 
-export const PollItem: React.FC<Props> = ({ poll, pollOption, handleUserChoice, submitVote }) => {
+export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, submitVote }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
@@ -38,75 +39,80 @@ export const PollItem: React.FC<Props> = ({ poll, pollOption, handleUserChoice, 
         "- Approval polls: require multiple-choice ballots in unranked order, and determines the winning vote option by finding the one with a relative majority in MKR voting weight. When used in situations where no winner is required, an absolute majority (ie. >50% of the total participating MKR excluding abstains) victory condition may also be applied as opposed to a relative majority.",
     ] as string[]
 
+    const [tableData, setTableData] = useState([] as IBatchVote[])
+    
+    useEffect(() => {
+        if(!poll) return
+        console.log("Debug poll: ", poll)
+    }, [poll])
+
     return (
         <div className="poll">
             <div className="poll-body">
                 <div className="vote-choices-wrapper">
                     <div className="vc-left">
                         <div className="poll-posted">
-                            POSTED MAR {pollOption?.postedTime} | POLL ID {pollOption?.pollId ? Number(pollOption.pollId) : ''}
+                            POSTED {poll?.postedTime} | POLL ID {poll?.pollId ? Number(poll.pollId) : ''}
                         </div>
                         <a href="#" className="poll-info">
                             <h3>
-                                {pollOption?.title}
+                                {poll?.title}
                             </h3>
                             <p>
-                                {pollOption?.description}
+                                {poll?.description}
                             </p>
                             <p>
-                                {pollOption?.pollOwner ? `Owner: ${pollOption.pollOwner}` : ''}
-                            </p>
-                            <p>
-                                {pollOption?.batchTaskId ? `Option ID: ${pollOption.batchTaskId}` : ''}
+                                {poll?.pollOwner ? `Owner: ${poll.pollOwner}` : ''}
                             </p>
                         </a>
 
                         <div className="characteristic-list">
-                            {pollOption?.charateristic.map((c: ICharacteristic) => {
+                            {poll?.charateristic && poll?.charateristic.map((c: ICharacteristic) => {
                                 return <>
                                     {mapCharacterristic(c)}
                                 </>
                             })}
                         </div>
 
-                        {pollOption?.status === 'active' &&
+                        {poll?.status === 'active' &&
                             <div className="time-and-comment">
                                 <div>
                                     <span className="lightgreen"><Clock /></span>
-                                    <span>{pollOption.timeRemaining} remaining</span>
+                                    <span>{poll.timeRemaining} remaining</span>
                                 </div>
 
                                 <div>
                                     <span className="lightgreen"><Message /></span>
-                                    <span>{pollOption.totalComments} comments</span>
+                                    <span>{poll.totalComments} comments</span>
                                 </div>
                             </div>}
                     </div>
 
                     <div className="vc-right">
-                        <div className="vc-head-row">
-                            <span className="poll-posted">Your vote</span>
-                            <span className="poll-posted">You have not voted</span>
+                        <div>
+                            {poll?.pollState === 0 && <span className="poll-posted">Poll not open</span>}
+                            {poll?.pollState === 1 && <span className="poll-posted">You have not voted</span>}
+                            {poll?.pollState === 2 && <span className="poll-posted">Poll voted</span>}
                         </div>
-                        {pollOption?.pollId && pollOption.batchTaskId && <div id="vote-choice-select-id">
-                            <VoteChoiceButton pollId={pollOption.pollId} optionId={Number(pollOption.batchTaskId)} text="" handleUserChoice={handleUserChoice} />
-                        </div>}
                         <div className="deposit-to-vote-btn">
-                            <LightGreenButton text="Submit vote" fontWeight={600} submitVote={submitVote} pollId={pollOption?.pollId} optionId={Number(pollOption?.batchTaskId)} />
+                            {/* <LightGreenButton text="Submit vote" fontWeight={600} submitVote={submitVote} pollId={poll?.pollId} optionId={Number(poll?.batchTaskId)} /> */}
+                            <DefaultButton text="View Details" fontWeight={600} />
                         </div>
                     </div>
                 </div>
 
-                <div className="view-detail">
-                    <DefaultButton text="View Details" fontWeight={600} />
+                <BatchVoteTable data={poll?.batchVotes} pollState={poll?.pollState} />
 
-                    {pollOption?.status === 'executive' &&
+                <div className="view-detail">
+                    {/* <DefaultButton text="View Details" fontWeight={600} /> */}
+                    <LightGreenButton text="Submit Vote" fontWeight={600} disable={poll?.pollState === 1 ? false : true} submitVote={submitVote} pollId={poll?.pollId} />
+                    {/* {poll?.status === 'executive' &&
                         <div className="mkr">
-                            <p className="mkr-number">{pollOption.mkr}</p>
+                            <p className="mkr-number">{poll.mkr}</p>
                             <p className="mkr-label">MKR supporting</p>
                         </div>}
-
-                    {pollOption?.status === 'active' &&
+                    
+                    {poll?.status === 'active' &&
                         <div className="plurality">
                             <div className="plurality-info">
                                 <span>
@@ -114,22 +120,22 @@ export const PollItem: React.FC<Props> = ({ poll, pollOption, handleUserChoice, 
                                 </span>
                                 <span className="plurality-info-icon lightgreen" onClick={showModal}><Info /></span>
                             </div>
-                            <CustomProgress id={888} agree={pollOption.agreePercentage ? pollOption.agreePercentage : 0} disagree={pollOption.disagreePercentage ? pollOption.disagreePercentage : 0} neutral={pollOption.neutralPercentage ? pollOption.neutralPercentage : 0} />
-                        </div>}
+                            <CustomProgress id={888} agree={poll.agreePercentage ? poll.agreePercentage : 0} disagree={poll.disagreePercentage ? poll.disagreePercentage : 0} neutral={poll.neutralPercentage ? poll.neutralPercentage : 0} />
+                        </div>} */}
                 </div>
             </div>
-            <div className="poll-foot">
+            {/* <div className="poll-foot">
                 <hr className="poll-hr" />
                 <div className="poll-foot-content">
                     <span>
                         LEADING OPTION:&nbsp;
-                        <span className="lightgreen">{pollOption?.leadingOption}</span>
+                        <span className="lightgreen">{poll?.leadingOption}</span>
                         &nbsp;WITH&nbsp;
-                        <span>{pollOption?.supportingMkr}</span>
+                        <span>{poll?.supportingMkr}</span>
                         &nbsp;MKR SUPPORTING.
                     </span>
                 </div>
-            </div>
+            </div> */}
 
             <InfoModal title={modalTitle} isOpen={isModalOpen} handleCancel={handleCancel} content={modalContent} />
         </div>

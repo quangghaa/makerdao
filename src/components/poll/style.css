@@ -41,6 +41,7 @@
 .vote-choices-wrapper {
     display: flex;
     justify-content: space-between;
+    /* gap: 2rem; */
 }
 
 .vc-left {

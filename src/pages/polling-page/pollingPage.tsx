@@ -6,7 +6,7 @@ import { Filter } from "../../components/filter/filter";
 import { InfoModal } from "../../components/modals/infoModal";
 import { PollItem } from "../../components/poll/poll";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { ICharacteristic, IContractRequest, IFilter, IPoll, IPollOption, ISort, IUserVote } from "../../types/types";
+import { IBatchVote, ICharacteristic, IContractRequest, IFilter, IPoll, IPollOption, ISelectedBatch, ISort, IUserVote } from "../../types/types";
 import { selectAuth } from "../auth/authSlice";
 import { getAllPoll, pollVote, selectPolls } from "./pollSlice";
 import './style.css';
@@ -162,9 +162,10 @@ export const PollingPage: React.FC<Props> = () => {
 
     const [userVoteList, setUserVoteList] = useState([] as IUserVote[])
 
+    const [selectedBatch, setSelectedBatch] = useState({} as ISelectedBatch)
+
     // prettier data showing
     const [pollsToShow, setPollsToShow] = useState([] as IPoll[])
-    const [optionsToShow, setOptionsToShow] = useState([] as IPollOption[])
 
     const showModal = () => {
       setIsModalOpen(true);
@@ -205,26 +206,20 @@ export const PollingPage: React.FC<Props> = () => {
         }
     }
 
-    const submitVote = (pollId: number, optionId: number) => {
+    const submitVote = (selectedBatch: ISelectedBatch) => {
         console.log("Call mee??? ")
-        let targetIndex = -1
-        let target = userVoteList.filter((u: IUserVote, index: number) => {
-            targetIndex = index
-            return u.pollId === pollId && u.optionId === optionId
-        })
 
-        console.log("debug target: ", target, target.length)
-        if(target.length === 0) {
-            console.log("Need to select vote first")
-            return
-        }
-        // disable submit button
-        // userVoteList[targetIndex].isSubmit = true
         if(authState.auth?.batchVotingContract) {
             console.log("Calling vote...")
+
+            if(Object.keys(selectedBatch).length === 0) {
+                console.log("Please select batch first")
+                return
+            }
+
             let request = {
                 contract: authState.auth.batchVotingContract,
-                param: {optionId: userVoteList[targetIndex].optionId, vote: userVoteList[targetIndex].vote}
+                param: {optionId: selectedBatch.batchId, pollId: selectedBatch.pollId}
             } as IContractRequest
 
             dispatch(pollVote(request))
@@ -240,18 +235,37 @@ export const PollingPage: React.FC<Props> = () => {
     }, [authState])
 
     useEffect(() => {
-        if(polls) {
-            console.log(" Check polls: ", polls, typeof(polls))
-            let options = [] as IPollOption[]
-            let showData = polls.map((p: IPoll) => {
-                p.batchTaskIds?.map((b: BigNumber) => {
-                    options.push({...fakePollOption, pollId: p.pollId, pollOwner: p.pollOwner, batchTaskId: b})
-                })
-                // return {...pollItem, pollId: p.pollId, pollOwner: p.pollOwner, batchTaskIds: p.batchTaskIds}
+        if(!polls) return 
+        console.log(" Check polls: ", polls, typeof(polls))
+        // Get all batch here (dispatch ...)
+        
+        let rs = [] as IPoll[]
+        polls.forEach((p: IPoll) => {
+            let pollObj = {} as IPoll
+            pollObj = {...p}
+
+            let batchList = [] as IBatchVote[]
+
+            p.batchTaskIds?.forEach((b: BigNumber) => {
+                let batchObj = {} as IBatchVote
+                if(!pollObj.pollId) {
+                    console.log("undefined poll id")
+                    return
+                }
+                batchObj.pollId = Number(pollObj.pollId)
+                batchObj.key = Number(b)
+                batchList.push(batchObj)
             })
-            
-            setOptionsToShow(options)
-        } 
+            pollObj.batchVotes = batchList
+
+            // delete me later
+            // pollObj.pollState = 1
+
+            rs.push(pollObj)
+        })
+        
+        setPollsToShow(rs)
+
     }, [polls])
 
     useEffect(() => {
@@ -266,9 +280,12 @@ export const PollingPage: React.FC<Props> = () => {
                     <h4 className="polling-title">Active Polls</h4>
                     <p className="polling-sub-title">18 polls - Ending mar 27 2023 16:00 UTC</p>
                     <div className="polling-items">
-                    {optionsToShow.length > 0 && 
+                    {/* {optionsToShow.length > 0 && 
                     optionsToShow.map((o: IPollOption) => {
                         return <PollItem pollOption={o} handleUserChoice={handleUserChoice} submitVote={submitVote} />
+                    })} */}
+                    {pollsToShow && pollsToShow.map((p: IPoll) => {
+                        return <PollItem poll={p} handleUserChoice={handleUserChoice} submitVote={submitVote}/>
                     })}
                     </div>
                     <div className="view-more-btn-wrapper">
@@ -296,7 +313,7 @@ export const PollingPage: React.FC<Props> = () => {
 
                     </div>
 
-                    <div className="system-info">
+                    {/* <div className="system-info">
                         <div className="extra-head">
                             <h3 className="eh-title">System Info</h3>
                             <a href="#" className="extra-link">
@@ -481,7 +498,7 @@ export const PollingPage: React.FC<Props> = () => {
                             </div>
 
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
