@@ -1,5 +1,7 @@
+import { ethers } from "ethers";
 import { useMetaMask } from "metamask-react";
 import React, { useEffect, useState } from "react";
+import Web3 from "web3";
 import { DAO, Eth, WalletAddress, WalletUser } from "../../assets/func/svg";
 import { elipsisAddress } from "../../common/helper";
 import { selectAuth, signedIn, signedOut } from "../../pages/auth/authSlice";
@@ -9,6 +11,10 @@ import { DefaultButton } from "../button/buttons";
 import { AccountInfoModal } from "../modals/account-info/account-info";
 import { AccountPopover } from "../popover/account";
 import './style.css';
+
+import taskManagerAbi from '../../abi/TaskManager.sol/TaskManager.json';
+import batchVotingAbi from '../../abi/BatchTaskVoting.sol/BatchTaskVoting.json';
+import autionAbi from '../../abi/TaskAuction.sol/TaskAuction.json';
 
 interface Props {
 
@@ -29,18 +35,44 @@ export const NavHeader: React.FC<Props> = () => {
         setIsAccountInfoModalShow(false)
     }
 
+    const getContract = (deployedAddress: string, abi: any) => {
+        if(window.ethereum){
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            // Set signer
+            const signer = provider.getSigner();
+            // const MySignerAddress = await signer.getAddress();
+            // console.log("my address: ", MySignerAddress)
+            return new ethers.Contract(deployedAddress, abi,signer);
+            // let allPoll = await vat.getAllPoll();
+            // console.log("all poll: ", allPoll[0].pollId)
+            // console.log("all poll: ", allPoll[0].pollOwner)
+            // console.log("all poll: ", allPoll[])
+        }
+    }
+
     useEffect(() => {
-        console.log("CHeck status: ", status)
+        // console.log("CHeck status: ", status)
         if(status === 'connected') {
-            dispatch(signedIn({account: account, chainId: chainId} as IAuth))
+            console.log("Account and chainId: ", account, chainId)
+
+            // init contract
+            let c1 = getContract("0x5FbDB2315678afecb367f032d93F642f64180aa3", taskManagerAbi.abi)
+            let c2 = getContract("0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512", batchVotingAbi.abi)
+            let c3 = getContract("0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0", autionAbi.abi)
+            if(!c1 || !c2 || !c3) {
+                console.log("contract undefined")
+                return
+            }
+
+            dispatch(signedIn({account: account, chainId: chainId, taskManagerContract: c1, batchVotingContract: c2, autionContract: c3} as IAuth))
         }
         if(status === 'notConnected') {
             dispatch(signedOut())
         }
-    }, [status, chainId])
+    }, [status, account, chainId])
 
     useEffect(() => {
-        console.log("check auth state: ", authState)
+        // console.log("check auth state: ", authState.auth?.taskManagerContract)
     }, [authState])
 
     return (

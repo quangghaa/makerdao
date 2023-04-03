@@ -38,6 +38,49 @@
     color: var(--theme-ui-colors-text);
 }
 
+.vote-choices-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.vc-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.vc-right {
+    min-width: 265px;
+    margin-left: 8px;
+}
+
+#vote-choice-select-id {
+    margin-top: 8px;
+}
+
+#vote-choice-select-id .ant-select {
+    width: 100%;
+}
+
+.deposit-to-vote-btn {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.deposit-to-vote-btn button {
+    width: 100%;
+    height: 38px;
+}
+
+.vc-head-row {
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-direction: row;
+}
+
 .poll-info h3 {
     margin: 8px 0px 0px;
     min-width: 0px;

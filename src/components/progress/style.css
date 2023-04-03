@@ -69,3 +69,8 @@
     height: 4px;
     width: 0%;
 }
+
+.step-progress {
+    margin: 0px;
+    min-width: 0px;
+}

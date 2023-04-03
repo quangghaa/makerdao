@@ -1,9 +1,36 @@
+import { BigNumber, Contract } from "ethers";
+
 export interface IPoll {
+    id: number;
+    pollId?: number;
+    batchTaskIds?: BigNumber[];
+    pollOwner?: string;
     postedTime: string;
     title: string;
     description: string;
     mkr?: number;
+    charateristic: ICharacteristic[];
+    timeRemaining?: string;
+    totalComments?: number;
+    agreePercentage?: number;
+    disagreePercentage?: number;
+    neutralPercentage?: number;
+    leadingOption: 'YES' | 'NO';
+    supportingMkr: number;
+    status: 'active' | 'executive';
+    passedTime?: string;
+    executedTime?: string;
+}
+
+export interface IPollOption {
     id: number;
+    pollId?: number;
+    batchTaskId?: BigNumber;
+    pollOwner?: string;
+    postedTime: string;
+    title: string;
+    description: string;
+    mkr?: number;
     charateristic: ICharacteristic[];
     timeRemaining?: string;
     totalComments?: number;
@@ -99,5 +126,24 @@ export interface IVotingByAddress {
 export interface IAuth {
     account: string
     chainId: string
+    taskManagerContract?: any 
+    batchVotingContract?: any 
+    autionContract?: any 
     status?: 'initializing' | 'unavailable' | 'notConnected' | 'connecting' | 'connected'
+}
+
+export interface IContract {
+    
+}
+
+export interface IUserVote {
+    pollId?: number
+    optionId?: number
+    vote?: boolean  // not vote / no / yes
+    isSubmit?: boolean
+}
+
+export interface IContractRequest {
+    contract?: Contract
+    param?: any
 }

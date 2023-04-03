@@ -1,4 +1,4 @@
-import { Checkbox, DatePicker, DatePickerProps, Popover } from "antd";
+import { Checkbox, DatePicker, DatePickerProps, Popover, Select } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React, { ReactNode } from "react";
 import { IFilter, ISort } from "../../types/types";
@@ -15,6 +15,12 @@ interface Props {
     sortOptions?: ISort[];
     placeholder?: string;
     count?: number;
+
+    handleUserChoice?: (pollId: number, optionId: number, vote: string) => void
+    pollId?: number;
+    optionId?: number;
+
+    submitVote?: (pollId: number, optionId: number) => void
 }
 
 const mapColor = (color: string) => {
@@ -67,11 +73,14 @@ export const GreenTextButton:React.FC<Props> = ({text, fontWeight}) => {
     )
 }
 
-export const LightGreenButton:React.FC<Props> = ({text}) => {
+export const LightGreenButton:React.FC<Props> = ({text, submitVote, pollId, optionId}) => {
     return (
-        <button className="lightgreen-btn">
+        <>
+        {pollId && optionId && submitVote && 
+        <button className="lightgreen-btn" onClick={() => submitVote(pollId, optionId)}>
             {text}
-        </button>
+        </button>}
+        </>
     )
 }
 
@@ -199,5 +208,25 @@ export const ViewMoreButton: React.FC<Props> = ({text, count, fontWeight}) => {
             {text}
             <span>({count})</span>
         </button>
+    )
+}
+
+export const VoteChoiceButton: React.FC<Props> = ({text, pollId, optionId,handleUserChoice}) => {
+    const handleChange = (value: string) => {
+        console.log(`selected ${value}`);
+        if(!pollId || !optionId || !handleUserChoice) return
+        handleUserChoice(pollId, optionId, value)
+    };
+
+    return (
+        <Select
+        id="choice-select-id"
+            defaultValue="Your choice"
+            onChange={handleChange}
+            options={[
+                { value: 'yes', label: 'Yes' },
+                { value: 'no', label: 'No' },
+            ]}
+        />
     )
 }

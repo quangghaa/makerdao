@@ -82,11 +82,11 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "_batchTaskID",
+          "name": "_pollID",
           "type": "uint256"
         }
       ],
-      "name": "getBatchTask",
+      "name": "getAllBatchTaskByPollID",
       "outputs": [
         {
           "components": [
@@ -106,9 +106,39 @@
               "type": "uint8"
             }
           ],
-          "internalType": "struct ITaskManager.BatchTask",
+          "internalType": "struct ITaskManager.BatchTask[]",
           "name": "",
-          "type": "tuple"
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAllPoll",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "pollId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "pollOwner",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "batchTaskIds",
+              "type": "uint256[]"
+            }
+          ],
+          "internalType": "struct ITaskManager.Poll[]",
+          "name": "",
+          "type": "tuple[]"
         }
       ],
       "stateMutability": "view",

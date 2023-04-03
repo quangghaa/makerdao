@@ -9,6 +9,7 @@ interface Props {
     neutral?: number;
     mkr?: number;
     percentage?: number;
+    totalStep?: number;
 }
 
 export const CustomProgress: React.FC<Props> = ({id, agree, disagree, neutral}) => {
@@ -60,6 +61,23 @@ export const AbsProgress: React.FC<Props> = ({mkr, percentage}) => {
                 <span className="detail-progess-text">{mkr} MKR Voting ({percentage}%)</span>
             </div>
             <Progress percent={percentage} showInfo={false} strokeColor={"#d5a090"} />
+        </div>
+    )
+}
+
+export const StepProgress: React.FC<Props> = ({mkr, percentage}) => {
+    return (
+        <div className="step-progress">
+            <div>
+                <span>0 of 5 available polls added to ballot</span>
+            </div>
+            <div className="step-progress-bar">
+                <div className="step-progress-item"></div>
+                <div className="step-progress-item"></div>
+                <div className="step-progress-item"></div>
+                <div className="step-progress-item"></div>
+                <div className="step-progress-item"></div>
+            </div>
         </div>
     )
 }
