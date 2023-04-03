@@ -1,15 +1,11 @@
 .bidding-detail-body {
     display: flex;
     width: 100%;
-    gap: 1rem;
+    /* gap: 1rem; */
 }
 
 .bidding-detail-main {
-    width: 60%;
-    /* height: 500px; */
-    /* max-height: 500px; */
-    text-align: center;
-
+    width: 100%;
     box-sizing: border-box;
     margin: 0;
     min-width: 0;

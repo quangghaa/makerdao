@@ -15,12 +15,13 @@ import { TestPage } from './pages/text';
 
 function App() {
   return (
+    <BrowserRouter>
     <div className="App">
       <NavHeader />
 
       <div className='app-container'>
         <div className='head-bg'></div>
-        <BrowserRouter>
+        
           <Routes>
             <Route path='/' element={<LandingPage />} />
             <Route path='/polling' element={<PollingPage />} />
@@ -34,7 +35,7 @@ function App() {
             <Route path='/test' element={<TestPage />} />
             <Route path='/metamask-test' element={<MetamaskTest />} />
           </Routes>
-        </BrowserRouter>
+        
 
         <div id='foot-sec' className='foot-sec'>
           <div className='foot-bg'>
@@ -160,6 +161,7 @@ function App() {
       </div>
 
     </div>
+    </BrowserRouter>
   );
 }
 

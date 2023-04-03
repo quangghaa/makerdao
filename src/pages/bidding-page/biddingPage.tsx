@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { HeadUpArrow, Info } from "../../assets/func/svg";
 import { BidItem } from "../../components/bid/bid";
 import { ViewMoreButton } from "../../components/button/buttons";
 import { Filter } from "../../components/filter/filter";
 import { InfoModal } from "../../components/modals/infoModal";
 import { PollItem } from "../../components/poll/poll";
-import { IBid, ICharacteristic, IFilter, IPoll, ISort } from "../../types/types";
+import { useAppSelector } from "../../redux/store";
+import { IBatchVote, IBid, ICharacteristic, IFilter, IPoll, ISort } from "../../types/types";
+import { selectBatchList } from "./bidSlice";
 import './style.css';
 
 interface Props {
@@ -129,6 +133,7 @@ const tagOptions = [
 
 export const BiddingPage: React.FC<Props> = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const batchList = useAppSelector(selectBatchList)
 
     const showModal = () => {
       setIsModalOpen(true);
@@ -149,15 +154,24 @@ export const BiddingPage: React.FC<Props> = () => {
       "v1 - The first version of the polling contract is still used for creating polls on-chain, but it only allows for voting on a single poll per transaction, so an upgrade was deployed.",
     ] as string[]
 
+    useEffect(() => {
+      if(!batchList) {
+        console.log("no batch list found")
+        return
+      }
+      console.log("check batch list: ", batchList)
+    }, [batchList])
+
     return (
         <main className="polling-main">
             <Filter sortOptions={sortOptions} statusOptions={statusOptions} tagOptions={tagOptions} typeOptions={typeOptions} />
             
-            <h4 className="polling-title">Polls on Bid</h4>
+            <h4 className="polling-title">Batch List</h4>
+            <p>{batchList?.length} batch</p>
             <div className="bidding-body">
-                {bidItems.map((b: IBid) => {
+                {batchList?.map((b: IBatchVote) => {
                     return (
-                        <BidItem bid={b} />
+                        <BidItem batch={b} />
                     )
                 })}
             </div>

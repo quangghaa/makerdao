@@ -167,6 +167,11 @@
     color: var(--theme-ui-colors-primary);
 }
 
+.batch-info-sec {
+    display: flex;
+    justify-content: space-between;
+}
+
 @media screen and (min-width: 40em) {
     .poll-info h3{
         font-size: 1.25rem;

@@ -15,6 +15,7 @@ import './style.css';
 import taskManagerAbi from '../../abi/TaskManager.sol/TaskManager.json';
 import batchVotingAbi from '../../abi/BatchTaskVoting.sol/BatchTaskVoting.json';
 import autionAbi from '../../abi/TaskAuction.sol/TaskAuction.json';
+import { useNavigate } from "react-router-dom";
 
 interface Props {
 
@@ -75,6 +76,18 @@ export const NavHeader: React.FC<Props> = () => {
         // console.log("check auth state: ", authState.auth?.taskManagerContract)
     }, [authState])
 
+    const navigate = useNavigate()
+
+    const toPolling = () => {
+        navigate("/polling")
+    }
+    const toBidding = () => {
+        navigate("/bidding")
+    }
+    const toAdmin = () => {
+        navigate("/metamask-test")
+    }
+
     return (
         <div className="nav-header">
             <div className="left">
@@ -83,11 +96,12 @@ export const NavHeader: React.FC<Props> = () => {
                 </a>
 
                 <div className="nav">
-                    <a className="nav-item" href="/polling">Polling</a>
-                    <a className="nav-item" href="/bidding">Bid</a>
-                    <a className="nav-item" href="/executive">Executive</a>
+                    <a className="nav-item" href="#" onClick={toPolling}>Polling</a>
+                    <a className="nav-item" href="#" onClick={toBidding}>Bid</a>
+                    <a className="nav-item" href="#" onClick={toAdmin}>Admin</a>
+                    {/* <a className="nav-item" href="/executive">Executive</a>
                     <a className="nav-item" href="/delegate">Delegates</a>
-                    <a className="nav-item" href="/es-module">ES Module</a>
+                    <a className="nav-item" href="/es-module">ES Module</a> */}
                 </div>
             </div>
 

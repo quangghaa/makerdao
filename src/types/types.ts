@@ -3,6 +3,7 @@ import { BigNumber, Contract } from "ethers";
 export interface IBatchVote {
     key: React.Key;
     pollId: number;
+    batchId: number;
     batchTitle: string;
     reporter: string;
     timeLeft: string;
@@ -173,7 +174,23 @@ export interface IContractRequest {
 
 export interface EndVoteEventArgs {
     pollId?: number
-    endTime?: string
+    time?: string
     batchTaskId?: number
     result?: number
+}
+
+export interface ITask {
+    taskId: number
+    taskName: string
+    deadline: string
+    reward: number
+    pic: string
+    type: number
+    point: number
+    commitedAmount: number
+    reviewer: string
+    description: string
+    currentBid: number
+    timeLeft: string
+    state: number
 }

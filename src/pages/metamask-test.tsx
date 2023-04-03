@@ -5,9 +5,10 @@ import { AccountInfoModal } from "../components/modals/account-info/account-info
 import { Contract, ethers, Signer } from "ethers";
 import taskManagerAbi from '../abi/TaskManager.sol/TaskManager.json';
 import Web3 from "web3";
-import { useAppSelector } from "../redux/store";
+import { useAppDispatch, useAppSelector } from "../redux/store";
 import { selectAuth } from "./auth/authSlice";
-import { EndVoteEventArgs } from "../types/types";
+import { EndVoteEventArgs, IBatchVote } from "../types/types";
+import { setBid } from "./bidding-page/bidSlice";
 
 interface Props {
     
@@ -15,6 +16,7 @@ interface Props {
 
 export const MetamaskTest: React.FC<Props> = () => {
     const authState = useAppSelector(selectAuth)
+    const dispatch = useAppDispatch()
 
     const callPoll = async () => {
         if(window.ethereum && authState){
@@ -102,26 +104,44 @@ export const MetamaskTest: React.FC<Props> = () => {
     const endVote = async () => {
         if(window.ethereum && authState){
             let contract = (authState.auth?.batchVotingContract) as Contract
+
+            let taskManagerContract = (authState.auth?.taskManagerContract) as Contract
             
             try{
                 let batch = await contract.endVote();
                 console.log("thanh cong end vote: ")
                 //Filter EndVote event
-                const filter = contract.filters.EndVote(null, null, null, null);
+                const filter = contract.filters.InitBatchTaskAuction(null, null, null, null);
                 const results = await contract.queryFilter(filter);
                 console.log("results: ", results)
                 let eventRs = [] as EndVoteEventArgs[]
                 results.forEach((r: ethers.Event) => {
                     let e = {} as EndVoteEventArgs
-                    e.pollId = r.args?.pollId.toString()
-                    e.endTime = r.args?.endTime.toString()
-                    e.batchTaskId = r.args?.batchTaskCanEnd?.batchTaskId.toString()
-                    e.result = r.args?.batchTaskCanEnd?.result.toString()
+                    let intPollId = parseInt(r.args?.pollId.toString())
+                    let intBatchTaskId = parseInt(r.args?.batchTaskAuction?.batchTaskId.toString())
+                    let intRs = parseInt(r.args?.batchTaskAuction?.result.toString())
+
+                    e.pollId = intPollId
+                    e.time = r.args?.time.toString()
+                    e.batchTaskId = intBatchTaskId
+                    e.result = intRs
 
                     eventRs.push(e)
                 })
 
                 console.log("check eventRs: ", eventRs)
+                console.log("set bid list")
+                let batchList = [] as IBatchVote[]
+                
+                eventRs.forEach((e: EndVoteEventArgs) => {
+                    let t = {} as IBatchVote
+                    t.batchId = e.batchTaskId ? e.batchTaskId : -1
+
+                    batchList.push(t)
+                })
+                console.log("before set batch list: ", batchList)
+
+                dispatch(setBid(batchList))
                 
             } catch(err) {
                 console.log("error: ", err)
@@ -147,7 +167,7 @@ export const MetamaskTest: React.FC<Props> = () => {
         if(window.ethereum && authState){
             let contract = (authState.auth?.taskManagerContract) as Contract
             try{
-                let batch = await contract.openBatchTaskForAuction(1, 30);
+                let batch = await contract.openBatchTaskForAuction(1, 300);
                 console.log("thanh cong batch task for auction: ")
                 //Filter EndVote event
                 const filter = contract.filters.OpenBatchTaskForAuction(null, null, null, null);
@@ -208,11 +228,7 @@ export const MetamaskTest: React.FC<Props> = () => {
         </div>
 
         <div style={{width: "800px", margin: '0 auto'}}>
-            <Button onClick={aution}>Aution</Button>
-        </div>
-
-        <div style={{width: "800px", margin: '0 auto'}}>
-            <Button onClick={openBatchTaskForAuction}>Open batch for aution</Button>
+            <Button onClick={openBatchTaskForAuction}>Open for Auction</Button>
         </div>
 
         <div style={{width: "800px", margin: '0 auto'}}>
