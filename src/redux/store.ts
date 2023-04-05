@@ -2,10 +2,18 @@ import { configureStore } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
 import { TypedUseSelectorHook, useDispatch } from 'react-redux'
 import authReducer from '../pages/auth/authSlice'
+import pollReducer from '../pages/polling-page/pollSlice'
+import bidReducer from '../pages/bidding-page/bidSlice'
+import taskReducer from '../pages/bidding-detail-page/taskSlice'
+import requestReducer from '../pages/polling-page/requestSlice'
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    poll: pollReducer,
+    bid: bidReducer,
+    task: taskReducer,
+    request: requestReducer,
   },
 })
 

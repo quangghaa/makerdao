@@ -230,7 +230,7 @@ export const PollingDetailPage: React.FC<Props> = () => {
                             </a>
 
                             <div className="characteristic-list mt-1rem">
-                                {pollItem?.charateristic.map((c: ICharacteristic) => {
+                                {pollItem?.charateristic && pollItem?.charateristic.map((c: ICharacteristic) => {
                                     return <>
                                         {mapCharacterristic(c)}
                                     </>

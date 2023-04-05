@@ -1,9 +1,53 @@
+import { BigNumber, Contract } from "ethers";
+
+export interface IBatchVote {
+    key: React.Key;
+    pollId: number;
+    batchId: number;
+    tasks: ITask[];
+    batchTitle: string;
+    reporter: string;
+    timeLeft: string;
+    totalReward: number;
+    totalParticipation: number;
+    approval: number;
+    
+  }
+
 export interface IPoll {
+    id?: number;
+    pollId?: number;
+    batchTaskIds?: BigNumber[];
+    batchVotes?: IBatchVote[];
+    pollOwner?: string;
+    pollState?: 0 | 1 | 2; // created - open - voted
+
+    postedTime?: string;
+    title?: string;
+    description?: string;
+    mkr?: number;
+    charateristic?: ICharacteristic[];
+    timeRemaining?: string;
+    totalComments?: number;
+    agreePercentage?: number;
+    disagreePercentage?: number;
+    neutralPercentage?: number;
+    leadingOption?: 'YES' | 'NO';
+    supportingMkr?: number;
+    status?: 'active' | 'executive';
+    passedTime?: string;
+    executedTime?: string;
+}
+
+export interface IPollOption {
+    id: number;
+    pollId?: number;
+    batchTaskId?: BigNumber;
+    pollOwner?: string;
     postedTime: string;
     title: string;
     description: string;
     mkr?: number;
-    id: number;
     charateristic: ICharacteristic[];
     timeRemaining?: string;
     totalComments?: number;
@@ -99,5 +143,68 @@ export interface IVotingByAddress {
 export interface IAuth {
     account: string
     chainId: string
+    taskManagerContract?: any 
+    batchVotingContract?: any 
+    autionContract?: any 
     status?: 'initializing' | 'unavailable' | 'notConnected' | 'connecting' | 'connected'
+}
+
+export interface IContract {
+    
+}
+
+export interface IUserVote {
+    pollId?: number
+    optionId?: number
+    vote?: boolean  // not vote / no / yes
+    isSubmit?: boolean
+}
+
+export interface ISelectedBatch {
+    pollId: number
+    batchId: number
+}
+
+export interface IRequest {
+    selectedBatch?: ISelectedBatch
+}
+
+export interface IContractRequest {
+    contract?: Contract
+    param?: any
+}
+
+export interface EndVoteEventArgs {
+    pollId?: number
+    time?: string
+    batchTaskId?: number
+    result?: number
+}
+
+export interface ITask {
+    taskId: number
+    taskName: string
+    deadline: string
+    reward: number
+    minReward: number
+    lowestBidder: string
+    lowestBidAmount: number
+    doer: string
+    pic: string
+    type: number
+    point: number
+    commitedAmount: number
+    reviewer: string
+    description: string
+    currentBid: number
+    timeLeft: string
+    state: number
+    reporter: string
+}
+
+export interface OpenTaskAuctionEventArgs {
+    batchId: number
+    auctionDuration: string
+    timeStart: string
+    auctionTask: ITask
 }

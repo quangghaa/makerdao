@@ -1,7 +1,8 @@
 import React, { ReactNode, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Clock, Info, Message } from "../../assets/func/svg";
 import { mapCharacterristic } from "../../common/common";
-import { IBid, ICharacteristic, IPoll } from "../../types/types";
+import { IBatchVote, IBid, ICharacteristic, IPoll } from "../../types/types";
 import { DefaultButton } from "../button/buttons";
 import { InfoModal } from "../modals/infoModal";
 import { CustomProgress } from "../progress/progress";
@@ -9,10 +10,10 @@ import { Characteristic } from "../tags/Characteristic";
 import './style.css';
 
 interface Props {
-    bid?: IBid
+    batch?: IBatchVote
 }
 
-export const BidItem: React.FC<Props> = ({ bid }) => {
+export const BidItem: React.FC<Props> = ({ batch }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
@@ -35,43 +36,32 @@ export const BidItem: React.FC<Props> = ({ bid }) => {
       "- Approval polls: require multiple-choice ballots in unranked order, and determines the winning vote option by finding the one with a relative majority in MKR voting weight. When used in situations where no winner is required, an absolute majority (ie. >50% of the total participating MKR excluding abstains) victory condition may also be applied as opposed to a relative majority.",
     ] as string[]
 
+    const navigate = useNavigate()
+    const toBidDetail = (batchId: number) => {
+        navigate(`/bidding/${batchId}`)
+    }
+
     return (
         <div className="poll">
             <div className="poll-body">
-                <div className="poll-posted">
-                    POSTED MAR {bid?.poll.postedTime} | POLL ID {bid?.id}
-                </div>
+                <div className="batch-info-sec">
+                    <div className="bis-left">
+                        <h3>Batch task ID: {batch?.batchId}</h3>
+                        <h3>{batch?.batchTitle}</h3>
+                        <p></p>
+                    </div>
 
-                <a href="#" className="poll-info">
-                    <h3>
-                        {bid?.poll.title}
-                    </h3>
-                    <p>
-                        {bid?.poll.description}
-                    </p>
-                </a>
-
-                <div className="characteristic-list">
-                    {bid?.poll.charateristic.map((c: ICharacteristic) => {
-                        return <>
-                            {mapCharacterristic(c)}
-                        </>
-                    })}
+                    <div className="bis-right">
+                        <p>Total Tokens: {batch?.totalReward}</p>
+                        <p>Total Tasks: </p>
+                        <p>Total Tasks Taken: </p>
+                        <p>Remaining: </p>
+                    </div>
                 </div>
 
                 <div className="view-detail">
-                    <DefaultButton text="Bid now" fontWeight={600} />
-
-                    <div className="mkr">
-                            <p className="mkr-number">
-                                <span className="current-bit-label">Current Bid:</span>
-                                ${bid?.poll.mkr}
-                            </p>
-                            <p className="mkr-label black-text">
-                                <span className="current-bit-label">Time left:</span>
-                                {bid?.timeLeft}
-                            </p>
-                    </div>
+                    {/* <DefaultButton text="Bid now" fontWeight={600} /> */}
+                    <button className="default-btn" onClick={() => toBidDetail(batch?.batchId ? batch.batchId : -1)}>Bid Now</button>
                 </div>
             </div>
 

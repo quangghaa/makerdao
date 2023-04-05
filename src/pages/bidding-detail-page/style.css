@@ -1,15 +1,11 @@
 .bidding-detail-body {
     display: flex;
     width: 100%;
-    gap: 1rem;
+    /* gap: 1rem; */
 }
 
 .bidding-detail-main {
-    width: 60%;
-    /* height: 500px; */
-    /* max-height: 500px; */
-    text-align: center;
-
+    width: 100%;
     box-sizing: border-box;
     margin: 0;
     min-width: 0;
@@ -61,6 +57,7 @@
 
 .bid-option {
     margin-left: 1rem;
+    margin-top: 1rem;
 }
 
 .bid-option p {
@@ -109,6 +106,13 @@
 
 .place-bid-btn {
     padding: 0 2rem;
+    /* font-weight: 600; */
+    margin-top: 2rem;
+}
+
+.lowest-bid {
+    margin-top: 1.5rem;
+    font-size: 1rem;
 }
 
 .place-bid-btn button {
@@ -116,6 +120,8 @@
     background-color: #134c7d;
     color: #fff;
     border-radius: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
 .others-info {

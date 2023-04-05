@@ -122,6 +122,11 @@
     margin-top: 16px;
 }
 
+.voting-weight-row {
+    display: flex;
+    justify-content: space-between;
+}
+
 .eh-title {
     box-sizing: border-box;
     margin: 0;

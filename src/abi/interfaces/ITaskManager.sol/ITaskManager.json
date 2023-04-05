@@ -56,16 +56,6 @@
               "internalType": "address",
               "name": "lowestBidder",
               "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "duration",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "startTime",
-              "type": "uint256"
             }
           ],
           "internalType": "struct ITaskAuction.AuctionTask",
@@ -82,11 +72,11 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "_batchTaskID",
+          "name": "_pollID",
           "type": "uint256"
         }
       ],
-      "name": "getBatchTask",
+      "name": "getAllBatchTaskByPollID",
       "outputs": [
         {
           "components": [
@@ -106,9 +96,44 @@
               "type": "uint8"
             }
           ],
-          "internalType": "struct ITaskManager.BatchTask",
+          "internalType": "struct ITaskManager.BatchTask[]",
           "name": "",
-          "type": "tuple"
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAllPoll",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "pollId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "pollOwner",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "batchTaskIds",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "enum ITaskManager.POLL_STATE",
+              "name": "pollState",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct ITaskManager.Poll[]",
+          "name": "",
+          "type": "tuple[]"
         }
       ],
       "stateMutability": "view",
@@ -233,11 +258,16 @@
           "internalType": "uint256",
           "name": "_taskId",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_commitValue",
+          "type": "uint256"
         }
       ],
       "name": "receiveTask",
       "outputs": [],
-      "stateMutability": "payable",
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {

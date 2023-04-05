@@ -211,7 +211,7 @@ export const TestPage = () => {
             </div>
 
             <div style={{width: '500px'}}>
-              <BidItem bid={bidItem} />
+              {/* <BidItem bid={bidItem} /> */}
             </div>
         </div>
     )
