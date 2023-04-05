@@ -1,6 +1,6 @@
 import { Radio, RadioChangeEvent, Select, Space } from "antd";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { HeadLeft, HeadRight, HeadUpArrow, Info } from "../../assets/func/svg";
 import { BidItem } from "../../components/bid/bid";
 import { DefaultButton, ViewMoreButton } from "../../components/button/buttons";
@@ -8,8 +8,9 @@ import { Filter } from "../../components/filter/filter";
 import { InfoModal } from "../../components/modals/infoModal";
 import { PollItem } from "../../components/poll/poll";
 import TaskListTable from "../../components/table/taskListTable";
-import { useAppDispatch } from "../../redux/store";
-import { IBid, ICharacteristic, IFilter, IPoll, ISort } from "../../types/types";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { IBatchVote, IBid, ICharacteristic, IFilter, IPoll, ISort } from "../../types/types";
+import { selectBatchList } from "../bidding-page/bidSlice";
 import './style.css';
 
 interface Props {
@@ -18,7 +19,11 @@ interface Props {
 
 export const BiddingDetailPage: React.FC<Props> = ({batchId}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate()
+  const param = useParams()
   const dispatch = useAppDispatch()
+  const batchList = useAppSelector(selectBatchList)
+  const [currentBatch, setCurrentBatch] = useState<IBatchVote>() 
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -38,22 +43,29 @@ export const BiddingDetailPage: React.FC<Props> = ({batchId}) => {
     "v2 - The latest version of the polling contract was deployed to enable batch voting, so users can vote on multiple polls in one transaction.",
     "v1 - The first version of the polling contract is still used for creating polls on-chain, but it only allows for voting on a single poll per transaction, so an upgrade was deployed.",
   ] as string[]
-
-  const [value, setValue] = useState(1);
-
-  const onChangeRadio = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setValue(e.target.value);
-  };
-
-  const handleChangeProtection = (value: string) => {
-    console.log(`selected ${value}`);
-  };
-
-  const navigate = useNavigate()
+  
+  console.log("Check params: ", param)
   const toBidding = () => {
     navigate("/bidding")
   }
+
+  useEffect(() => {
+    if(!batchList) {
+      return
+    }
+    
+    if(!param.id) return 
+    let intCurrentBatchId = parseInt(param.id)
+
+    let target = batchList.find((b: IBatchVote) => b.batchId === intCurrentBatchId )
+    if(!target) {
+      console.log("target batch not found")
+      return 
+    }
+    
+    setCurrentBatch(target)
+
+  }, [batchList])
 
   return (
     <main className="polling-main">
@@ -73,15 +85,15 @@ export const BiddingDetailPage: React.FC<Props> = ({batchId}) => {
       </div>
       <div className="bidding-detail-body">
         <div className="bidding-detail-main">
-          <p className="price-title">Current Bid:</p>
+          
           <div className="current-bid-box">
-            <p className="big-number">$36,000</p>
-            <p className="premium-label">w/ Buyer's Premium (BP):</p>
-            <p>$43,200.00</p>
+            <p className="price-title">Total Bid:</p>
+            <p className="big-number">0 $</p>
+            <p className="price-title">Total Tasks:</p>
+            <p className="big-number">0</p>
           </div>
 
-          <TaskListTable data={[]} />
-
+          <TaskListTable data={currentBatch?.tasks} batchId={currentBatch?.batchId} />
         </div>
 
         {/* <div className="bidding-detail-info">

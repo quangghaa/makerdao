@@ -7,8 +7,8 @@ import taskManagerAbi from '../abi/TaskManager.sol/TaskManager.json';
 import Web3 from "web3";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { selectAuth } from "./auth/authSlice";
-import { EndVoteEventArgs, IBatchVote } from "../types/types";
-import { setBid } from "./bidding-page/bidSlice";
+import { EndVoteEventArgs, IBatchVote, ITask, OpenTaskAuctionEventArgs } from "../types/types";
+import { selectBatchList, setBid } from "./bidding-page/bidSlice";
 
 interface Props {
     
@@ -16,6 +16,7 @@ interface Props {
 
 export const MetamaskTest: React.FC<Props> = () => {
     const authState = useAppSelector(selectAuth)
+    const batchList = useAppSelector(selectBatchList)
     const dispatch = useAppDispatch()
 
     const callPoll = async () => {
@@ -47,7 +48,7 @@ export const MetamaskTest: React.FC<Props> = () => {
             console.log("check contract: ", contract)
 
             try{
-                let batch = await contract.openPollForVote(1, 30);
+                let batch = await contract.openPollForVote(1, 300);
                 console.log("open for vote: ", batch)
 
                 //Filter EndVote event
@@ -166,13 +167,70 @@ export const MetamaskTest: React.FC<Props> = () => {
     const openBatchTaskForAuction = async () => {
         if(window.ethereum && authState){
             let contract = (authState.auth?.taskManagerContract) as Contract
+            let autionContract = (authState.auth?.autionContract) as Contract
+
             try{
                 let batch = await contract.openBatchTaskForAuction(1, 300);
                 console.log("thanh cong batch task for auction: ")
                 //Filter EndVote event
-                const filter = contract.filters.OpenBatchTaskForAuction(null, null, null, null);
-                const results = await contract.queryFilter(filter);
+                const filter = autionContract.filters.OpenTaskForAuction(null, null, null, null);
+                const results = await autionContract.queryFilter(filter);
                 console.log("results: ", results)
+
+                let eventRs = [] as OpenTaskAuctionEventArgs[]
+
+                if(!batchList || batchList.length === 0) {
+                    console.log("batch list empty or undefined")
+                    return
+                }
+                let newBatchList = [] as IBatchVote[]
+                batchList.forEach((b: IBatchVote) => {
+                    let x = {} as IBatchVote
+                    x.batchId = b.batchId
+                    x.tasks = [] as ITask[]
+
+                    newBatchList.push(x)
+                })
+
+                results.forEach((r: ethers.Event) => {
+                    let e = {} as OpenTaskAuctionEventArgs
+                    let intBatchTaskId = parseInt(r.args?._batchTaskId?.toString())
+
+                    e.batchId = intBatchTaskId
+                    e.auctionDuration = r.args?._auctionDuration.toString()
+                    e.timeStart = r.args?.timeStart.toString()
+
+                    let task = {} as ITask
+                    let intTaskId = parseInt(r.args?.auctionTask.taskId.toString())
+                    let intReward = parseInt(r.args?.auctionTask.reward.toString())
+                    let intPoint = parseInt(r.args?.auctionTask.point.toString())
+                    let intMinReward = parseInt(r.args?.auctionTask.minReward.toString())
+                    let intLowestBidAmount = parseInt(r.args?.auctionTask.lowestBidAmount.toString()) 
+
+                    task.taskId = intTaskId
+                    task.reward = intReward
+                    task.reviewer = r.args?.auctionTask.reviewer.toString()
+                    task.reporter = r.args?.auctionTask.reporter.toString()
+                    task.point = intPoint
+                    task.minReward = intMinReward
+                    task.lowestBidder = r.args?.auctionTask.lowestBidder.toString()
+                    task.lowestBidAmount = intLowestBidAmount
+                    task.doer = r.args?.auctionTask.doer.toString()
+                    
+                    e.auctionTask = task
+
+                    let ind = newBatchList.findIndex((b: IBatchVote) => b.batchId === e.batchId)
+                    if(ind === -1) {
+                        console.log("found index -1")
+                        return
+                    }
+                    newBatchList[ind].tasks.push(task)
+                    eventRs.push(e)
+                })
+                console.log("set task list to batch")
+                console.log("before set new batch list: ", newBatchList)
+                dispatch(setBid(newBatchList))
+
             } catch(err) {
                 console.log("error: ", err)
             }

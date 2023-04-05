@@ -4,12 +4,14 @@ export interface IBatchVote {
     key: React.Key;
     pollId: number;
     batchId: number;
+    tasks: ITask[];
     batchTitle: string;
     reporter: string;
     timeLeft: string;
     totalReward: number;
     totalParticipation: number;
     approval: number;
+    
   }
 
 export interface IPoll {
@@ -184,6 +186,10 @@ export interface ITask {
     taskName: string
     deadline: string
     reward: number
+    minReward: number
+    lowestBidder: string
+    lowestBidAmount: number
+    doer: string
     pic: string
     type: number
     point: number
@@ -193,4 +199,12 @@ export interface ITask {
     currentBid: number
     timeLeft: string
     state: number
+    reporter: string
+}
+
+export interface OpenTaskAuctionEventArgs {
+    batchId: number
+    auctionDuration: string
+    timeStart: string
+    auctionTask: ITask
 }
