@@ -1,6 +1,5 @@
 .default-btn {
     max-height: 45px;
-    /* max-width: 150px; */
     box-sizing: border-box;
     margin: 0px 4px 0px 0px;
     min-width: 0px;
@@ -22,6 +21,7 @@
     border-image: initial;
     background-color: var(--theme-ui-colors-surface);
     border-color: var(--theme-ui-colors-secondary);
+    font-weight: 600;
 }
 
 .green-text-btn {
@@ -173,14 +173,15 @@
 .search-button {
     position: relative;
     width: fit-content;
+    margin: 1rem 0;
 }
 
 .search-button input {
     box-sizing: border-box;
     margin: 0px;
-    min-width: 0px;
-    display: block;
     width: 100%;
+    min-width: 300px;
+    display: block;
     appearance: none;
     font-size: inherit;
     line-height: inherit;
@@ -192,7 +193,7 @@
     border-color: var(--theme-ui-colors-secondary);
     color: var(--theme-ui-colors-onSurface);
     padding: 8px 16px;
-    max-width: 250px;
+    /* max-width: 250px; */
     border-radius: 24px;
 }
 

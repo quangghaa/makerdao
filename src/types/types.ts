@@ -6,9 +6,12 @@ export interface IBatchVote {
     batchId: number;
     tasks: ITask[];
     batchTitle: string;
+    description: string;
     reporter: string;
     timeLeft: string;
     totalReward: number;
+    totalTasks: number;
+    totalRemainingTasks: number; 
     totalParticipation: number;
     approval: number;
     

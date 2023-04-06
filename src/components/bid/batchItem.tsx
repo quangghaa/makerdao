@@ -1,6 +1,7 @@
 import React, { ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Clock, Info, Message } from "../../assets/func/svg";
+import { StableLab } from "../../assets/func/img";
+import { Clock, Info, Message, WalletUser } from "../../assets/func/svg";
 import { mapCharacterristic } from "../../common/common";
 import { IBatchVote, IBid, ICharacteristic, IPoll } from "../../types/types";
 import { DefaultButton } from "../button/buttons";
@@ -13,7 +14,7 @@ interface Props {
     batch?: IBatchVote
 }
 
-export const BidItem: React.FC<Props> = ({ batch }) => {
+export const BatchItem: React.FC<Props> = ({ batch }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
@@ -46,22 +47,28 @@ export const BidItem: React.FC<Props> = ({ batch }) => {
             <div className="poll-body">
                 <div className="batch-info-sec">
                     <div className="bis-left">
-                        <h3>Batch task ID: {batch?.batchId}</h3>
-                        <h3>{batch?.batchTitle}</h3>
-                        <p></p>
+                        <h3>Poll ID: {batch?.pollId}</h3>
+                        <h3>Batch ID: {batch?.batchId}</h3>
+                        <p className="batch-description">{batch?.description}</p>
+                    
+                        <div className="group-address">
+                            <StableLab />
+                            <StableLab />
+                            <StableLab />
+                            <span className="unit">&nbsp;+8 others</span>
+                        </div>
                     </div>
 
                     <div className="bis-right">
-                        <p>Total Tokens: {batch?.totalReward}</p>
-                        <p>Total Tasks: </p>
-                        <p>Total Tasks Taken: </p>
-                        <p>Remaining: </p>
+                        <p>{batch?.totalReward} <span className="unit">tokens</span></p>
+                        <p>{batch?.totalTasks} <span className="unit">tasks</span></p>
+                        <p>{batch?.totalRemainingTasks} <span className="unit">remaining tasks</span></p>
+                        <p>{batch?.timeLeft} <span className="unit">remaining</span> </p>
                     </div>
                 </div>
 
                 <div className="view-detail">
-                    {/* <DefaultButton text="Bid now" fontWeight={600} /> */}
-                    <button className="default-btn" onClick={() => toBidDetail(batch?.batchId ? batch.batchId : -1)}>Bid Now</button>
+                    <button className="default-btn" onClick={() => toBidDetail(batch?.batchId ? batch.batchId : -1)}>VIEW DETAIL</button>
                 </div>
             </div>
 

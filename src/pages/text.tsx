@@ -1,7 +1,6 @@
 import { Button } from "antd";
 import React, { useState } from "react";
 import { FilledPlay, HeadDown, HeadLeft, HeadRight, Search } from "../assets/func/svg";
-import { BidItem } from "../components/bid/bid";
 import { DateButton, DefaultButton, LightGreenButton, LinkButton, SearchButton, SelectButton, SortButton, ViewMoreButton } from "../components/button/buttons";
 import { InfoModal } from "../components/modals/infoModal";
 import { PollItem } from "../components/poll/poll";

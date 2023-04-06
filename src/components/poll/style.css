@@ -120,7 +120,7 @@
 .view-detail {
     display: flex;
     line-height: 1.5rem;
-    justify-content: space-between;
+    justify-content: center;
     align-items: flex-end;
 }
 

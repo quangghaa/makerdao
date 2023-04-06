@@ -21,6 +21,11 @@ interface Props {
 
 }
 
+const pathMap = new Map<string, string>()
+pathMap.set('home', '/')
+pathMap.set('poll', '/polling')
+pathMap.set('bid', '/bidding')
+
 export const NavHeader: React.FC<Props> = () => {
     const { status, connect, account, chainId, ethereum } = useMetaMask();
     const dispatch = useAppDispatch()
@@ -41,18 +46,11 @@ export const NavHeader: React.FC<Props> = () => {
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             // Set signer
             const signer = provider.getSigner();
-            // const MySignerAddress = await signer.getAddress();
-            // console.log("my address: ", MySignerAddress)
             return new ethers.Contract(deployedAddress, abi,signer);
-            // let allPoll = await vat.getAllPoll();
-            // console.log("all poll: ", allPoll[0].pollId)
-            // console.log("all poll: ", allPoll[0].pollOwner)
-            // console.log("all poll: ", allPoll[])
         }
     }
 
     useEffect(() => {
-        // console.log("CHeck status: ", status)
         if(status === 'connected') {
             console.log("Account and chainId: ", account, chainId)
 
@@ -78,12 +76,18 @@ export const NavHeader: React.FC<Props> = () => {
 
     const navigate = useNavigate()
 
-    const toPolling = () => {
-        navigate("/polling")
+    const goTo = (pageName: 'home' | 'poll' | 'bid') => {
+        let path = pathMap.get(pageName)
+        if(!path) return
+        navigate(path)
     }
-    const toBidding = () => {
-        navigate("/bidding")
-    }
+
+    // const toPolling = () => {
+    //     navigate("/polling")
+    // }
+    // const toBidding = () => {
+    //     navigate("/bidding")
+    // }
     const toAdmin = () => {
         navigate("/metamask-test")
     }
@@ -91,13 +95,13 @@ export const NavHeader: React.FC<Props> = () => {
     return (
         <div className="nav-header">
             <div className="left">
-                <a href="/" className="logo">
+                <a className="logo" onClick={() => goTo('home')}>
                     <DAO />
                 </a>
 
                 <div className="nav">
-                    <a className="nav-item" href="#" onClick={toPolling}>Polling</a>
-                    <a className="nav-item" href="#" onClick={toBidding}>Bid</a>
+                    <a className="nav-item" href="#" onClick={() => goTo('poll')}>Polling</a>
+                    <a className="nav-item" href="#" onClick={() => goTo('bid')}>Bid</a>
                     <a className="nav-item" href="#" onClick={toAdmin}>Admin</a>
                     {/* <a className="nav-item" href="/executive">Executive</a>
                     <a className="nav-item" href="/delegate">Delegates</a>
@@ -129,7 +133,7 @@ export const NavHeader: React.FC<Props> = () => {
                     <span className="wallet-address-text">{account ? elipsisAddress(account) : ''}</span>
                 </div>}
 
-                <AccountPopover />
+                {/* <AccountPopover /> */}
             </div>
 
             <AccountInfoModal isOpen={isAccountInfoModalShow} handleCancel={closeAccountInfoModal} auth={authState.auth} />
