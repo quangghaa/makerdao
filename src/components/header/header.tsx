@@ -7,14 +7,12 @@ import { elipsisAddress } from "../../common/helper";
 import { selectAuth, signedIn, signedOut } from "../../pages/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { IAuth } from "../../types/types";
-import { DefaultButton } from "../button/buttons";
 import { AccountInfoModal } from "../modals/account-info/account-info";
-import { AccountPopover } from "../popover/account";
 import './style.css';
 
-import taskManagerAbi from '../../abi/TaskManager.sol/TaskManager.json';
-import batchVotingAbi from '../../abi/BatchTaskVoting.sol/BatchTaskVoting.json';
-import autionAbi from '../../abi/TaskAuction.sol/TaskAuction.json';
+import taskManagerAbi from '../../contractsData/TaskManager.json';
+import batchVotingAbi from '../../contractsData/BatchTaskVoting.json';
+import autionAbi from '../../contractsData/TaskAuction.json';
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -111,12 +109,20 @@ export const NavHeader: React.FC<Props> = () => {
 
             <div className="right">
                 <button className="nav-btn">
-                    <div className="nav-btn-text">
-                        <span>
+                    {!authState.isLoggedIn && 
+                        <div className="nav-btn-text">
+                        {/* <span>
                             <Eth />
-                        </span>
-                        Mainnet
-                    </div>
+                        </span> */}
+                        Network
+                    </div>}
+                    {authState.isLoggedIn && 
+                        <div className="nav-btn-text">
+                        {/* <span>
+                            <Eth />
+                        </span> */}
+                        Chain ID: {chainId}
+                    </div>}
                 </button>
                 {!authState.isLoggedIn && 
                 <button className="nav-btn" onClick={connect}>

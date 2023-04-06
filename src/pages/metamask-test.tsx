@@ -1,9 +1,7 @@
 import { Button } from "antd";
 import { useMetaMask } from "metamask-react";
 import React, { useEffect, useState } from "react";
-import { AccountInfoModal } from "../components/modals/account-info/account-info";
 import { Contract, ethers, Signer } from "ethers";
-import taskManagerAbi from '../abi/TaskManager.sol/TaskManager.json';
 import Web3 from "web3";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { selectAuth } from "./auth/authSlice";

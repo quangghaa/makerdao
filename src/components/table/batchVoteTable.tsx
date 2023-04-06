@@ -1,9 +1,23 @@
 import React, { useState } from 'react';
-import { Divider, Progress, Radio, Table } from 'antd';
+import { Divider, Popover, Progress, Radio, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { IBatchVote } from '../../types/types';
+import { IBatchVote, IDelegate } from '../../types/types';
 import { useAppDispatch } from '../../redux/store';
 import { setSelectedBatch } from '../../pages/polling-page/requestSlice';
+import { StableLab } from '../../assets/func/img';
+import { GreenCheck } from '../../assets/func/svg';
+import { PopoverDelegate } from '../delegate/delegate';
+
+const delegate = {
+  img: '',
+  status: 'green-check',
+  name: 'StableLab',
+  address: '0.4e324...2754',
+  totalMkrDelegated: 330,
+  pollParticipation: 100,
+  executiveParticipation: 100,
+  communication: 98.88
+} as IDelegate
 
 const columns: ColumnsType<IBatchVote> = [
   {
@@ -12,28 +26,61 @@ const columns: ColumnsType<IBatchVote> = [
     render: (text: string) => <span>{text}</span>,
   },
   {
-    title: 'Batch title',
-    dataIndex: 'batchTitle',
-    render: (text: string) => <a>{text}</a>,
-  },
-  {
     title: 'Reporter',
     dataIndex: 'reporter',
-    render: (text: string) => <a>{text}</a>
+    render: (text: string) => {
+      if(text && text.length != 0) {
+        return <a href="#" className='address-item'>
+                <Popover placement="bottomLeft" content={() => delegate ? PopoverDelegate(delegate) : <></>}>
+                <div className="delegate-img" onMouseOver={() => console.log("hover me")}>
+                    <StableLab />
+                    <div className="green-check-box">
+                        <GreenCheck />
+                    </div>
+                </div>
+                </Popover>
+                <div className="delegate-info">
+                    <p></p>
+                    <p>{"ABC"}</p>
+                </div>
+          </a>
+      } else {
+        return <>---</>
+      }
+    }
   },
   {
     title: 'Time left',
     dataIndex: 'timeLeft',
+    render: (text: string) => {
+      if(text && text.length != 0) {
+        return <span>{text}</span>
+      } else {
+        return <>---</>
+      }
+    }
   },
   {
     title: 'Total reward',
     dataIndex: 'totalReward',
-    render: (text: number) => <span>{text} tokens</span>
+    render: (text: number) => {
+      if(text) {
+        return <span>{text} tokens</span>
+      } else {
+        return <>---</>
+      }
+    }
   },
   {
     title: 'Total participation',
     dataIndex: 'totalParticipation',
-    render: (text: number) => <span>{text} persons</span>
+    render: (text: number) => {
+      if(text) {
+        return <span>{text} persons</span>
+      } else {
+        return <>---</>
+      }
+    }
   },
   {
     title: 'Approval',
@@ -41,7 +88,6 @@ const columns: ColumnsType<IBatchVote> = [
     render: (text: number) => <Progress type="circle" percent={text} size={'small'} />
   },
 ];
-
 
 
 interface Props {

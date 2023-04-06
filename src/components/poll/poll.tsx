@@ -2,7 +2,11 @@ import { BigNumber } from "ethers";
 import React, { ReactNode, useEffect, useState } from "react";
 import { Clock, Info, Message } from "../../assets/func/svg";
 import { mapCharacterristic } from "../../common/common";
-import { IBatchVote, ICharacteristic, IPoll, IPollOption, ISelectedBatch } from "../../types/types";
+import { selectAuth } from "../../pages/auth/authSlice";
+import { pollVote } from "../../pages/polling-page/pollSlice";
+import { selectRequest } from "../../pages/polling-page/requestSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { IBatchVote, ICharacteristic, IContractRequest, IPoll, IPollOption, ISelectedBatch } from "../../types/types";
 import { DefaultButton, LightGreenButton, VoteChoiceButton } from "../button/buttons";
 import { InfoModal } from "../modals/infoModal";
 import { CustomProgress } from "../progress/progress";
@@ -16,8 +20,42 @@ interface Props {
     submitVote?: (selectedBatch: ISelectedBatch) => void
 }
 
-export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, submitVote }) => {
+export const PollItem: React.FC<Props> = ({ poll, handleUserChoice }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const requestState = useAppSelector(selectRequest)
+    const dispatch = useAppDispatch()
+    const authState = useAppSelector(selectAuth)
+
+    const submitVote = () => {
+        console.log("Check request: ", requestState.request)
+        if(!requestState.request.selectedBatch) {
+            console.log("selected batch undefine")
+            return 
+        }
+        if(authState.auth?.batchVotingContract) {
+            console.log("Calling vote...")
+
+            if(Object.keys(requestState.request.selectedBatch).length === 0) {
+                console.log("Please select batch first")
+                return
+            }
+
+            let request = {
+                contract: authState.auth.batchVotingContract,
+                param: {
+                    pollId: requestState.request.selectedBatch.pollId, 
+                    batchId: requestState.request.selectedBatch.batchId,
+                    account: authState.auth?.account
+                }
+            } as IContractRequest
+
+            console.log("Check request: ", request)
+            dispatch(pollVote(request))
+            
+            console.log("update poll state ...")
+        }
+    }
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -40,11 +78,6 @@ export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, submitVote }
     ] as string[]
 
     const [tableData, setTableData] = useState([] as IBatchVote[])
-    
-    useEffect(() => {
-        if(!poll) return
-        console.log("Debug poll: ", poll)
-    }, [poll])
 
     return (
         <div className="poll">
@@ -58,7 +91,7 @@ export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, submitVote }
                             <h3>
                                 {poll?.title}
                             </h3>
-                            <p>
+                            <p className="batch-description">
                                 {poll?.description}
                             </p>
                             <p>
@@ -92,11 +125,14 @@ export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, submitVote }
                         <div>
                             {poll?.pollState === 0 && <span className="poll-posted">Poll not open</span>}
                             {poll?.pollState === 1 && <span className="poll-posted">You have not voted</span>}
-                            {poll?.pollState === 2 && <span className="poll-posted">Poll voted</span>}
+                            {poll?.pollState === 2 && <span className="poll-posted">Poll ended</span>}
                         </div>
-                        <div className="deposit-to-vote-btn">
+                        <div className="view-detail-btn">
                             {/* <LightGreenButton text="Submit vote" fontWeight={600} submitVote={submitVote} pollId={poll?.pollId} optionId={Number(poll?.batchTaskId)} /> */}
-                            <DefaultButton text="View Details" fontWeight={600} />
+                            {/* <DefaultButton text="View Details" fontWeight={600} /> */}
+                            <button className="default-btn" disabled>
+                                View Detail
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -105,7 +141,9 @@ export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, submitVote }
 
                 <div className="view-detail">
                     {/* <DefaultButton text="View Details" fontWeight={600} /> */}
-                    <LightGreenButton text="Submit Vote" fontWeight={600} disable={poll?.pollState === 1 ? false : true} submitVote={submitVote} pollId={poll?.pollId} />
+                    <button className="lightgreen-btn" onClick={submitVote}>
+                        Submit Vote
+                    </button>
                     {/* {poll?.status === 'executive' &&
                         <div className="mkr">
                             <p className="mkr-number">{poll.mkr}</p>

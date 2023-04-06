@@ -1,14 +1,19 @@
+import { Input } from "antd";
+import Search from "antd/es/input/Search";
 import { BigNumber } from "ethers";
 import React, { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { HeadUpArrow, Info } from "../../assets/func/svg";
 import { LightGreenButton, ViewMoreButton } from "../../components/button/buttons";
 import { Filter } from "../../components/filter/filter";
+import { Loading } from "../../components/loading/loading";
 import { InfoModal } from "../../components/modals/infoModal";
+import { Notification } from "../../components/notification/Notification";
 import { PollItem } from "../../components/poll/poll";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { IBatchVote, ICharacteristic, IContractRequest, IFilter, IPoll, IPollOption, ISelectedBatch, ISort, IUserVote } from "../../types/types";
 import { selectAuth } from "../auth/authSlice";
-import { getAllPoll, pollVote, selectPolls } from "./pollSlice";
+import { getAllPoll, getAllPollVoting, pollVote, selectPolls, selectPollState } from "./pollSlice";
 import './style.css';
 
 interface Props {
@@ -54,41 +59,41 @@ const tagOptions = [
 
   const pollItem = {
     postedTime: 'mar 13 2023 16:00 UTC',
-    title: 'Ratification Poll for the Constitution MIP Set - March 13, 2023',
-    description: 'The Constitution MIP Set (MIP101 through MIP114) introduces the Maker Constitution and the Scope Framework as well as containing MIP102c2-SP1 which amends multiple MIPs.',
+    title: 'Task Auction',
+    description: 'Vote task list, task commitment, task auction, tokens reward',
     charateristic: [
       {
         tipe: 'yellow-pink',
         text: 'High Impact'
       },
-      {
-        tipe: 'pink',
-        text: 'Real World Asset'
-      },
-      {
-        tipe: 'gray',
-        text: 'Misc Governance'
-      },
-      {
-        tipe: 'orange',
-        text: 'Collateral Offboarding'
-      },
-      {
-        tipe: 'yellow',
-        text: 'Misc Funding'
-      },
-      {
-        tipe: 'green',
-        text: 'Ratification Poll',
-      },
-      {
-        tipe: 'blue-green',
-        text: 'MIP'
-      },
-      {
-        tipe: 'blue',
-        text: 'Budget'
-      }
+    //   {
+    //     tipe: 'pink',
+    //     text: 'Real World Asset'
+    //   },
+    //   {
+    //     tipe: 'gray',
+    //     text: 'Misc Governance'
+    //   },
+    //   {
+    //     tipe: 'orange',
+    //     text: 'Collateral Offboarding'
+    //   },
+    //   {
+    //     tipe: 'yellow',
+    //     text: 'Misc Funding'
+    //   },
+    //   {
+    //     tipe: 'green',
+    //     text: 'Ratification Poll',
+    //   },
+    //   {
+    //     tipe: 'blue-green',
+    //     text: 'MIP'
+    //   },
+    //   {
+    //     tipe: 'blue',
+    //     text: 'Budget'
+    //   }
     ] as ICharacteristic[],
     timeRemaining: '4d 7h',
     totalComments: 2,
@@ -155,9 +160,13 @@ const tagOptions = [
   } as IPollOption
 
 export const PollingPage: React.FC<Props> = () => {
+    const { Search } = Input;
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const dispatch = useAppDispatch()
+    const pollState = useAppSelector(selectPollState)
     const polls = useAppSelector(selectPolls)
+
     const authState = useAppSelector(selectAuth)
 
     const [userVoteList, setUserVoteList] = useState([] as IUserVote[])
@@ -166,6 +175,18 @@ export const PollingPage: React.FC<Props> = () => {
 
     // prettier data showing
     const [pollsToShow, setPollsToShow] = useState([] as IPoll[])
+
+    const [pollsSearchRs, setPollsSearchRs] = useState({
+        isSearch: false,
+        data: [] as IPoll[]
+    })
+    const [hasMore, setHasMore] = useState(false)
+
+    const [isLoading, setIsLoading] = useState(false)
+
+    const fetchMoreData = () => {
+      console.log("fetch more data")
+    }
 
     const showModal = () => {
       setIsModalOpen(true);
@@ -184,7 +205,28 @@ export const PollingPage: React.FC<Props> = () => {
     const modalContent = [
       "v2 - The latest version of the polling contract was deployed to enable batch voting, so users can vote on multiple polls in one transaction.",
       "v1 - The first version of the polling contract is still used for creating polls on-chain, but it only allows for voting on a single poll per transaction, so an upgrade was deployed.",
-    ] as string[]
+    ] as string[]   
+
+    const searchByPollId = (value: string) => {
+        let intId = parseInt(value)
+        if(Number.isNaN(intId)) {
+            console.log("Please input number only")
+            return
+        }
+        if(pollsToShow.length === 0) return
+        
+        setIsLoading(true)
+        
+
+        setTimeout(() => {
+            let target = pollsToShow.filter((p: IPoll) => Number(p.pollId) === intId)
+            setPollsSearchRs({
+                isSearch: true,
+                data: target
+            })
+            setIsLoading(false)
+        }, 1000)
+    }
 
     const handleUserChoice = (pollId: number, optionId: number, value: string) => {
         let isExist = false
@@ -231,19 +273,30 @@ export const PollingPage: React.FC<Props> = () => {
             console.log("not have auth ", authState)
             return 
         }
+        
         dispatch(getAllPoll(authState.auth?.taskManagerContract))
+
+        dispatch(getAllPollVoting(authState.auth?.batchVotingContract))
+
     }, [authState])
 
     useEffect(() => {
+        console.log("raw polls >>>: ", polls)
+    }, [polls])
+
+    useEffect(() => {
+        console.log("raw data poll voting >>>: ", pollState.pollsVoting)
+    }, [pollState.pollsVoting])
+
+    useEffect(() => {
         if(!polls) return 
-        console.log(" Check polls: ", polls, typeof(polls))
         // Get all batch here (dispatch ...)
         
         let rs = [] as IPoll[]
         polls.forEach((p: IPoll) => {
             let pollObj = {} as IPoll
+            pollObj = {...pollItem}
             pollObj = {...p}
-
             let batchList = [] as IBatchVote[]
 
             p.batchTaskIds?.forEach((b: BigNumber) => {
@@ -269,31 +322,77 @@ export const PollingPage: React.FC<Props> = () => {
     }, [polls])
 
     useEffect(() => {
-        console.log("Check user vote list: ", userVoteList)
+        // console.log("Check user vote list: ", userVoteList)
     }, [userVoteList])
 
     return (
         <main className="polling-main">
-            <Filter sortOptions={sortOptions} statusOptions={statusOptions} tagOptions={tagOptions} typeOptions={typeOptions} />
+            <Notification type={'success'} message="show me somthing" />
+            
+            {pollState.status === 'loading' && <Loading />}
+            {isLoading && <Loading />}
+
+            <div id="search-tool" className="search-tool">
+                <Search placeholder="Search by Poll ID" size="large" loading={false} onSearch={searchByPollId} />
+            </div>
+
             <div className="polling-body">
                 <div className="polling-list">
                     <h4 className="polling-title">Active Polls</h4>
-                    <p className="polling-sub-title">18 polls - Ending mar 27 2023 16:00 UTC</p>
-                    <div className="polling-items">
-                    {/* {optionsToShow.length > 0 && 
-                    optionsToShow.map((o: IPollOption) => {
-                        return <PollItem pollOption={o} handleUserChoice={handleUserChoice} submitVote={submitVote} />
-                    })} */}
-                    {pollsToShow && pollsToShow.map((p: IPoll) => {
-                        return <PollItem poll={p} handleUserChoice={handleUserChoice} submitVote={submitVote}/>
-                    })}
-                    </div>
-                    <div className="view-more-btn-wrapper">
+                    <p className="polling-sub-title">{pollsToShow.length} polls</p>
+                    
+                    {!pollsToShow || pollsToShow.length === 0 && 
+                    <div className="empty-result">
+                        NO DATA FOUND
+                    </div>}
+
+                    {pollsToShow && !pollsSearchRs.isSearch && 
+                        <InfiniteScroll
+                        dataLength={pollsToShow.length}
+                        next={fetchMoreData}
+                        hasMore={hasMore}
+                        loader={<h4>Loading...</h4>}
+                      >
+                          <div className="polling-items">
+                              {/* {optionsToShow.length > 0 && 
+                              optionsToShow.map((o: IPollOption) => {
+                                  return <PollItem pollOption={o} handleUserChoice={handleUserChoice} submitVote={submitVote} />
+                              })} */}
+                              {pollsToShow.map((p: IPoll) => {
+                                  return <PollItem poll={p} handleUserChoice={handleUserChoice} submitVote={submitVote}/>
+                              })}
+                          </div>
+                      </InfiniteScroll>}
+
+                      {pollsToShow && pollsSearchRs.isSearch && pollsSearchRs.data.length > 0 &&
+                        <InfiniteScroll
+                        dataLength={pollsToShow.length}
+                        next={fetchMoreData}
+                        hasMore={hasMore}
+                        loader={<h4>Loading...</h4>}
+                      >
+                          <div className="polling-items">
+                              {/* {optionsToShow.length > 0 && 
+                              optionsToShow.map((o: IPollOption) => {
+                                  return <PollItem pollOption={o} handleUserChoice={handleUserChoice} submitVote={submitVote} />
+                              })} */}
+                              {pollsToShow.map((p: IPoll) => {
+                                  return <PollItem poll={p} handleUserChoice={handleUserChoice} submitVote={submitVote}/>
+                              })}
+                          </div>
+                      </InfiniteScroll>}
+
+                      {pollsToShow && pollsSearchRs.isSearch && pollsSearchRs.data.length === 0 &&
+                        <div className="empty-result">
+                            NO DATA FOUND
+                        </div>}
+                    {/* <div className="view-more-btn-wrapper">
                         <ViewMoreButton text="View ended polls" count={934} fontWeight={500} />
-                    </div>
+                    </div> */}
+
                 </div>
 
-                <div className="polling-extra-info">
+                {/* <div className="polling-extra-info">
                     <div className="system-info">
                         <div className="extra-head">
                             <h3 className="eh-title">Your Ballot</h3>
@@ -313,7 +412,7 @@ export const PollingPage: React.FC<Props> = () => {
 
                     </div>
 
-                    {/* <div className="system-info">
+                    <div className="system-info">
                         <div className="extra-head">
                             <h3 className="eh-title">System Info</h3>
                             <a href="#" className="extra-link">
@@ -498,8 +597,8 @@ export const PollingPage: React.FC<Props> = () => {
                             </div>
 
                         </div>
-                    </div> */}
-                </div>
+                    </div>
+                </div> */}
             </div>
 
             <InfoModal title={modalTitle} isOpen={isModalOpen} handleCancel={handleCancel} content={modalContent} align={'center'} />

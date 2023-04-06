@@ -23,7 +23,7 @@ export interface IPoll {
     batchTaskIds?: BigNumber[];
     batchVotes?: IBatchVote[];
     pollOwner?: string;
-    pollState?: 0 | 1 | 2; // created - open - voted
+    pollState?: 0 | 1 | 2; // created - open - end poll
 
     postedTime?: string;
     title?: string;

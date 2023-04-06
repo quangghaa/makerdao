@@ -211,6 +211,11 @@
     color: var(--theme-ui-colors-primary);
 }
 
+.view-detail-btn {
+    max-width: 180px;
+    margin-top: 8px;
+}
+
 @media screen and (min-width: 40em) {
     .poll-info h3{
         font-size: 1.25rem;
