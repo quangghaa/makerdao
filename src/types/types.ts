@@ -146,10 +146,6 @@ export interface IVotingByAddress {
 export interface IAuth {
     account: string
     chainId: string
-    taskManagerContract?: any 
-    batchVotingContract?: any 
-    autionContract?: any 
-    status?: 'initializing' | 'unavailable' | 'notConnected' | 'connecting' | 'connected'
 }
 
 export interface IContract {

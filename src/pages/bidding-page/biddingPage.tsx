@@ -86,7 +86,7 @@ export const BiddingPage: React.FC<Props> = () => {
                       <div className="bidding-body">
                       
                         {batchListFake.map((i, index) => (
-                          <BatchItem batch={i} />
+                          <BatchItem key={index} batch={i} />
                         ))}
                       </div>
 
@@ -97,9 +97,9 @@ export const BiddingPage: React.FC<Props> = () => {
               <>
                 <p>{batchList.length} batch</p>
                 <div className="bidding-body">
-                    {batchList.map((b: IBatchVote) => {
+                    {batchList.map((b: IBatchVote, index) => {
                         return (
-                            <BatchItem batch={b} />
+                            <BatchItem key={index} batch={b} />
                         )
                     })}
                 </div>

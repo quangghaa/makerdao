@@ -22,7 +22,7 @@ const delegate = {
 const columns: ColumnsType<IBatchVote> = [
   {
     title: 'Batch ID',
-    dataIndex: 'key',
+    dataIndex: 'batchId',
     render: (text: string) => <span>{text}</span>,
   },
   {

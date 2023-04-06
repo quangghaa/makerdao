@@ -29,32 +29,32 @@ export const PollItem: React.FC<Props> = ({ poll, handleUserChoice }) => {
 
     const submitVote = () => {
         console.log("Check request: ", requestState.request)
-        if(!requestState.request.selectedBatch) {
-            console.log("selected batch undefine")
-            return 
-        }
-        if(authState.auth?.batchVotingContract) {
-            console.log("Calling vote...")
+        // if(!requestState.request.selectedBatch) {
+        //     console.log("selected batch undefine")
+        //     return 
+        // }
+        // if(authState.auth?.batchVotingContract) {
+        //     console.log("Calling vote...")
 
-            if(Object.keys(requestState.request.selectedBatch).length === 0) {
-                console.log("Please select batch first")
-                return
-            }
+        //     if(Object.keys(requestState.request.selectedBatch).length === 0) {
+        //         console.log("Please select batch first")
+        //         return
+        //     }
 
-            let request = {
-                contract: authState.auth.batchVotingContract,
-                param: {
-                    pollId: requestState.request.selectedBatch.pollId, 
-                    batchId: requestState.request.selectedBatch.batchId,
-                    account: authState.auth?.account
-                }
-            } as IContractRequest
+        //     let request = {
+        //         contract: authState.auth.batchVotingContract,
+        //         param: {
+        //             pollId: requestState.request.selectedBatch.pollId, 
+        //             batchId: requestState.request.selectedBatch.batchId,
+        //             account: authState.auth?.account
+        //         }
+        //     } as IContractRequest
 
-            console.log("Check request: ", request)
-            dispatch(pollVote(request))
+        //     console.log("Check request: ", request)
+        //     dispatch(pollVote(request))
             
-            console.log("update poll state ...")
-        }
+        //     console.log("update poll state ...")
+        // }
     }
 
     const showModal = () => {
@@ -100,10 +100,10 @@ export const PollItem: React.FC<Props> = ({ poll, handleUserChoice }) => {
                         </a>
 
                         <div className="characteristic-list">
-                            {poll?.charateristic && poll?.charateristic.map((c: ICharacteristic) => {
-                                return <>
+                            {poll?.charateristic && poll?.charateristic.map((c: ICharacteristic, index: number) => {
+                                return <div key={index}>
                                     {mapCharacterristic(c)}
-                                </>
+                                </div>
                             })}
                         </div>
 

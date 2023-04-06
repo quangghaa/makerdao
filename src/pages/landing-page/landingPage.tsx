@@ -426,8 +426,8 @@ export const LandingPage:React.FC<Props> = () => {
 
             <h2>Show me more polls related to</h2>
             <div className='showmore-list'>
-              {chs.map((c: ICharacteristic) => {
-                return <div className='showmore-item'>
+              {chs.map((c: ICharacteristic, index) => {
+                return <div key={index} className='showmore-item'>
                   {mapCharacterristic(c)}
                 </div>
               })}
@@ -604,7 +604,7 @@ export const LandingPage:React.FC<Props> = () => {
                   <div className='ls-left'>
                     {participate.map((s: IStep, index: number) => {
                       return (
-                        <div className='ls-left-item' onClick={() => navStep(index)}>
+                        <div key={index} className='ls-left-item' onClick={() => navStep(index)}>
                           <span className={'learn-item-color-' + (index + 1)}>{s.id}</span>
                           <span>{s.title}</span>
                         </div>
@@ -616,7 +616,7 @@ export const LandingPage:React.FC<Props> = () => {
                     <div id='ls-right-content' className='ls-right-content'>
                       {participate.map((s: IStep, index: number) => {
                         return (
-                          <div className='ls-content-info'>
+                          <div key={index} className='ls-content-info'>
                             <div className='info-number'>
                               <h1 className={'info-number-text learn-item-color-' + (index + 1)}>{s.id}</h1>
                             </div>
@@ -635,9 +635,9 @@ export const LandingPage:React.FC<Props> = () => {
                                 </div>
 
                               </div>
-                              {s.detail.links?.map((l: string) => {
+                              {s.detail.links?.map((l: string, index) => {
                                 return (
-                                  <a href="#" className='ls-info-link'>
+                                  <a key={index} href="#" className='ls-info-link'>
                                     <span>{l}</span>
                                     <span><HeadUpArrow /></span>
                                   </a>
@@ -666,9 +666,9 @@ export const LandingPage:React.FC<Props> = () => {
               </div>
 
               <div className='resources-body'>
-                {resourcesItem.map((r: IResources) => {
+                {resourcesItem.map((r: IResources, index) => {
                   return (
-                    <a href='#' className='resources-item'>
+                    <a key={index} href='#' className='resources-item'>
                       <div className={'ri-img ' + (r.tipe == "Products & Tools" ? 'resources-purple ' : '') + (r.tipe == "Developers" ? 'resources-pink ' : '')}
                       >
                         <div className='ri-img-content'>
@@ -719,10 +719,10 @@ export const LandingPage:React.FC<Props> = () => {
                 </a>
               </div>
               <div className='browse-forum-body'>
-                {browseForum.map((b: IBrowseForum) => {
+                {browseForum.map((b: IBrowseForum, index) => {
                   return (
 
-                    <div className='forum-item'>
+                    <div key={index} className='forum-item'>
                       <ForumImg1 />
                       <div className='forum-item-info'>
                         <div className='fii-content'>

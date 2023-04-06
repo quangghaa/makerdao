@@ -1,18 +1,13 @@
-import { ethers } from "ethers";
+
 import { useMetaMask } from "metamask-react";
 import React, { useEffect, useState } from "react";
-import Web3 from "web3";
-import { DAO, Eth, WalletAddress, WalletUser } from "../../assets/func/svg";
+import { DAO, WalletAddress } from "../../assets/func/svg";
 import { elipsisAddress } from "../../common/helper";
 import { selectAuth, signedIn, signedOut } from "../../pages/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { IAuth } from "../../types/types";
 import { AccountInfoModal } from "../modals/account-info/account-info";
 import './style.css';
-
-import taskManagerAbi from '../../contractsData/TaskManager.json';
-import batchVotingAbi from '../../contractsData/BatchTaskVoting.json';
-import autionAbi from '../../contractsData/TaskAuction.json';
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -39,29 +34,9 @@ export const NavHeader: React.FC<Props> = () => {
         setIsAccountInfoModalShow(false)
     }
 
-    const getContract = (deployedAddress: string, abi: any) => {
-        if(window.ethereum){
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            // Set signer
-            const signer = provider.getSigner();
-            return new ethers.Contract(deployedAddress, abi,signer);
-        }
-    }
-
     useEffect(() => {
         if(status === 'connected') {
-            console.log("Account and chainId: ", account, chainId)
-
-            // init contract
-            let c1 = getContract("0x5FbDB2315678afecb367f032d93F642f64180aa3", taskManagerAbi.abi)
-            let c2 = getContract("0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512", batchVotingAbi.abi)
-            let c3 = getContract("0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0", autionAbi.abi)
-            if(!c1 || !c2 || !c3) {
-                console.log("contract undefined")
-                return
-            }
-
-            dispatch(signedIn({account: account, chainId: chainId, taskManagerContract: c1, batchVotingContract: c2, autionContract: c3} as IAuth))
+            dispatch(signedIn({account: account, chainId: chainId} as IAuth))
         }
         if(status === 'notConnected') {
             dispatch(signedOut())
@@ -80,12 +55,6 @@ export const NavHeader: React.FC<Props> = () => {
         navigate(path)
     }
 
-    // const toPolling = () => {
-    //     navigate("/polling")
-    // }
-    // const toBidding = () => {
-    //     navigate("/bidding")
-    // }
     const toAdmin = () => {
         navigate("/metamask-test")
     }
