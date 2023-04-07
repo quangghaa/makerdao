@@ -1,28 +1,26 @@
 import { Input } from "antd";
-import Search from "antd/es/input/Search";
-import { BigNumber } from "ethers";
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { HeadUpArrow, Info } from "../../assets/func/svg";
-import { LightGreenButton, ViewMoreButton } from "../../components/button/buttons";
-import { Filter } from "../../components/filter/filter";
 import { Loading } from "../../components/loading/loading";
-import { InfoModal } from "../../components/modals/infoModal";
 import { Notification } from "../../components/notification/Notification";
 import { PollItem } from "../../components/poll/poll";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { voteOnBatchTask, voteOnBatchTaskFilterEvent } from "../../services/batchTask";
+import { voteOnBatchTaskFilterEvent } from "../../services/batchTask";
 import { getAllPoll } from "../../services/poll";
-import { IBatchVote, ICharacteristic, IContractRequest, IFilter, INotification, IPoll, IPollOption, ISelectedBatch, ISort, IUserVote } from "../../types/types";
+import { IBatchVote, ICharacteristic, INotification, IPoll, ISelectedBatch, IUserVote } from "../../types/types";
 import { selectAuth } from "../auth/authSlice";
-import {selectPolls, selectPollState } from "./pollSlice";
-import { selectedBatch, setSelectedBatch } from "./voteSlice";
+import { setSelectedBatch } from "./voteSlice";
 import './style.css';
 
 interface Props {
 }
 
   const pollItem = {
+    id: 1,
+    pollId: 1,
+    batchTaskIds: [-1, -2] ,
+    pollOwner: '',
+    pollState: 1,
     postedTime: 'mar 13 2023 16:00 UTC',
     title: 'Task Auction',
     description: 'Vote task list, task commitment, task auction, tokens reward',
@@ -84,8 +82,6 @@ export const PollingPage: React.FC<Props> = () => {
     const { Search } = Input;
 
     const dispatch = useAppDispatch()
-    const pollState = useAppSelector(selectPollState)
-    const polls = useAppSelector(selectPolls)
     const authState = useAppSelector(selectAuth)
 
     const [userVoteList, setUserVoteList] = useState([] as IUserVote[])
@@ -137,26 +133,6 @@ export const PollingPage: React.FC<Props> = () => {
         }, 500)
     }
 
-    const handleUserChoice = (pollId: number, optionId: number, value: string) => {
-        let isExist = false
-        userVoteList.forEach((u: IUserVote) => {
-            if (u.optionId === optionId) {
-                console.log("contain optionId: ", optionId)
-                isExist = true
-                u.vote = (value === 'yes') ? true : false
-            }
-        })
-        if (!isExist) {
-            console.log("Add new user vote")
-            console.log("vote list before add: ", userVoteList)
-            userVoteList.push({ pollId: pollId, optionId: optionId, vote: (value === 'yes') ? true : false })
-            console.log("new vote list: ", userVoteList)
-            setUserVoteList(Object.assign([], userVoteList))
-        } else {
-            setUserVoteList(Object.assign([], userVoteList))
-        }
-    }
-
     useEffect(() => {
         if(!notification.isShow) return  
         // close notification after 3 seconds
@@ -177,7 +153,6 @@ export const PollingPage: React.FC<Props> = () => {
                 if(result.length === 0) return
                 let event = result[result.length - 1].args
                 if(!event) return
-                console.log("FIND IT: ", Number(event._pollId), Number(event.batchTaskVoted.batchTaskId))
                 
                 let ePollId = Number(event._pollId)
                 let eBatchId = Number(event.batchTaskVoted.batchTaskId)
@@ -220,43 +195,9 @@ export const PollingPage: React.FC<Props> = () => {
         })
     }, [authState])
 
-
     useEffect(() => {
         console.log("raw polls >>>: ", allPolls)
     }, [allPolls])
-
-    // useEffect(() => {
-    //     if(!polls) return 
-    //     // Get all batch here (dispatch ...)
-        
-    //     let rs = [] as IPoll[]
-    //     polls.forEach((p: IPoll) => {
-    //         let pollObj = {} as IPoll
-    //         pollObj = {...pollItem}
-    //         pollObj = {...p}
-    //         let batchList = [] as IBatchVote[]
-
-    //         p.batchTaskIds?.forEach((b: BigNumber) => {
-    //             let batchObj = {} as IBatchVote
-    //             if(!pollObj.pollId) {
-    //                 console.log("undefined poll id")
-    //                 return
-    //             }
-    //             batchObj.pollId = Number(pollObj.pollId)
-    //             batchObj.key = Number(b)
-    //             batchList.push(batchObj)
-    //         })
-    //         pollObj.batchVotes = batchList
-
-    //         // delete me later
-    //         // pollObj.pollState = 1
-
-    //         rs.push(pollObj)
-    //     })
-        
-    //     setPollsToShow(rs)
-
-    // }, [polls])
 
     return (
         <main className="polling-main">
@@ -287,7 +228,7 @@ export const PollingPage: React.FC<Props> = () => {
                       >
                           <div className="polling-items">
                               {allPolls.map((p: IPoll) => {
-                                  return <PollItem key={p.pollId} poll={p} handleUserChoice={handleUserChoice} setNotification={setNotification}/>
+                                  return <PollItem key={p.pollId} poll={p} setNotification={setNotification}/>
                               })}
                           </div>
                       </InfiniteScroll>}
@@ -301,7 +242,7 @@ export const PollingPage: React.FC<Props> = () => {
                       >
                           <div className="polling-items">
                               {pollsSearchRs.data.map((p: IPoll) => {
-                                  return <PollItem key={p.pollId} poll={p} handleUserChoice={handleUserChoice} setNotification={setNotification}/>
+                                  return <PollItem key={p.pollId} poll={p} setNotification={setNotification}/>
                               })}
                           </div>
                       </InfiniteScroll>}
@@ -315,7 +256,6 @@ export const PollingPage: React.FC<Props> = () => {
 
             </div>
 
-            {/* <InfoModal title={modalTitle} isOpen={isModalOpen} handleCancel={handleCancel} content={modalContent} align={'center'} /> */}
         </main>
     )
 } 

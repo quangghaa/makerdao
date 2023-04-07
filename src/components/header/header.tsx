@@ -1,5 +1,4 @@
 
-import { useMetaMask } from "metamask-react";
 import React, { useEffect, useState } from "react";
 import { DAO, WalletAddress } from "../../assets/func/svg";
 import { elipsisAddress } from "../../common/helper";
@@ -9,7 +8,7 @@ import { IAuth } from "../../types/types";
 import { AccountInfoModal } from "../modals/account-info/account-info";
 import './style.css';
 import { useNavigate } from "react-router-dom";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi";
 import { InjectedConnector } from "@wagmi/core";
 
 interface Props {
@@ -22,7 +21,6 @@ pathMap.set('poll', '/polling')
 pathMap.set('bid', '/bidding')
 
 export const NavHeader: React.FC<Props> = () => {
-    const { account, chainId, ethereum } = useMetaMask();
     const dispatch = useAppDispatch()
     const authState = useAppSelector(selectAuth)
 
@@ -38,6 +36,7 @@ export const NavHeader: React.FC<Props> = () => {
 
     // DEMO
     const { address, isConnected, status } = useAccount()
+    const { chain } = useNetwork()
     const { connect } = useConnect({
         connector: new InjectedConnector(),
     })
@@ -45,13 +44,12 @@ export const NavHeader: React.FC<Props> = () => {
 
     useEffect(() => {
         if(status === 'connected') {
-            dispatch(signedIn({account: address, chainId: "xxx"} as IAuth))
+            dispatch(signedIn({account: address, chainId: chain ? '' + chain.id : ''} as IAuth))
         }
         if(status === 'disconnected') {
-            console.log("DISCONNECTED ")
             dispatch(signedOut())
         }
-    }, [status, account, chainId])
+    }, [status, address, chain])
 
     useEffect(() => {
         // console.log("check auth state: ", authState.auth?.taskManagerContract)
@@ -100,7 +98,7 @@ export const NavHeader: React.FC<Props> = () => {
                         {/* <span>
                             <Eth />
                         </span> */}
-                        Chain ID: {chainId}
+                        Chain ID: {authState.auth?.chainId}
                     </div>}
                 </button>
                 {!authState.isLoggedIn && 
@@ -115,7 +113,7 @@ export const NavHeader: React.FC<Props> = () => {
                     <div className="wallet-icon-bg">
                         <WalletAddress />
                     </div>
-                    <span className="wallet-address-text">{account ? elipsisAddress(account) : ''}</span>
+                    <span className="wallet-address-text">{address ? elipsisAddress(address) : ''}</span>
                 </div>}
 
                 {/* <AccountPopover /> */}

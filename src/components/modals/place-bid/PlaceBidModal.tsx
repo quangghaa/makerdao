@@ -1,7 +1,7 @@
 import { Form, FormInstance, Modal, Radio, RadioChangeEvent, Select, Space } from "antd";
 import React, { useEffect, useState } from "react";
 import { selectAuth } from "../../../pages/auth/authSlice";
-import { placeBid } from "../../../pages/bidding-detail-page/taskSlice";
+import { placeBid } from "../../../pages/bidding-detail/taskSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/store";
 import { IContractRequest, ITask } from "../../../types/types";
 

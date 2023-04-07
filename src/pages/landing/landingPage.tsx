@@ -16,6 +16,12 @@ interface Props {
 }
 
 const pollItem = {
+    id: 1,
+    pollId: 1,
+    batchTaskIds: [1, 2] ,
+    batchVotes: [],
+    pollOwner: '',
+    pollState: 1,
     postedTime: 'mar 13 2023 16:00 UTC',
     title: 'Ratification Poll for the Constitution MIP Set - March 13, 2023',
     description: 'The Constitution MIP Set (MIP101 through MIP114) introduces the Maker Constitution and the Scope Framework as well as containing MIP102c2-SP1 which amends multiple MIPs.',
@@ -67,6 +73,12 @@ const pollItem = {
   } as IPoll
   
   const pollItemExec = {
+    id: 1,
+    pollId: 1,
+    batchTaskIds: [1, 2] ,
+    batchVotes: [],
+    pollOwner: '',
+    pollState: 1,
     postedTime: 'mar 13 2023 16:00 UTC',
     title: 'Ratification Poll for the Constitution MIP Set - March 13, 2023',
     description: 'The Constitution MIP Set (MIP101 through MIP114) introduces the Maker Constitution and the Scope Framework as well as containing MIP102c2-SP1 which amends multiple MIPs.',

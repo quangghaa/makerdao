@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Button, Divider, Popover, Progress, Radio, Table } from 'antd';
+import { Popover, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { IBatchVote, IDelegate } from '../../types/types';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
-import { setSelectedBatch } from '../../pages/polling-page/requestSlice';
+import { setSelectedBatch } from '../../pages/polling/requestSlice';
 import { StableLab } from '../../assets/func/img';
 import { GreenCheck } from '../../assets/func/svg';
 import { PopoverDelegate } from '../delegate/delegate';
 import SummaryInfo from './summaryInfo';
-import { selectedBatch } from '../../pages/polling-page/voteSlice';
+import { selectedBatch } from '../../pages/polling/voteSlice';
 import { elipsisAddress } from '../../common/helper';
 
 const delegate = {

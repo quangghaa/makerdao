@@ -22,9 +22,7 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <WagmiConfig client={client}>
-      <MetaMaskProvider>
         <App />
-      </MetaMaskProvider>
       </WagmiConfig>
     </Provider>
   </React.StrictMode>

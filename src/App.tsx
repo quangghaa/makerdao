@@ -2,15 +2,15 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Canny, DAO, FilledDiscord, FilledGithub, FilledPlay, FilledReddit, FilledTweeter, FilledYoutube, GreenCheck, HeadRight, HeadUP, HeadUpArrow, Immunefi, MediumDAO, MediumDAOWithFoot, Poll } from './assets/func/svg';
 import { NavHeader } from './components/header/header';
-import { BiddingDetailPage } from './pages/bidding-detail-page/biddingDetailPage';
-import { BiddingPage } from './pages/bidding-page/biddingPage';
-import { DelegatePage } from './pages/delegate-page/delegatePage';
-import { ESModulePage } from './pages/es-module-page/eSModulePage';
-import { ExecutivePage } from './pages/executive-page/executivePage';
-import { LandingPage } from './pages/landing-page/landingPage';
+import { BiddingDetailPage } from './pages/bidding-detail/biddingDetailPage';
+import { BiddingPage } from './pages/bidding/biddingPage';
+import { DelegatePage } from './pages/delegate/delegatePage';
+import { ESModulePage } from './pages/es-module/eSModulePage';
+import { ExecutivePage } from './pages/executive/executivePage';
+import { LandingPage } from './pages/landing/landingPage';
 import { MetamaskTest } from './pages/metamask-test';
-import { PollingDetailPage } from './pages/polling-detail-page/pollingDetailPage';
-import { PollingPage } from './pages/polling-page/pollingPage';
+import { PollingDetailPage } from './pages/polling-detail/pollingDetailPage';
+import { PollingPage } from './pages/polling/pollingPage';
 import { TestPage } from './pages/text';
 
 function App() {
