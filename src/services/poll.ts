@@ -8,7 +8,8 @@ import BatchTaskVotingAbi from "../contractsData/BatchTaskVoting.json"
 import TaskAuctionAbi from "../contractsData/TaskAuction.json"
 
 export const getContract = (name: 'taskManger' | 'batchVoting' | 'auction') => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    // if(!window.ethereum) return 
+    const provider = new ethers.providers.Web3Provider((window as any).ethereum);
     const signer = provider.getSigner();
     switch (name) {
         case "taskManger":
@@ -46,7 +47,7 @@ export const openPollForVote = async () => {
     try {
         let contract = getContract('taskManger')
         const response = await contract.openPollForVote(1, 30000)
-        return response
+        return response 
     } catch (error) {
         console.log("openPollForVote error: ", error)
         return

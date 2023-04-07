@@ -9,6 +9,8 @@ import { IAuth } from "../../types/types";
 import { AccountInfoModal } from "../modals/account-info/account-info";
 import './style.css';
 import { useNavigate } from "react-router-dom";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { InjectedConnector } from "@wagmi/core";
 
 interface Props {
 
@@ -20,7 +22,7 @@ pathMap.set('poll', '/polling')
 pathMap.set('bid', '/bidding')
 
 export const NavHeader: React.FC<Props> = () => {
-    const { status, connect, account, chainId, ethereum } = useMetaMask();
+    const { account, chainId, ethereum } = useMetaMask();
     const dispatch = useAppDispatch()
     const authState = useAppSelector(selectAuth)
 
@@ -34,11 +36,19 @@ export const NavHeader: React.FC<Props> = () => {
         setIsAccountInfoModalShow(false)
     }
 
+    // DEMO
+    const { address, isConnected, status } = useAccount()
+    const { connect } = useConnect({
+        connector: new InjectedConnector(),
+    })
+    const { disconnect } = useDisconnect()
+
     useEffect(() => {
         if(status === 'connected') {
-            dispatch(signedIn({account: account, chainId: chainId} as IAuth))
+            dispatch(signedIn({account: address, chainId: "xxx"} as IAuth))
         }
-        if(status === 'notConnected') {
+        if(status === 'disconnected') {
+            console.log("DISCONNECTED ")
             dispatch(signedOut())
         }
     }, [status, account, chainId])
@@ -94,7 +104,7 @@ export const NavHeader: React.FC<Props> = () => {
                     </div>}
                 </button>
                 {!authState.isLoggedIn && 
-                <button className="nav-btn" onClick={connect}>
+                <button className="nav-btn" onClick={() => connect()}>
                     <div className="nav-btn-text">
                         Connect wallet
                     </div>
@@ -111,7 +121,7 @@ export const NavHeader: React.FC<Props> = () => {
                 {/* <AccountPopover /> */}
             </div>
 
-            <AccountInfoModal isOpen={isAccountInfoModalShow} handleCancel={closeAccountInfoModal} auth={authState.auth} />
+            <AccountInfoModal isOpen={isAccountInfoModalShow} disConnect={disconnect} handleCancel={closeAccountInfoModal} auth={authState.auth} />
         </div>
     )
 }

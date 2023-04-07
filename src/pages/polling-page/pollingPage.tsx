@@ -109,6 +109,14 @@ export const PollingPage: React.FC<Props> = () => {
     }  
 
     const searchByPollId = (value: string) => {
+        if(value.trim().length === 0) {
+            setPollsSearchRs({
+                isSearch: true,
+                data: allPolls
+            })
+            return
+        }
+
         let intId = parseInt(value)
         if(Number.isNaN(intId)) {
             console.log("Please input number only")
@@ -120,12 +128,13 @@ export const PollingPage: React.FC<Props> = () => {
         setIsLoading(true)
         setTimeout(() => {
             let target = allPolls.filter((p: IPoll) => Number(p.pollId) === intId)
+            console.log("ra day? ", target)
             setPollsSearchRs({
                 isSearch: true,
                 data: target
             })
             setIsLoading(false)
-        }, 1000)
+        }, 500)
     }
 
     const handleUserChoice = (pollId: number, optionId: number, value: string) => {
@@ -148,21 +157,6 @@ export const PollingPage: React.FC<Props> = () => {
         }
     }
 
-    const submitVote = (selectedBatch: ISelectedBatch) => {
-        console.log("Sumit vote >>> ")
-        
-        setIsLoading(true)
-        voteOnBatchTask(selectedBatch.batchId, selectedBatch.pollId).then((value: any) => {
-            console.log("check data: ", value)
-        }).catch((error) => {
-            console.log(error)
-            setNotification({isShow: true, type: 'fail', message: 'Error occured, please check console'})
-        }).finally(() => {
-            setIsLoading(false)
-        })
-
-    }
-
     useEffect(() => {
         if(!notification.isShow) return  
         // close notification after 3 seconds
@@ -174,7 +168,6 @@ export const PollingPage: React.FC<Props> = () => {
     useEffect(() => {
         if(!authState.isLoggedIn) {
             setNotification({isShow: true, type: 'warn', message: 'Please check your wallet connect'})
-            return 
         }
 
         voteOnBatchTaskFilterEvent(undefined, authState.auth?.account)
@@ -278,7 +271,7 @@ export const PollingPage: React.FC<Props> = () => {
             <div className="polling-body">
                 <div className="polling-list">
                     <h4 className="polling-title">All Polls</h4>
-                    <p className="polling-sub-title">{allPolls.length} polls</p>
+                    <p className="polling-sub-title">{!pollsSearchRs.isSearch ? allPolls.length : pollsSearchRs.data.length} polls</p>
                     
                     {!allPolls || allPolls.length === 0 && 
                     <div className="empty-result">
@@ -301,13 +294,13 @@ export const PollingPage: React.FC<Props> = () => {
 
                       {allPolls && pollsSearchRs.isSearch && pollsSearchRs.data.length > 0 &&
                         <InfiniteScroll
-                        dataLength={allPolls.length}
+                        dataLength={pollsSearchRs.data.length}
                         next={fetchMoreData}
                         hasMore={hasMore}
                         loader={<h4>Loading...</h4>}
                       >
                           <div className="polling-items">
-                              {allPolls.map((p: IPoll) => {
+                              {pollsSearchRs.data.map((p: IPoll) => {
                                   return <PollItem key={p.pollId} poll={p} handleUserChoice={handleUserChoice} setNotification={setNotification}/>
                               })}
                           </div>

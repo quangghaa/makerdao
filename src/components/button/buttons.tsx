@@ -3,7 +3,6 @@ import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React, { ReactNode } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAuth } from "../../pages/auth/authSlice";
-import { pollVote, setPollState } from "../../pages/polling-page/pollSlice";
 import { selectRequest } from "../../pages/polling-page/requestSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { IContractRequest, IFilter, IPoll, ISelectedBatch, ISort } from "../../types/types";

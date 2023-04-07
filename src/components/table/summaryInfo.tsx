@@ -104,12 +104,12 @@ interface Props {
 const SummaryInfo: React.FC<Props> = ({data}) => {
 
   return (
-    <div>
+    <div style={{maxWidth: "500px"}}>
       <Table
         columns={columns}
         dataSource={tableData}
         pagination={false}
-        scroll={{y: 300}}
+        scroll={{y: 200}}
       />
     </div>
   );
