@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Divider, Modal, Progress, Radio, Table } from 'antd';
+import { Button, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { IBatchVote, ITask } from '../../types/types';
-import { useAppDispatch } from '../../redux/store';
-import { setSelectedBatch } from '../../pages/polling-page/requestSlice';
-import { PlaceBidModal } from '../modals/place-bid/PlaceBidModal';
+import { ITask } from '../../types/types';
 import { TaskDescriptionModal } from '../modals/task-description/taskDesciption';
 
 

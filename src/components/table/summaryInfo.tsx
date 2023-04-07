@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Divider, Popover, Progress, Radio, Table } from 'antd';
+import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { IBatchVote, IDelegate, IParticipation } from '../../types/types';
-import { useAppDispatch } from '../../redux/store';
-import { setSelectedBatch } from '../../pages/polling-page/requestSlice';
+import { IDelegate, IParticipation } from '../../types/types';
 import { StableLab } from '../../assets/func/img';
 import { GreenCheck } from '../../assets/func/svg';
-import { PopoverDelegate } from '../delegate/delegate';
 import { elipsisAddress } from '../../common/helper';
 
 const delegate = {
@@ -104,11 +101,12 @@ interface Props {
 const SummaryInfo: React.FC<Props> = ({data}) => {
 
   return (
-    <div>
+    <div style={{maxWidth: "500px"}}>
       <Table
         columns={columns}
         dataSource={tableData}
         pagination={false}
+        scroll={{y: 200}}
       />
     </div>
   );

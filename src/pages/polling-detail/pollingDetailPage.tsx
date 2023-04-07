@@ -1,5 +1,4 @@
 import { Tabs, TabsProps } from "antd";
-import Search from "antd/es/input/Search";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { StableLab } from "../../assets/func/img";
@@ -7,12 +6,7 @@ import { Clock, GreenCheck, HeadLeft, HeadRight, HeadUpArrow, Info } from "../..
 import { mapCharacterristic } from "../../common/common";
 import { elipsisAddress } from "../../common/helper";
 import { DefaultButton } from "../../components/button/buttons";
-import { InfoModal } from "../../components/modals/infoModal";
-import { AbsProgress, NoProgress, YesProgress } from "../../components/progress/progress";
-import SummaryInfo from "../../components/table/summaryInfo";
-import TaskListDetailTable from "../../components/table/taskListDetailTable";
-import { VotingAddressTable } from "../../components/table/votingAddressTable";
-import { IBatchVote, ICharacteristic, IDelegate, IPoll, ITask, IVotingByAddress } from "../../types/types";
+import { IBatchVote, ICharacteristic, IPoll } from "../../types/types";
 import './style.css';
 import { TabContent } from "./tabContent";
 

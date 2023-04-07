@@ -6,16 +6,24 @@ import reportWebVitals from './reportWebVitals';
 import { MetaMaskProvider } from "metamask-react";
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
+import { WagmiConfig, createClient } from 'wagmi'
+import { getDefaultProvider } from 'ethers';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+const client = createClient({
+  autoConnect: true,
+  provider: getDefaultProvider(),
+})
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <MetaMaskProvider>
+      <WagmiConfig client={client}>
         <App />
-      </MetaMaskProvider>
+      </WagmiConfig>
     </Provider>
   </React.StrictMode>
 );

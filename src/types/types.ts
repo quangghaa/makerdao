@@ -24,50 +24,21 @@ export interface IParticipation {
 }
 
 export interface IPoll {
-    id?: number;
-    pollId?: number;
-    batchTaskIds?: BigNumber[];
-    batchVotes?: IBatchVote[];
-    pollOwner?: string;
-    pollState?: 0 | 1 | 2; // created - open - end poll
-
-    postedTime?: string;
-    title?: string;
-    description?: string;
-    mkr?: number;
-    charateristic?: ICharacteristic[];
-    timeRemaining?: string;
-    totalComments?: number;
-    agreePercentage?: number;
-    disagreePercentage?: number;
-    neutralPercentage?: number;
-    leadingOption?: 'YES' | 'NO';
-    supportingMkr?: number;
-    status?: 'active' | 'executive';
-    passedTime?: string;
-    executedTime?: string;
-}
-
-export interface IPollOption {
     id: number;
-    pollId?: number;
-    batchTaskId?: BigNumber;
-    pollOwner?: string;
+    pollId: number;
+    batchTaskIds: number[];
+    batchVotes: IBatchVote[];
+    pollOwner: string;
+    pollState: 0 | 1 | 2; // created - open - end poll
+
     postedTime: string;
     title: string;
     description: string;
-    mkr?: number;
     charateristic: ICharacteristic[];
-    timeRemaining?: string;
-    totalComments?: number;
-    agreePercentage?: number;
-    disagreePercentage?: number;
-    neutralPercentage?: number;
-    leadingOption: 'YES' | 'NO';
-    supportingMkr: number;
-    status: 'active' | 'executive';
-    passedTime?: string;
-    executedTime?: string;
+    timeRemaining: string;
+    totalComments: number;
+    passedTime: string;
+    executedTime: string;
 }
 
 export interface IBid {
@@ -84,14 +55,14 @@ export interface ICharacteristic {
 
 export interface IDelegate {
     img?: string;
-    status: 'green-check' | 'unknown';
-    name: string;
+    status?: 'green-check' | 'unknown';
+    name?: string;
     address: string;
     charateristic?: ICharacteristic[];
-    totalMkrDelegated: number;
-    pollParticipation: number;
-    executiveParticipation: number;
-    communication: number;
+    totalMkrDelegated?: number;
+    pollParticipation?: number;
+    executiveParticipation?: number;
+    communication?: number;
 }
 
 export interface IStepDetail {
@@ -152,10 +123,6 @@ export interface IVotingByAddress {
 export interface IAuth {
     account: string
     chainId: string
-}
-
-export interface IContract {
-    
 }
 
 export interface IUserVote {

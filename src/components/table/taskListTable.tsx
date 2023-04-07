@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Divider, Progress, Radio, Table } from 'antd';
+import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { IBatchVote, ITask } from '../../types/types';
 import { useAppDispatch } from '../../redux/store';
-import { setSelectedBatch } from '../../pages/polling-page/requestSlice';
+import { setSelectedBatch } from '../../pages/polling/requestSlice';
 import { PlaceBidModal } from '../modals/place-bid/PlaceBidModal';
 
 const columns: ColumnsType<ITask> = [

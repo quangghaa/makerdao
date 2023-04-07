@@ -6,7 +6,7 @@ import Web3 from "web3";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { selectAuth } from "./auth/authSlice";
 import { EndVoteEventArgs, IBatchVote, ITask, OpenTaskAuctionEventArgs } from "../types/types";
-import { selectBatchList, setBid } from "./bidding-page/bidSlice";
+import { selectBatchList, setBid } from "./bidding/bidSlice";
 import { getAllPoll, openPollForVote, openPollForVoteFilterEvent } from "../services/poll";
 
 interface Props {

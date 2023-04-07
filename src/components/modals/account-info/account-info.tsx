@@ -10,9 +10,16 @@ interface Props {
     isOpen: boolean;
     handleCancel: () => void;
     auth?: IAuth;
+    disConnect?: () => void;
 }
 
-export const AccountInfoModal: React.FC<Props> = ({ isOpen, handleCancel, auth }) => {
+export const AccountInfoModal: React.FC<Props> = ({ isOpen, handleCancel, auth, disConnect }) => {
+    const handeDisconnect = () => {
+        if(!disConnect) return
+        disConnect()
+        handleCancel()
+    }
+
     return (
         <Modal title={"Account"} open={isOpen} onCancel={handleCancel} footer={null} width={400}>
             <div className="modal-content">
@@ -48,7 +55,7 @@ export const AccountInfoModal: React.FC<Props> = ({ isOpen, handleCancel, auth }
                             <span><HeadUpArrow /></span>
                         </a>
                         <div>
-                            <DefaultButton text={"Disconnect"} fontWeight={600} />
+                            <button className="default-btn" onClick={() => handeDisconnect()}>Disconnect</button>
                         </div>
                     </div>
 

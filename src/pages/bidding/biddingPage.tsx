@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import LazyLoad from "react-lazy-load";
-import { HeadUpArrow, Info, Search } from "../../assets/func/svg";
+import { Search } from "../../assets/func/svg";
 import { BatchItem } from "../../components/bid/batchItem";
 import { useAppSelector } from "../../redux/store";
 import { IBatchVote } from "../../types/types";
@@ -40,10 +39,6 @@ export const BiddingPage: React.FC<Props> = () => {
       }, 1500);
     }
 
-    // for(let i = 1; i < 100; i++) {
-    //   batchListFake.push({key: i, pollId: i, batchId: i, description: "Very long text Very long text Very long text Very long text Very long text Very long text Very long text Very long text", totalReward: 100, totalTasks: 20, totalRemainingTasks: 10, timeLeft: "4 hours"} as IBatchVote)
-    // }
-
     useEffect(() => {
       if(!batchList) {
         console.log("no batch list found")
@@ -65,13 +60,6 @@ export const BiddingPage: React.FC<Props> = () => {
             <>
               <p>No batch task list found =&gt; FAKE IT</p>
               <p>{batchListFake.length} batch</p>
-                    {/* {batchListFake.map((b: IBatchVote) => {
-                        return (
-                          <LazyLoad height={"auto"} width={"auto"} onContentVisible={() => {console.log('loaded!')}}>
-                            <BatchItem batch={b} />
-                          </LazyLoad>
-                        )
-                    })} */}
                     <InfiniteScroll
                       dataLength={batchListFake.length}
                       next={fetchMoreData}

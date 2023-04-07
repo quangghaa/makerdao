@@ -2,48 +2,15 @@ import Search from "antd/es/input/Search";
 import React, { useEffect, useState } from "react";
 import { Info } from "../../assets/func/svg";
 import { InfoModal } from "../../components/modals/infoModal";
-import { AbsProgress, NoProgress, YesProgress } from "../../components/progress/progress";
+import { NoProgress, YesProgress } from "../../components/progress/progress";
 import SummaryInfo from "../../components/table/summaryInfo";
 import TaskListDetailTable from "../../components/table/taskListDetailTable";
-import { useAppSelector } from "../../redux/store";
 import { getAllTask } from "../../services/batchTask";
 import { IDelegate, ITask, IVotingByAddress } from "../../types/types";
 
 interface Props {
     batchId: number
 }
-
-const votingByAddress = [
-    {
-      address: {img: '', status: 'green-check', name: 'StableLab', address:'0x4e324...2754', totalMkrDelegated: 300, pollParticipation: 100, executiveParticipation: 100, communication: 98.98} as IDelegate,
-      option: 'Yes',
-      votePercentage: 27.04,
-      mkr: 48612,
-      verify: 'Arbiscan',
-    },
-    {
-      address: {img: '', status: 'green-check', name: 'StableLab', address:'0x4e324...2754', totalMkrDelegated: 300, pollParticipation: 100, executiveParticipation: 100, communication: 98.98} as IDelegate,
-      option: 'Yes',
-      votePercentage: 27.04,
-      mkr: 48612,
-      verify: 'Arbiscan',
-    },
-    {
-      address: {img: '', status: 'unknown', name: 'StableLab', address:'0x4e324...2754', totalMkrDelegated: 300, pollParticipation: 100, executiveParticipation: 100, communication: 98.98} as IDelegate,
-      option: 'Yes',
-      votePercentage: 27.04,
-      mkr: 48612,
-      verify: 'Etherscan',
-    },
-    {
-      address: {img: '', status: 'green-check', name: 'StableLab', address:'0x4e324...2754', totalMkrDelegated: 300, pollParticipation: 100, executiveParticipation: 100, communication: 98.98} as IDelegate,
-      option: 'Yes',
-      votePercentage: 27.04,
-      mkr: 48612,
-      verify: 'Arbiscan',
-    },
-
-  ] as IVotingByAddress[]
 
 const fakeTaskTableData = [
     {key: 1, taskId: 1, taskName: 'Implement contract', deadline: '04/04/2023', reward: 100, pic: 'vietlq', type: 0, reporter: 'nampkh', reviewer: 'nampkh', expectedResult: ['Run as expected', 'Clean code', 'Extendable']} as ITask,
@@ -59,26 +26,6 @@ const fakeTaskItem = {key: 1, taskId: 1, taskName: 'Implement contract', deadlin
 export const TabContent: React.FC<Props> = ({batchId}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [allTasks, setAllTasks] = useState<ITask[]>()
-    // const selectedBatch = useAppSelector(selec)
-
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
-
-    const modalTitle = "Polling contract versions"
-
-    const modalContent = [
-        "v2 - The latest version of the polling contract was deployed to enable batch voting, so users can vote on multiple polls in one transaction.",
-        "v1 - The first version of the polling contract is still used for creating polls on-chain, but it only allows for voting on a single poll per transaction, so an upgrade was deployed.",
-    ] as string[]
 
     useEffect(() => {
         // setIsLoading(true)
@@ -138,7 +85,7 @@ export const TabContent: React.FC<Props> = ({batchId}) => {
                         <span>
                             plurality poll
                         </span>
-                        <span className="plurality-info-icon lightgreen" onClick={showModal}><Info /></span>
+                        <span className="plurality-info-icon lightgreen" onClick={() => console.log("")}><Info /></span>
                     </div>
                 </div>
                 <YesProgress mkr={27079} percentage={70} />
@@ -156,9 +103,6 @@ export const TabContent: React.FC<Props> = ({batchId}) => {
                 <TaskListDetailTable data={allTasks ? allTasks : [] as ITask[]} />
             </div>
             <hr className="poll-hr" />
-
-            <InfoModal title={modalTitle} isOpen={isModalOpen} handleCancel={handleCancel} content={modalContent} align={'center'} />
-
         </div>
     )
 }
