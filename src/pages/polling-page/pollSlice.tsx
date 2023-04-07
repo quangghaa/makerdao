@@ -20,16 +20,6 @@ export const pollSlice = createSlice({
   name: 'poll',
   initialState,
   reducers: {
-    setPollState: (state, action: PayloadAction<IPoll>) => {
-      console.log("SHOW polls: ", state.polls)
-      state.polls?.forEach((p: IPoll) => {
-        console.log("check polls stateeee: ", p, action.payload)
-        if (p.pollId === action.payload.pollId) {
-          p.pollState = 1
-          console.log("vao day: ", p.pollId)
-        }
-      })
-    },
   },
   extraReducers(builder) {
     builder
@@ -108,6 +98,6 @@ export const pollVote = createAsyncThunk('poll/pollVote', async (contractRequest
 export const selectPollState = (state: RootState) => state.poll
 export const selectPolls = (state: RootState) => state.poll.polls
 
-export const { setPollState } = pollSlice.actions
+// export const { setPollState } = pollSlice.actions
 
 export default pollSlice.reducer

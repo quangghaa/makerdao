@@ -84,14 +84,14 @@ export interface ICharacteristic {
 
 export interface IDelegate {
     img?: string;
-    status: 'green-check' | 'unknown';
-    name: string;
+    status?: 'green-check' | 'unknown';
+    name?: string;
     address: string;
     charateristic?: ICharacteristic[];
-    totalMkrDelegated: number;
-    pollParticipation: number;
-    executiveParticipation: number;
-    communication: number;
+    totalMkrDelegated?: number;
+    pollParticipation?: number;
+    executiveParticipation?: number;
+    communication?: number;
 }
 
 export interface IStepDetail {

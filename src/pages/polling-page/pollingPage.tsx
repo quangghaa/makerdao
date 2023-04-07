@@ -74,6 +74,12 @@ interface Props {
     supportingMkr: 115663
   } as IPoll
 
+  const fakeBatchVote = {
+    reporter: "0x888888888888888888",
+    totalReward: 100,
+    approval: 10
+  } as IBatchVote
+
 export const PollingPage: React.FC<Props> = () => {
     const { Search } = Input;
 
@@ -201,10 +207,12 @@ export const PollingPage: React.FC<Props> = () => {
 
                 if(!Array.isArray(p.batchTaskIds)) return 
                 let tempBatchList = [] as IBatchVote[]
-                p.batchTaskIds.forEach((id: any) => {
+                p.batchTaskIds.forEach((id: any, index: number) => {
                     let t = {} as IBatchVote
+                    t = {...fakeBatchVote}
                     t.key = Number(id)
                     t.batchId = Number(id)
+                    t.approval = t.approval - index
                     tempBatchList.push(t)
                 })
                 tempPoll.batchVotes = tempBatchList

@@ -9,6 +9,7 @@ import { GreenCheck } from '../../assets/func/svg';
 import { PopoverDelegate } from '../delegate/delegate';
 import SummaryInfo from './summaryInfo';
 import { selectedBatch } from '../../pages/polling-page/voteSlice';
+import { elipsisAddress } from '../../common/helper';
 
 const delegate = {
   img: '',
@@ -21,93 +22,6 @@ const delegate = {
   communication: 98.88
 } as IDelegate
 
-const columns: ColumnsType<IBatchVote> = [
-  {
-    title: '',
-    dataIndex: 'key',
-    render: (text: string) => <span></span>,
-  },
-  {
-    title: 'Batch ID',
-    dataIndex: 'batchId',
-    render: (text: string) => <span>{text}</span>,
-  },
-  {
-    title: 'Reporter',
-    dataIndex: 'reporter',
-    render: (text: string) => {
-      if(text && text.length != 0) {
-        return <a href="#" className='address-item'>
-                <Popover placement="bottomLeft" content={() => delegate ? PopoverDelegate(delegate) : <></>}>
-                <div className="delegate-img" onMouseOver={() => console.log("hover me")}>
-                    <StableLab />
-                    <div className="green-check-box">
-                        <GreenCheck />
-                    </div>
-                </div>
-                </Popover>
-                <div className="delegate-info">
-                    <p></p>
-                    <p>{"ABC"}</p>
-                </div>
-          </a>
-      } else {
-        return <>---</>
-      }
-    }
-  },
-  {
-    title: 'Time left',
-    dataIndex: 'timeLeft',
-    render: (text: string) => {
-      if(text && text.length != 0) {
-        return <span>{text}</span>
-      } else {
-        return <>---</>
-      }
-    }
-  },
-  {
-    title: 'Total reward',
-    dataIndex: 'totalReward',
-    render: (text: number) => {
-      if(text) {
-        return <span>{text} tokens</span>
-      } else {
-        return <>---</>
-      }
-    }
-  },
-  {
-    title: 'Total participation',
-    dataIndex: 'totalParticipation',
-    render: (text: number) => {
-      if(text) {
-        return <span>{text} persons</span>
-      } else {
-        return <>---</>
-      }
-    }
-  },
-  {
-    title: 'Approval',
-    dataIndex: 'approval',
-    render: (text: number) => <Progress type="circle" percent={text} size={'small'} />
-  },
-  {
-    title: 'Summary ',
-    dataIndex: 'batchId',
-    render: (text: number) => {
-      return <>
-        <Popover placement="topRight" content={<SummaryInfo />}>
-          <Button type='link'>See detail</Button>
-        </Popover>
-      </>
-    }
-  },
-];
-
-
 interface Props {
   data?: IBatchVote[]
   pollId?: number
@@ -115,13 +29,92 @@ interface Props {
 }
 
 const BatchVoteTable: React.FC<Props> = ({data, pollId, pollState}) => {
+  const columns: ColumnsType<IBatchVote> = [
+    {
+      title: '',
+      dataIndex: 'key',
+      render: (text: string) => <span></span>,
+    },
+    {
+      title: 'Batch ID',
+      dataIndex: 'batchId',
+      render: (text: string) => <span>{text}</span>,
+    },
+    {
+      title: 'Reporter',
+      dataIndex: 'reporter',
+      render: (text: string) => {
+        if(text && text.length != 0) {
+          return <a href="#" className='address-item'>
+                  <Popover placement="bottomLeft" content={() => selectedAddress ? PopoverDelegate(selectedAddress) : <></>}>
+                  <div className="delegate-img" onMouseOver={() => hoverAddress(text)}>
+                      <StableLab />
+                      <div className="green-check-box">
+                          <GreenCheck />
+                      </div>
+                  </div>
+                  </Popover>
+                  <div className="delegate-info">
+                      <p></p>
+                      <p>{elipsisAddress(text)}</p>
+                  </div>
+            </a>
+        } else {
+          return <>---</>
+        }
+      }
+    },
+    {
+      title: 'Total reward',
+      dataIndex: 'totalReward',
+      render: (text: number) => {
+        if(text) {
+          return <span>{text} Tokens</span>
+        } else {
+          return <>---</>
+        }
+      }
+    },
+    {
+      title: 'Approval',
+      dataIndex: 'approval',
+      defaultSortOrder: 'descend',
+      sorter: (a, b) => a.approval - b.approval,
+      render: (text: number) => {
+        if(!text) return <>---</>
+        return <span>{text}</span>
+      }
+    },
+    {
+      title: 'Summary ',
+      dataIndex: 'batchId',
+      render: (text: number) => {
+        return <>
+          <Popover placement="topRight" content={<SummaryInfo />}>
+            <button className='link-button'>See detail</button>
+          </Popover>
+        </>
+      }
+    },
+  ];
+
+  const [selectedAddress, setSelectedAddress] = useState<IDelegate>()
+
+  const hoverAddress = (address: string) => {
+    let del: IDelegate = {
+      address: ''
+    }
+    del.address = address
+    setSelectedAddress(del)
+  }
+
   const [selectionType, setSelectionType] = useState<'checkbox' | 'radio'>('radio');
   const dispatch = useAppDispatch()
   const selectedBatchState = useAppSelector(selectedBatch)
 
+
   // rowSelection object indicates the need for row selection
   const rowSelection = {
-    
     onChange: (selectedRowKeys: React.Key[], selectedRows: IBatchVote[]) => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       
@@ -145,6 +138,7 @@ const BatchVoteTable: React.FC<Props> = ({data, pollId, pollState}) => {
   return (
     <div>
       <Table
+        className='table'
         rowSelection={{type: selectionType, ...rowSelection}}
         columns={columns}
         dataSource={data}

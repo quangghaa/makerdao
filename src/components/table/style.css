@@ -187,6 +187,14 @@
     }
 }
 
+.link-button {
+    background: transparent;
+    border: unset;
+    color: var(--theme-ui-colors-textSecondary);
+    text-decoration: underline;
+}
+
+
 @media screen and (min-width: 52em) {
     .td-mkr {
         text-align: left;

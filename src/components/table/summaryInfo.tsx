@@ -109,6 +109,7 @@ const SummaryInfo: React.FC<Props> = ({data}) => {
         columns={columns}
         dataSource={tableData}
         pagination={false}
+        scroll={{y: 300}}
       />
     </div>
   );

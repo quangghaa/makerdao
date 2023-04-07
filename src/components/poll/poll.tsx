@@ -129,9 +129,6 @@ export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, setNotificat
                             <p className="batch-description">
                                 {poll?.description}
                             </p>
-                            <p>
-                                {poll?.pollOwner ? `Owner: ${poll.pollOwner}` : ''}
-                            </p>
                         </a>
 
                         <div className="characteristic-list">
@@ -149,10 +146,10 @@ export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, setNotificat
                                     <span>{poll.timeRemaining} remaining</span>
                                 </div>
 
-                                <div>
+                                {/* <div>
                                     <span className="lightgreen"><Message /></span>
                                     <span>{poll.totalComments} comments</span>
-                                </div>
+                                </div> */}
                             </div>}
                     </div>
 
