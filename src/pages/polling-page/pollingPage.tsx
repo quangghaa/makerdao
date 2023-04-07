@@ -11,11 +11,12 @@ import { InfoModal } from "../../components/modals/infoModal";
 import { Notification } from "../../components/notification/Notification";
 import { PollItem } from "../../components/poll/poll";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { voteOnBatchTask } from "../../services/batchTask";
+import { voteOnBatchTask, voteOnBatchTaskFilterEvent } from "../../services/batchTask";
 import { getAllPoll } from "../../services/poll";
-import { IBatchVote, ICharacteristic, IContractRequest, IFilter, IPoll, IPollOption, ISelectedBatch, ISort, IUserVote } from "../../types/types";
+import { IBatchVote, ICharacteristic, IContractRequest, IFilter, INotification, IPoll, IPollOption, ISelectedBatch, ISort, IUserVote } from "../../types/types";
 import { selectAuth } from "../auth/authSlice";
 import {selectPolls, selectPollState } from "./pollSlice";
+import { selectedBatch, setSelectedBatch } from "./voteSlice";
 import './style.css';
 
 interface Props {
@@ -72,12 +73,6 @@ interface Props {
     mkr: 99245,
     supportingMkr: 115663
   } as IPoll
-
-interface INotification {
-    isShow: boolean
-    type: 'warn' | 'success' | 'fail'
-    message: string
-}
 
 export const PollingPage: React.FC<Props> = () => {
     const { Search } = Input;
@@ -175,10 +170,26 @@ export const PollingPage: React.FC<Props> = () => {
             setNotification({isShow: true, type: 'warn', message: 'Please check your wallet connect'})
             return 
         }
+
+        voteOnBatchTaskFilterEvent(undefined, authState.auth?.account)
+            .then((result) => {
+                console.log("voteOnBatchTask event: ", result)
+                if(!result) return 
+                if(result.length === 0) return
+                let event = result[result.length - 1].args
+                if(!event) return
+                console.log("FIND IT: ", Number(event._pollId), Number(event.batchTaskVoted.batchTaskId))
+                
+                let ePollId = Number(event._pollId)
+                let eBatchId = Number(event.batchTaskVoted.batchTaskId)
+
+                dispatch(setSelectedBatch({pollId: ePollId, batchId: eBatchId} as ISelectedBatch))
+
+            }).finally(() => {
+            })
         
         setIsLoading(true)
         getAllPoll().then((pollList: any) => {
-            console.log("check all polls: ", pollList)
             let tempAllPolls = [] as IPoll[]
             if(!Array.isArray(pollList)) return 
             pollList.forEach((p: any) => {
@@ -192,14 +203,12 @@ export const PollingPage: React.FC<Props> = () => {
                 let tempBatchList = [] as IBatchVote[]
                 p.batchTaskIds.forEach((id: any) => {
                     let t = {} as IBatchVote
+                    t.key = Number(id)
                     t.batchId = Number(id)
                     tempBatchList.push(t)
                 })
-                console.log("check id >>>: ", tempPoll.pollId)
                 tempPoll.batchVotes = tempBatchList
-                console.log("check tempoll: ", tempPoll.batchVotes)
                 tempAllPolls.push(tempPoll)
-                console.log("Check temp all polls: ", tempAllPolls)
             })
             setAllPolls(tempAllPolls)
         }).catch((error) => {
@@ -276,12 +285,8 @@ export const PollingPage: React.FC<Props> = () => {
                         loader={<h4>Loading...</h4>}
                       >
                           <div className="polling-items">
-                              {/* {optionsToShow.length > 0 && 
-                              optionsToShow.map((o: IPollOption) => {
-                                  return <PollItem pollOption={o} handleUserChoice={handleUserChoice} submitVote={submitVote} />
-                              })} */}
                               {allPolls.map((p: IPoll) => {
-                                  return <PollItem key={p.pollId} poll={p} handleUserChoice={handleUserChoice} submitVote={submitVote}/>
+                                  return <PollItem key={p.pollId} poll={p} handleUserChoice={handleUserChoice} setNotification={setNotification}/>
                               })}
                           </div>
                       </InfiniteScroll>}
@@ -294,12 +299,8 @@ export const PollingPage: React.FC<Props> = () => {
                         loader={<h4>Loading...</h4>}
                       >
                           <div className="polling-items">
-                              {/* {optionsToShow.length > 0 && 
-                              optionsToShow.map((o: IPollOption) => {
-                                  return <PollItem pollOption={o} handleUserChoice={handleUserChoice} submitVote={submitVote} />
-                              })} */}
                               {allPolls.map((p: IPoll) => {
-                                  return <PollItem key={p.pollId} poll={p} handleUserChoice={handleUserChoice} submitVote={submitVote}/>
+                                  return <PollItem key={p.pollId} poll={p} handleUserChoice={handleUserChoice} setNotification={setNotification}/>
                               })}
                           </div>
                       </InfiniteScroll>}
@@ -308,219 +309,9 @@ export const PollingPage: React.FC<Props> = () => {
                         <div className="empty-result">
                             NO DATA FOUND
                         </div>}
-                    {/* <div className="view-more-btn-wrapper">
-                        <ViewMoreButton text="View ended polls" count={934} fontWeight={500} />
-                    </div> */}
 
                 </div>
 
-                {/* <div className="polling-extra-info">
-                    <div className="system-info">
-                        <div className="extra-head">
-                            <h3 className="eh-title">Your Ballot</h3>
-                        </div>
-
-                        <div className="extra-body">
-                            <hr className="poll-hr"/>
-                            <div className="voting-weight-row">
-                                <span className="poll-posted">Voting weight</span>
-                                <span>0 MKR</span>
-                            </div>
-                            <hr className="poll-hr"/>
-                            <div className="deposit-to-vote-btn">
-                                <LightGreenButton text="Review & Submit your Ballot" fontWeight={600} />
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div className="system-info">
-                        <div className="extra-head">
-                            <h3 className="eh-title">System Info</h3>
-                            <a href="#" className="extra-link">
-                                <span>See more</span>
-                                <span><HeadUpArrow /></span>
-                            </a>
-                        </div>
-
-                        <div className="extra-body">
-                            <div className="extra-body-item mt-0">
-                                <div className="ebi-left">
-                                    <span>Polling Contract v2</span>
-                                    <span className="ebi-left-info-icon" onClick={showModal}><Info /></span>
-                                </div>
-
-                                <a href="#" className="extra-link">
-                                    <span>0xD3A9F...b133</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <div className="ebi-left">
-                                    <span>Polling Contract v1</span>
-                                    <span className="ebi-left-info-icon" onClick={showModal}><Info /></span>
-                                </div>
-
-                                <a href="#" className="extra-link">
-                                    <span>0xD3A9F...b133</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <div className="ebi-left">
-                                    <span>Arbitrum Polling Contract</span>
-                                    <span></span>
-                                </div>
-
-                                <a href="#" className="extra-link">
-                                    <span>0xD3A9F...b133</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <div className="ebi-left">
-                                    <span>Dai Savings Rate</span>
-                                    <span></span>
-                                </div>
-
-                                <div>
-                                    <span>1.00%</span>
-                                </div>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <div className="ebi-left">
-                                    <span>Total Dai</span>
-                                    <span></span>
-                                </div>
-
-                                <div>
-                                    <span>5,417,424,976 DAI</span>
-                                </div>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <div className="ebi-left">
-                                    <span>Dai Debt Ceiling</span>
-                                    <span></span>
-                                </div>
-
-                                <div>
-                                    <span>7,244,751,817 DAI</span>
-                                </div>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <div className="ebi-left">
-                                    <span>System Surplus</span>
-                                    <span></span>
-                                </div>
-
-                                <div>
-                                    <span>72,252,120 DAI</span>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div className="polling-faq">
-                        <div className="extra-head">
-                            <h3 className="eh-title">Polling FAQs</h3>
-                        </div>
-
-                        <div className="extra-body">
-                            <div className="extra-body-item mt-0">
-                                <a href="#" className="extra-link">
-                                    <span>How to participate in MakerDAO governance?</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>What are Governance Polls?</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>How is voting weight calculated?</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>How to manually vote in a poll with Etherscan?</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>How to set up your wallet for voting?</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>How does gasless poll voting work?</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="general-resources">
-                        <div className="extra-head">
-                            <h3 className="eh-title">General Governance Resources</h3>
-                        </div>
-
-                        <div className="extra-body">
-                            <div className="extra-body-item mt-0">
-                                <a href="#" className="extra-link">
-                                    <span>Maker Forum</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>Governance FAQs</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>Governance Risk Framework</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>Awesome MakerDAO</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>Governance Call Schedule</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                        </div>
-                    </div>
-                </div> */}
             </div>
 
             {/* <InfoModal title={modalTitle} isOpen={isModalOpen} handleCancel={handleCancel} content={modalContent} align={'center'} /> */}

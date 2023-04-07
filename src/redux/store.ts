@@ -6,6 +6,7 @@ import pollReducer from '../pages/polling-page/pollSlice'
 import bidReducer from '../pages/bidding-page/bidSlice'
 import taskReducer from '../pages/bidding-detail-page/taskSlice'
 import requestReducer from '../pages/polling-page/requestSlice'
+import voteReducer from '../pages/polling-page/voteSlice'
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     bid: bidReducer,
     task: taskReducer,
     request: requestReducer,
+    vote: voteReducer,
   },
 })
 

@@ -1,4 +1,5 @@
 import { BigNumber, Contract } from "ethers";
+import React from "react";
 
 export interface IBatchVote {
     key: React.Key;
@@ -14,8 +15,13 @@ export interface IBatchVote {
     totalRemainingTasks: number; 
     totalParticipation: number;
     approval: number;
-    
   }
+
+export interface IParticipation {
+    address: string
+    totalRewards: number
+    totalTasks: number
+}
 
 export interface IPoll {
     id?: number;
@@ -181,6 +187,7 @@ export interface EndVoteEventArgs {
 }
 
 export interface ITask {
+    key: React.Key
     taskId: number
     taskName: string
     deadline: string
@@ -199,6 +206,7 @@ export interface ITask {
     timeLeft: string
     state: number
     reporter: string
+    expectedResult: string[]
 }
 
 export interface OpenTaskAuctionEventArgs {
@@ -206,4 +214,10 @@ export interface OpenTaskAuctionEventArgs {
     auctionDuration: string
     timeStart: string
     auctionTask: ITask
+}
+
+export interface INotification {
+    isShow: boolean
+    type: 'warn' | 'success' | 'fail'
+    message: string
 }

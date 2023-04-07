@@ -45,7 +45,7 @@ export const getAllVotingPoll = async () => {
 export const openPollForVote = async () => {
     try {
         let contract = getContract('taskManger')
-        const response = await contract.openPollForVote(1, 300)
+        const response = await contract.openPollForVote(1, 30000)
         return response
     } catch (error) {
         console.log("openPollForVote error: ", error)

@@ -1,0 +1,25 @@
+.des-row {
+    display: flex;
+    width: 100%;
+}
+
+.des-label {
+    font-weight: 600;
+    color: var(--theme-ui-colors-textSecondary);
+    flex-basis: 200px;
+    row-gap: wrap;
+    font-size: 1rem;
+}
+
+.des-content {
+    font-size: 1rem;
+    flex-grow: 1;
+}
+
+.mt-1rem {
+    margin-top: 1rem;
+}
+
+.expected-rs-list {
+    margin: 0;
+}

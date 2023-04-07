@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Divider, Popover, Progress, Radio, Table } from 'antd';
+import { Button, Divider, Popover, Progress, Radio, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { IBatchVote, IDelegate } from '../../types/types';
-import { useAppDispatch } from '../../redux/store';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 import { setSelectedBatch } from '../../pages/polling-page/requestSlice';
 import { StableLab } from '../../assets/func/img';
 import { GreenCheck } from '../../assets/func/svg';
 import { PopoverDelegate } from '../delegate/delegate';
+import SummaryInfo from './summaryInfo';
+import { selectedBatch } from '../../pages/polling-page/voteSlice';
 
 const delegate = {
   img: '',
@@ -20,6 +22,11 @@ const delegate = {
 } as IDelegate
 
 const columns: ColumnsType<IBatchVote> = [
+  {
+    title: '',
+    dataIndex: 'key',
+    render: (text: string) => <span></span>,
+  },
   {
     title: 'Batch ID',
     dataIndex: 'batchId',
@@ -87,6 +94,17 @@ const columns: ColumnsType<IBatchVote> = [
     dataIndex: 'approval',
     render: (text: number) => <Progress type="circle" percent={text} size={'small'} />
   },
+  {
+    title: 'Summary ',
+    dataIndex: 'batchId',
+    render: (text: number) => {
+      return <>
+        <Popover placement="topRight" content={<SummaryInfo />}>
+          <Button type='link'>See detail</Button>
+        </Popover>
+      </>
+    }
+  },
 ];
 
 
@@ -99,29 +117,39 @@ interface Props {
 const BatchVoteTable: React.FC<Props> = ({data, pollId, pollState}) => {
   const [selectionType, setSelectionType] = useState<'checkbox' | 'radio'>('radio');
   const dispatch = useAppDispatch()
+  const selectedBatchState = useAppSelector(selectedBatch)
 
   // rowSelection object indicates the need for row selection
   const rowSelection = {
+    
     onChange: (selectedRowKeys: React.Key[], selectedRows: IBatchVote[]) => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       
       let intKey = parseInt(selectedRowKeys[0].toString())
-      dispatch(setSelectedBatch({pollId: selectedRows[0].pollId, batchId: intKey}))
+
+      if(!pollId) {
+        console.log("missing poll id or undefined")
+        return
+      }
+
+      dispatch(setSelectedBatch({pollId: pollId, batchId: intKey}))
     },
     getCheckboxProps: (record: IBatchVote) => ({
-      disabled: false, // Column configuration not to be checked
-      // name: record.name,
+      disabled: pollState === 0 || pollState === 2 || (selectedBatchState.batchId === record.batchId) ? true : false, // Column configuration not to be checked
+      
+      // selection: 2,
+      // name: pollState,
     }),
   };
 
   return (
     <div>
       <Table
-        rowSelection={pollState === 1 ? {type: selectionType,...rowSelection} : undefined}
+        rowSelection={{type: selectionType, ...rowSelection}}
         columns={columns}
         dataSource={data}
         pagination={false}
-        scroll={{x: "150%"}}
+        scroll={{x: "100%"}}
       />
     </div>
   );

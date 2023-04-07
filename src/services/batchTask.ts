@@ -43,6 +43,8 @@ export const voteOnBatchTask = async (batchId: number, pollId: number) => {
 
 export const voteOnBatchTaskFilterEvent = async (pollId?: number, address?: string) => {
     try {
+        console.log("param filter event: ", pollId, address)
+
         let contract = getContract('batchVoting')
         const filter = contract.filters.VoteOnBatchTask(pollId ? pollId : null, null, null, address ? address : null);
         if(!filter) throw new Error("filter undefined");
@@ -50,6 +52,18 @@ export const voteOnBatchTaskFilterEvent = async (pollId?: number, address?: stri
         return results
       } catch (error) {
         console.log("PollVote error: ", error)
+        return
+      }
+}
+
+export const getAllTask = async (batchId: number) => {
+    try {
+        let contract = getContract('taskManger')
+        const response = await contract.getAllTask(batchId)
+        console.log("have respone: ", response)
+        return response
+      } catch (error) {
+        console.log("getAllTask error: ", error)
         return
       }
 }
