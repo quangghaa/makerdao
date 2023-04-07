@@ -18,6 +18,15 @@
     margin-top: 16px;
 }
 
+.view-more {
+    min-width: 300px;
+    margin: 2rem auto;
+}
+
+.view-more button {
+    width: 100%;
+}
+
 @media screen and (min-width: 40em) {
     .bidding-body {
         grid-template-columns: auto;

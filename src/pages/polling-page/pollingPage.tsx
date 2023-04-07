@@ -1,94 +1,65 @@
+import { Input } from "antd";
+import Search from "antd/es/input/Search";
 import { BigNumber } from "ethers";
 import React, { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { HeadUpArrow, Info } from "../../assets/func/svg";
 import { LightGreenButton, ViewMoreButton } from "../../components/button/buttons";
 import { Filter } from "../../components/filter/filter";
+import { Loading } from "../../components/loading/loading";
 import { InfoModal } from "../../components/modals/infoModal";
+import { Notification } from "../../components/notification/Notification";
 import { PollItem } from "../../components/poll/poll";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { IBatchVote, ICharacteristic, IContractRequest, IFilter, IPoll, IPollOption, ISelectedBatch, ISort, IUserVote } from "../../types/types";
+import { voteOnBatchTask, voteOnBatchTaskFilterEvent } from "../../services/batchTask";
+import { getAllPoll } from "../../services/poll";
+import { IBatchVote, ICharacteristic, IContractRequest, IFilter, INotification, IPoll, IPollOption, ISelectedBatch, ISort, IUserVote } from "../../types/types";
 import { selectAuth } from "../auth/authSlice";
-import { getAllPoll, pollVote, selectPolls } from "./pollSlice";
+import {selectPolls, selectPollState } from "./pollSlice";
+import { selectedBatch, setSelectedBatch } from "./voteSlice";
 import './style.css';
 
 interface Props {
 }
 
-const tagOptions = [
-    {id: 1, state: 'unchecked', name: 'Aution', totalValue: 27},
-    {id: 2, state: 'unchecked', name: 'Black Thursday', totalValue: 27},
-    {id: 3, state: 'unchecked', name: 'Budget', totalValue: 27},
-    {id: 4, state: 'unchecked', name: 'Collateral Offboarding', totalValue: 27},
-    {id: 5, state: 'unchecked', name: 'Collateral Onboarding', totalValue: 27},
-    {id: 6, state: 'unchecked', name: 'Core Unit Offboarding', totalValue: 27},
-    {id: 7, state: 'unchecked', name: 'Core Unit Onboarding', totalValue: 27},
-    {id: 8, state: 'unchecked', name: 'DAI Direct Deposit Module', totalValue: 27},
-    {id: 9, state: 'unchecked', name: 'Dai Saving Rate', totalValue: 27},
-    {id: 10, state: 'unchecked', name: 'Delegates', totalValue: 27},
-    {id: 11, state: 'unchecked', name: 'Endgame', totalValue: 27},
-    {id: 12, state: 'unchecked', name: 'Greenlight', totalValue: 27},
-    {id: 13, state: 'unchecked', name: 'High Impact', totalValue: 27},
-    {id: 14, state: 'unchecked', name: 'Inclusion Poll', totalValue: 27},
-    {id: 15, state: 'unchecked', name: 'Low Impact', totalValue: 27},
-    {id: 16, state: 'unchecked', name: 'MIP', totalValue: 27},
-  ] as IFilter[]
-
-  const statusOptions = [
-    {id: 1, state: 'unchecked', name: 'Active Polls', totalValue: 18},
-    {id: 2, state: 'unchecked', name: 'Ended Polls', totalValue: 933},
-  ] as IFilter[]
-
-  const typeOptions = [
-    {id: 1, state: 'unchecked', name: 'Plurality', totalValue: 881},
-    {id: 2, state: 'unchecked', name: 'Ranked Choice', totalValue: 70},
-    {id: 3, state: 'unchecked', name: 'Majority', totalValue: 0},
-    {id: 4, state: 'unchecked', name: 'Approval', totalValue: 1},
-  ] as IFilter[]
-
-  const sortOptions = [
-    {id: 1, name: 'Nearest end date'},
-    {id: 2, name: 'Furthest end date'},
-    {id: 3, name: 'Nearest start date'},
-    {id: 4, name: 'Furthest start date'},
-  ] as ISort[]
-
   const pollItem = {
     postedTime: 'mar 13 2023 16:00 UTC',
-    title: 'Ratification Poll for the Constitution MIP Set - March 13, 2023',
-    description: 'The Constitution MIP Set (MIP101 through MIP114) introduces the Maker Constitution and the Scope Framework as well as containing MIP102c2-SP1 which amends multiple MIPs.',
+    title: 'Task Auction',
+    description: 'Vote task list, task commitment, task auction, tokens reward',
+    batchVotes: [] as IBatchVote[],
     charateristic: [
       {
         tipe: 'yellow-pink',
         text: 'High Impact'
       },
-      {
-        tipe: 'pink',
-        text: 'Real World Asset'
-      },
-      {
-        tipe: 'gray',
-        text: 'Misc Governance'
-      },
-      {
-        tipe: 'orange',
-        text: 'Collateral Offboarding'
-      },
-      {
-        tipe: 'yellow',
-        text: 'Misc Funding'
-      },
-      {
-        tipe: 'green',
-        text: 'Ratification Poll',
-      },
-      {
-        tipe: 'blue-green',
-        text: 'MIP'
-      },
-      {
-        tipe: 'blue',
-        text: 'Budget'
-      }
+    //   {
+    //     tipe: 'pink',
+    //     text: 'Real World Asset'
+    //   },
+    //   {
+    //     tipe: 'gray',
+    //     text: 'Misc Governance'
+    //   },
+    //   {
+    //     tipe: 'orange',
+    //     text: 'Collateral Offboarding'
+    //   },
+    //   {
+    //     tipe: 'yellow',
+    //     text: 'Misc Funding'
+    //   },
+    //   {
+    //     tipe: 'green',
+    //     text: 'Ratification Poll',
+    //   },
+    //   {
+    //     tipe: 'blue-green',
+    //     text: 'MIP'
+    //   },
+    //   {
+    //     tipe: 'blue',
+    //     text: 'Budget'
+    //   }
     ] as ICharacteristic[],
     timeRemaining: '4d 7h',
     totalComments: 2,
@@ -103,88 +74,53 @@ const tagOptions = [
     supportingMkr: 115663
   } as IPoll
 
-  const fakePollOption = {
-    postedTime: 'mar 13 2023 16:00 UTC',
-    title: 'Ratification Poll for the Constitution MIP Set - March 13, 2023',
-    description: 'The Constitution MIP Set (MIP101 through MIP114) introduces the Maker Constitution and the Scope Framework as well as containing MIP102c2-SP1 which amends multiple MIPs.',
-    charateristic: [
-      {
-        tipe: 'yellow-pink',
-        text: 'High Impact'
-      },
-      {
-        tipe: 'pink',
-        text: 'Real World Asset'
-      },
-      {
-        tipe: 'gray',
-        text: 'Misc Governance'
-      },
-      {
-        tipe: 'orange',
-        text: 'Collateral Offboarding'
-      },
-      {
-        tipe: 'yellow',
-        text: 'Misc Funding'
-      },
-      {
-        tipe: 'green',
-        text: 'Ratification Poll',
-      },
-      {
-        tipe: 'blue-green',
-        text: 'MIP'
-      },
-      {
-        tipe: 'blue',
-        text: 'Budget'
-      }
-    ] as ICharacteristic[],
-    timeRemaining: '4d 7h',
-    totalComments: 2,
-    agreePercentage: 70,
-    disagreePercentage: 20,
-    neutralPercentage: 10,
-    leadingOption: 'YES',
-    status: 'active',
-    passedTime: 'mar 15 2023 18:18 UTC',
-    executedTime: 'mar 16 2023 10:20 UTC',
-    mkr: 99245,
-    supportingMkr: 115663
-  } as IPollOption
-
 export const PollingPage: React.FC<Props> = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { Search } = Input;
+
     const dispatch = useAppDispatch()
+    const pollState = useAppSelector(selectPollState)
     const polls = useAppSelector(selectPolls)
     const authState = useAppSelector(selectAuth)
 
     const [userVoteList, setUserVoteList] = useState([] as IUserVote[])
 
-    const [selectedBatch, setSelectedBatch] = useState({} as ISelectedBatch)
+    const [allPolls, setAllPolls] = useState([] as IPoll[])
+    const [pollsSearchRs, setPollsSearchRs] = useState({
+        isSearch: false,
+        data: [] as IPoll[]
+    })
 
-    // prettier data showing
-    const [pollsToShow, setPollsToShow] = useState([] as IPoll[])
+    const [hasMore, setHasMore] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+    const [notification, setNotification] = useState({
+        isShow: false,
+        type: 'warn',
+        message: '',
+    } as INotification)
 
-    const showModal = () => {
-      setIsModalOpen(true);
-    };
-  
-    const handleOk = () => {
-      setIsModalOpen(false);
-    };
-  
-    const handleCancel = () => {
-      setIsModalOpen(false);
-    };
+    const fetchMoreData = () => {
+      console.log("fetch more data")
+    }  
 
-    const modalTitle = "Polling contract versions"
-
-    const modalContent = [
-      "v2 - The latest version of the polling contract was deployed to enable batch voting, so users can vote on multiple polls in one transaction.",
-      "v1 - The first version of the polling contract is still used for creating polls on-chain, but it only allows for voting on a single poll per transaction, so an upgrade was deployed.",
-    ] as string[]
+    const searchByPollId = (value: string) => {
+        let intId = parseInt(value)
+        if(Number.isNaN(intId)) {
+            console.log("Please input number only")
+            setNotification({isShow: true, type: 'warn', message: 'Please input number only'})
+            return
+        }
+        if(allPolls.length === 0) return
+        
+        setIsLoading(true)
+        setTimeout(() => {
+            let target = allPolls.filter((p: IPoll) => Number(p.pollId) === intId)
+            setPollsSearchRs({
+                isSearch: true,
+                data: target
+            })
+            setIsLoading(false)
+        }, 1000)
+    }
 
     const handleUserChoice = (pollId: number, optionId: number, value: string) => {
         let isExist = false
@@ -207,302 +143,178 @@ export const PollingPage: React.FC<Props> = () => {
     }
 
     const submitVote = (selectedBatch: ISelectedBatch) => {
-        console.log("Call mee??? ")
+        console.log("Sumit vote >>> ")
+        
+        setIsLoading(true)
+        voteOnBatchTask(selectedBatch.batchId, selectedBatch.pollId).then((value: any) => {
+            console.log("check data: ", value)
+        }).catch((error) => {
+            console.log(error)
+            setNotification({isShow: true, type: 'fail', message: 'Error occured, please check console'})
+        }).finally(() => {
+            setIsLoading(false)
+        })
 
-        if(authState.auth?.batchVotingContract) {
-            console.log("Calling vote...")
-
-            if(Object.keys(selectedBatch).length === 0) {
-                console.log("Please select batch first")
-                return
-            }
-
-            let request = {
-                contract: authState.auth.batchVotingContract,
-                param: {optionId: selectedBatch.batchId, pollId: selectedBatch.pollId}
-            } as IContractRequest
-
-            dispatch(pollVote(request))
-        }
     }
 
     useEffect(() => {
+        if(!notification.isShow) return  
+        // close notification after 3 seconds
+        setTimeout(() => {
+            setNotification({...notification, isShow: false})
+        }, 3000)
+    }, [notification])
+
+    useEffect(() => {
         if(!authState.isLoggedIn) {
-            console.log("not have auth ", authState)
+            setNotification({isShow: true, type: 'warn', message: 'Please check your wallet connect'})
             return 
         }
-        dispatch(getAllPoll(authState.auth?.taskManagerContract))
+
+        voteOnBatchTaskFilterEvent(undefined, authState.auth?.account)
+            .then((result) => {
+                console.log("voteOnBatchTask event: ", result)
+                if(!result) return 
+                if(result.length === 0) return
+                let event = result[result.length - 1].args
+                if(!event) return
+                console.log("FIND IT: ", Number(event._pollId), Number(event.batchTaskVoted.batchTaskId))
+                
+                let ePollId = Number(event._pollId)
+                let eBatchId = Number(event.batchTaskVoted.batchTaskId)
+
+                dispatch(setSelectedBatch({pollId: ePollId, batchId: eBatchId} as ISelectedBatch))
+
+            }).finally(() => {
+            })
+        
+        setIsLoading(true)
+        getAllPoll().then((pollList: any) => {
+            let tempAllPolls = [] as IPoll[]
+            if(!Array.isArray(pollList)) return 
+            pollList.forEach((p: any) => {
+                let tempPoll = {} as IPoll
+                tempPoll = {...pollItem}
+                tempPoll.pollId = Number(p.pollId)
+                tempPoll.pollOwner = p.pollOwner
+                tempPoll.pollState = p.pollState
+
+                if(!Array.isArray(p.batchTaskIds)) return 
+                let tempBatchList = [] as IBatchVote[]
+                p.batchTaskIds.forEach((id: any) => {
+                    let t = {} as IBatchVote
+                    t.key = Number(id)
+                    t.batchId = Number(id)
+                    tempBatchList.push(t)
+                })
+                tempPoll.batchVotes = tempBatchList
+                tempAllPolls.push(tempPoll)
+            })
+            setAllPolls(tempAllPolls)
+        }).catch((error) => {
+            console.log(error)
+            setNotification({isShow: true, type: 'fail', message: 'Error occured, please check console'})
+        }).finally(() => {
+            setIsLoading(false)
+        })
     }, [authState])
 
-    useEffect(() => {
-        if(!polls) return 
-        console.log(" Check polls: ", polls, typeof(polls))
-        // Get all batch here (dispatch ...)
-        
-        let rs = [] as IPoll[]
-        polls.forEach((p: IPoll) => {
-            let pollObj = {} as IPoll
-            pollObj = {...p}
-
-            let batchList = [] as IBatchVote[]
-
-            p.batchTaskIds?.forEach((b: BigNumber) => {
-                let batchObj = {} as IBatchVote
-                if(!pollObj.pollId) {
-                    console.log("undefined poll id")
-                    return
-                }
-                batchObj.pollId = Number(pollObj.pollId)
-                batchObj.key = Number(b)
-                batchList.push(batchObj)
-            })
-            pollObj.batchVotes = batchList
-
-            // delete me later
-            // pollObj.pollState = 1
-
-            rs.push(pollObj)
-        })
-        
-        setPollsToShow(rs)
-
-    }, [polls])
 
     useEffect(() => {
-        console.log("Check user vote list: ", userVoteList)
-    }, [userVoteList])
+        console.log("raw polls >>>: ", allPolls)
+    }, [allPolls])
+
+    // useEffect(() => {
+    //     if(!polls) return 
+    //     // Get all batch here (dispatch ...)
+        
+    //     let rs = [] as IPoll[]
+    //     polls.forEach((p: IPoll) => {
+    //         let pollObj = {} as IPoll
+    //         pollObj = {...pollItem}
+    //         pollObj = {...p}
+    //         let batchList = [] as IBatchVote[]
+
+    //         p.batchTaskIds?.forEach((b: BigNumber) => {
+    //             let batchObj = {} as IBatchVote
+    //             if(!pollObj.pollId) {
+    //                 console.log("undefined poll id")
+    //                 return
+    //             }
+    //             batchObj.pollId = Number(pollObj.pollId)
+    //             batchObj.key = Number(b)
+    //             batchList.push(batchObj)
+    //         })
+    //         pollObj.batchVotes = batchList
+
+    //         // delete me later
+    //         // pollObj.pollState = 1
+
+    //         rs.push(pollObj)
+    //     })
+        
+    //     setPollsToShow(rs)
+
+    // }, [polls])
 
     return (
         <main className="polling-main">
-            <Filter sortOptions={sortOptions} statusOptions={statusOptions} tagOptions={tagOptions} typeOptions={typeOptions} />
-            <div className="polling-body">
-                <div className="polling-list">
-                    <h4 className="polling-title">Active Polls</h4>
-                    <p className="polling-sub-title">18 polls - Ending mar 27 2023 16:00 UTC</p>
-                    <div className="polling-items">
-                    {/* {optionsToShow.length > 0 && 
-                    optionsToShow.map((o: IPollOption) => {
-                        return <PollItem pollOption={o} handleUserChoice={handleUserChoice} submitVote={submitVote} />
-                    })} */}
-                    {pollsToShow && pollsToShow.map((p: IPoll) => {
-                        return <PollItem poll={p} handleUserChoice={handleUserChoice} submitVote={submitVote}/>
-                    })}
-                    </div>
-                    <div className="view-more-btn-wrapper">
-                        <ViewMoreButton text="View ended polls" count={934} fontWeight={500} />
-                    </div>
-                </div>
+            {notification.isShow && <Notification type={notification.type} message={notification.message} />}
+            
+            {isLoading && <Loading />}
 
-                <div className="polling-extra-info">
-                    <div className="system-info">
-                        <div className="extra-head">
-                            <h3 className="eh-title">Your Ballot</h3>
-                        </div>
-
-                        <div className="extra-body">
-                            <hr className="poll-hr"/>
-                            <div className="voting-weight-row">
-                                <span className="poll-posted">Voting weight</span>
-                                <span>0 MKR</span>
-                            </div>
-                            <hr className="poll-hr"/>
-                            <div className="deposit-to-vote-btn">
-                                <LightGreenButton text="Review & Submit your Ballot" fontWeight={600} />
-                            </div>
-                        </div>
-
-                    </div>
-
-                    {/* <div className="system-info">
-                        <div className="extra-head">
-                            <h3 className="eh-title">System Info</h3>
-                            <a href="#" className="extra-link">
-                                <span>See more</span>
-                                <span><HeadUpArrow /></span>
-                            </a>
-                        </div>
-
-                        <div className="extra-body">
-                            <div className="extra-body-item mt-0">
-                                <div className="ebi-left">
-                                    <span>Polling Contract v2</span>
-                                    <span className="ebi-left-info-icon" onClick={showModal}><Info /></span>
-                                </div>
-
-                                <a href="#" className="extra-link">
-                                    <span>0xD3A9F...b133</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <div className="ebi-left">
-                                    <span>Polling Contract v1</span>
-                                    <span className="ebi-left-info-icon" onClick={showModal}><Info /></span>
-                                </div>
-
-                                <a href="#" className="extra-link">
-                                    <span>0xD3A9F...b133</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <div className="ebi-left">
-                                    <span>Arbitrum Polling Contract</span>
-                                    <span></span>
-                                </div>
-
-                                <a href="#" className="extra-link">
-                                    <span>0xD3A9F...b133</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <div className="ebi-left">
-                                    <span>Dai Savings Rate</span>
-                                    <span></span>
-                                </div>
-
-                                <div>
-                                    <span>1.00%</span>
-                                </div>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <div className="ebi-left">
-                                    <span>Total Dai</span>
-                                    <span></span>
-                                </div>
-
-                                <div>
-                                    <span>5,417,424,976 DAI</span>
-                                </div>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <div className="ebi-left">
-                                    <span>Dai Debt Ceiling</span>
-                                    <span></span>
-                                </div>
-
-                                <div>
-                                    <span>7,244,751,817 DAI</span>
-                                </div>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <div className="ebi-left">
-                                    <span>System Surplus</span>
-                                    <span></span>
-                                </div>
-
-                                <div>
-                                    <span>72,252,120 DAI</span>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div className="polling-faq">
-                        <div className="extra-head">
-                            <h3 className="eh-title">Polling FAQs</h3>
-                        </div>
-
-                        <div className="extra-body">
-                            <div className="extra-body-item mt-0">
-                                <a href="#" className="extra-link">
-                                    <span>How to participate in MakerDAO governance?</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>What are Governance Polls?</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>How is voting weight calculated?</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>How to manually vote in a poll with Etherscan?</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>How to set up your wallet for voting?</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>How does gasless poll voting work?</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="general-resources">
-                        <div className="extra-head">
-                            <h3 className="eh-title">General Governance Resources</h3>
-                        </div>
-
-                        <div className="extra-body">
-                            <div className="extra-body-item mt-0">
-                                <a href="#" className="extra-link">
-                                    <span>Maker Forum</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>Governance FAQs</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>Governance Risk Framework</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>Awesome MakerDAO</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                            <div className="extra-body-item">
-                                <a href="#" className="extra-link">
-                                    <span>Governance Call Schedule</span>
-                                    <span><HeadUpArrow /></span>
-                                </a>
-                            </div>
-
-                        </div>
-                    </div> */}
-                </div>
+            <div id="search-tool" className="search-tool">
+                <Search placeholder="Search by Poll ID" size="large" loading={false} onSearch={searchByPollId} />
             </div>
 
-            <InfoModal title={modalTitle} isOpen={isModalOpen} handleCancel={handleCancel} content={modalContent} align={'center'} />
+            <div className="polling-body">
+                <div className="polling-list">
+                    <h4 className="polling-title">All Polls</h4>
+                    <p className="polling-sub-title">{allPolls.length} polls</p>
+                    
+                    {!allPolls || allPolls.length === 0 && 
+                    <div className="empty-result">
+                        NO DATA FOUND
+                    </div>}
+
+                    {allPolls && !pollsSearchRs.isSearch && 
+                        <InfiniteScroll
+                        dataLength={allPolls.length}
+                        next={fetchMoreData}
+                        hasMore={hasMore}
+                        loader={<h4>Loading...</h4>}
+                      >
+                          <div className="polling-items">
+                              {allPolls.map((p: IPoll) => {
+                                  return <PollItem key={p.pollId} poll={p} handleUserChoice={handleUserChoice} setNotification={setNotification}/>
+                              })}
+                          </div>
+                      </InfiniteScroll>}
+
+                      {allPolls && pollsSearchRs.isSearch && pollsSearchRs.data.length > 0 &&
+                        <InfiniteScroll
+                        dataLength={allPolls.length}
+                        next={fetchMoreData}
+                        hasMore={hasMore}
+                        loader={<h4>Loading...</h4>}
+                      >
+                          <div className="polling-items">
+                              {allPolls.map((p: IPoll) => {
+                                  return <PollItem key={p.pollId} poll={p} handleUserChoice={handleUserChoice} setNotification={setNotification}/>
+                              })}
+                          </div>
+                      </InfiniteScroll>}
+
+                      {allPolls && pollsSearchRs.isSearch && pollsSearchRs.data.length === 0 &&
+                        <div className="empty-result">
+                            NO DATA FOUND
+                        </div>}
+
+                </div>
+
+            </div>
+
+            {/* <InfoModal title={modalTitle} isOpen={isModalOpen} handleCancel={handleCancel} content={modalContent} align={'center'} /> */}
         </main>
     )
 } 

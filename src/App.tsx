@@ -37,7 +37,7 @@ function App() {
           </Routes>
         
 
-        <div id='foot-sec' className='foot-sec'>
+        <div id='foot-sec' className='foot-sec' style={{display: 'none'}}>
           <div className='foot-bg'>
           </div>
           <footer className='foot'>

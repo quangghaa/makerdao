@@ -19,7 +19,7 @@ export const Filter: React.FC<Props> = ({sortOptions, tagOptions, statusOptions,
                 <div className="option-wrapper">
                     <SearchButton text="" placeholder="Search poll titles" icon={<Search />} />
                 </div>
-                <div className="">
+                {/* <div className="">
                     <SortButton text={sortOptions ? sortOptions[0].name : 'Default value'} icon={<HeadDown />} fontWeight={600} sortOptions={sortOptions} />
                 </div>
                 <div className="option-wrapper">
@@ -36,12 +36,12 @@ export const Filter: React.FC<Props> = ({sortOptions, tagOptions, statusOptions,
 
                 <div className="option-wrapper">
                     <DateButton text="Date" icon={<HeadDown />}/>
-                </div>
+                </div> */}
             </div>
 
-            <div className="filter-reset">
+            {/* <div className="filter-reset">
                 <LinkButton text="Reset filters" fontWeight={600} />
-            </div>
+            </div> */}
         </div>
     )
 }

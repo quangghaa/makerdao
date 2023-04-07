@@ -39,7 +39,7 @@ code {
     width: 100%;
     z-index: -1;
     position: absolute;
-    background-image: url('./assets/images/bg_medium.jpeg');
+    /* background-image: url('./assets/images/bg_medium.jpeg'); */
     background-position: center top;
     background-repeat: no-repeat;
 }

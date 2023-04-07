@@ -1,0 +1,19 @@
+
+.notification-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 10px;
+}
+
+.notification {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid #d9d9d9;
+    text-align: center;
+    font-weight: 1rem;
+    padding: 0.5rem 0;
+    max-width: 400px;
+    word-wrap: break-word;
+}

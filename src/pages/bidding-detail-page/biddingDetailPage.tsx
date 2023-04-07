@@ -2,7 +2,6 @@ import { Radio, RadioChangeEvent, Select, Space } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { HeadLeft, HeadRight, HeadUpArrow, Info } from "../../assets/func/svg";
-import { BidItem } from "../../components/bid/bid";
 import { DefaultButton, ViewMoreButton } from "../../components/button/buttons";
 import { Filter } from "../../components/filter/filter";
 import { InfoModal } from "../../components/modals/infoModal";

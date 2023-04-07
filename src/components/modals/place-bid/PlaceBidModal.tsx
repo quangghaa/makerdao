@@ -26,22 +26,22 @@ export const PlaceBidModal: React.FC<Props> = ({ isOpen, selectedTask, batchId, 
     const onFinish = (values: any) => {
         console.log("values: ", values);
 
-        if (authState.auth?.autionContract) {
-            console.log("Calling vote...")
+        // if (authState.auth?.autionContract) {
+        //     console.log("Calling vote...")
 
-            if (Object.keys(values).length === 0) {
-                console.log("Please enter fields first")
-                return
-            }
+        //     if (Object.keys(values).length === 0) {
+        //         console.log("Please enter fields first")
+        //         return
+        //     }
 
-            let request = {
-                contract: authState.auth.autionContract,
-                param: { taskId: values.taskId, batchId: values.batchId, value: values.yourBid }
-            } as IContractRequest
-            console.log("check request send: ", request)
+        //     let request = {
+        //         contract: authState.auth.autionContract,
+        //         param: { taskId: values.taskId, batchId: values.batchId, value: values.yourBid }
+        //     } as IContractRequest
+        //     console.log("check request send: ", request)
 
-            dispatch(placeBid(request))
-        }
+        //     dispatch(placeBid(request))
+        // }
 
     };
 

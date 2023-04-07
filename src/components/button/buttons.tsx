@@ -85,30 +85,30 @@ export const LightGreenButton:React.FC<Props> = ({text, disable, submitVote, pol
     const authState = useAppSelector(selectAuth)
 
     const demo = () => {
-        console.log("Check request: ", requestState.request)
-        if(!requestState.request.selectedBatch) {
-            console.log("selected batch undefine")
-            return 
-        }
-        if(authState.auth?.batchVotingContract) {
-            console.log("Calling vote...")
+        // console.log("Check request: ", requestState.request)
+        // if(!requestState.request.selectedBatch) {
+        //     console.log("selected batch undefine")
+        //     return 
+        // }
+        // if(authState.auth?.batchVotingContract) {
+        //     console.log("Calling vote...")
 
-            if(Object.keys(requestState.request.selectedBatch).length === 0) {
-                console.log("Please select batch first")
-                return
-            }
+        //     if(Object.keys(requestState.request.selectedBatch).length === 0) {
+        //         console.log("Please select batch first")
+        //         return
+        //     }
 
-            let request = {
-                contract: authState.auth.batchVotingContract,
-                param: {pollId: requestState.request.selectedBatch.pollId, batchId: requestState.request.selectedBatch.batchId}
-            } as IContractRequest
+        //     let request = {
+        //         contract: authState.auth.batchVotingContract,
+        //         param: {pollId: requestState.request.selectedBatch.pollId, batchId: requestState.request.selectedBatch.batchId}
+        //     } as IContractRequest
 
-            console.log("Check request: ", request)
-            dispatch(pollVote(request))
+        //     console.log("Check request: ", request)
+        //     dispatch(pollVote(request))
             
-            console.log("update poll state ...")
-            dispatch(setPollState({pollId: requestState.request.selectedBatch.pollId} as IPoll))
-        }
+        //     console.log("update poll state ...")
+        //     dispatch(setPollState({pollId: requestState.request.selectedBatch.pollId} as IPoll))
+        // }
     }
 
     return (

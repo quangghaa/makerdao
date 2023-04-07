@@ -82,7 +82,7 @@ const TaskListTable: React.FC<Props> = ({data, batchId}) => {
       console.log("not have data or empty")
       return
     }
-    console.log("Check table data: ", data)
+    // console.log("Check table data: ", data)
   }, [data])
 
   // rowSelection object indicates the need for row selection

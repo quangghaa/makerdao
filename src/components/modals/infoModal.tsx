@@ -15,9 +15,9 @@ export const InfoModal: React.FC<Props> = ({isOpen, handleCancel, title, content
         <Modal open={isOpen} onCancel={handleCancel} footer={null} width={400}>
             <div className="modal-content">
                 <h2>{title}</h2>
-                {content.map((c: string) => {
+                {content.map((c: string, index: number) => {
                     return (
-                        <p style={align ? {textAlign: align} : {textAlign:'left'}}>{c}</p>
+                        <p key={index} style={align ? {textAlign: align} : {textAlign:'left'}}>{c}</p>
                     )
                 })}
             </div>

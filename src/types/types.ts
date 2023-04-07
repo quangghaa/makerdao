@@ -1,4 +1,5 @@
 import { BigNumber, Contract } from "ethers";
+import React from "react";
 
 export interface IBatchVote {
     key: React.Key;
@@ -6,13 +7,21 @@ export interface IBatchVote {
     batchId: number;
     tasks: ITask[];
     batchTitle: string;
+    description: string;
     reporter: string;
     timeLeft: string;
     totalReward: number;
+    totalTasks: number;
+    totalRemainingTasks: number; 
     totalParticipation: number;
     approval: number;
-    
   }
+
+export interface IParticipation {
+    address: string
+    totalRewards: number
+    totalTasks: number
+}
 
 export interface IPoll {
     id?: number;
@@ -20,7 +29,7 @@ export interface IPoll {
     batchTaskIds?: BigNumber[];
     batchVotes?: IBatchVote[];
     pollOwner?: string;
-    pollState?: 0 | 1 | 2; // created - open - voted
+    pollState?: 0 | 1 | 2; // created - open - end poll
 
     postedTime?: string;
     title?: string;
@@ -143,10 +152,6 @@ export interface IVotingByAddress {
 export interface IAuth {
     account: string
     chainId: string
-    taskManagerContract?: any 
-    batchVotingContract?: any 
-    autionContract?: any 
-    status?: 'initializing' | 'unavailable' | 'notConnected' | 'connecting' | 'connected'
 }
 
 export interface IContract {
@@ -182,6 +187,7 @@ export interface EndVoteEventArgs {
 }
 
 export interface ITask {
+    key: React.Key
     taskId: number
     taskName: string
     deadline: string
@@ -200,6 +206,7 @@ export interface ITask {
     timeLeft: string
     state: number
     reporter: string
+    expectedResult: string[]
 }
 
 export interface OpenTaskAuctionEventArgs {
@@ -207,4 +214,10 @@ export interface OpenTaskAuctionEventArgs {
     auctionDuration: string
     timeStart: string
     auctionTask: ITask
+}
+
+export interface INotification {
+    isShow: boolean
+    type: 'warn' | 'success' | 'fail'
+    message: string
 }

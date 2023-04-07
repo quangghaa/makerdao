@@ -2,22 +2,90 @@ import { BigNumber } from "ethers";
 import React, { ReactNode, useEffect, useState } from "react";
 import { Clock, Info, Message } from "../../assets/func/svg";
 import { mapCharacterristic } from "../../common/common";
-import { IBatchVote, ICharacteristic, IPoll, IPollOption, ISelectedBatch } from "../../types/types";
+import { selectAuth } from "../../pages/auth/authSlice";
+import { pollVote } from "../../pages/polling-page/pollSlice";
+import { selectRequest } from "../../pages/polling-page/requestSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { voteOnBatchTask, voteOnBatchTaskFilterEvent } from "../../services/batchTask";
+import { IBatchVote, ICharacteristic, IContractRequest, INotification, IPoll, IPollOption, ISelectedBatch } from "../../types/types";
 import { DefaultButton, LightGreenButton, VoteChoiceButton } from "../button/buttons";
 import { InfoModal } from "../modals/infoModal";
 import { CustomProgress } from "../progress/progress";
 import BatchVoteTable from "../table/batchVoteTable";
 import { Characteristic } from "../tags/Characteristic";
+import { useNavigate } from "react-router-dom";
 import './style.css';
 
 interface Props {
     poll?: IPoll
     handleUserChoice?: (pollId: number, optionId: number, vote: string) => void
-    submitVote?: (selectedBatch: ISelectedBatch) => void
+    setNotification?: (noti: INotification) => void
+    setIsloading?: (v: boolean) => void
 }
 
-export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, submitVote }) => {
+export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, setNotification, setIsloading }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const requestState = useAppSelector(selectRequest)
+    const dispatch = useAppDispatch()
+    const authState = useAppSelector(selectAuth)
+
+    const submitVote = () => {
+        console.log("Check request: ", requestState.request)
+
+        if (!authState.isLoggedIn) {
+            if (setNotification) setNotification({ isShow: true, type: 'warn', message: 'Please check your wallet connect' } as INotification)
+            return
+        }
+
+        if (!requestState.request.selectedBatch) {
+            console.log("selected batch undefine")
+            return
+        }
+        if (setIsloading) setIsloading(true)
+        voteOnBatchTask(requestState.request.selectedBatch.batchId, requestState.request.selectedBatch.pollId)
+            .then((result) => {
+                if(!result.hash) {
+                    if(setNotification) setNotification({isShow: true, type:'fail', message:'Something went wrong, please submit again'} as INotification)
+                    return
+                }
+                if(setNotification) setNotification({isShow: true, type:'success', message:`Voted with transaction hash: ${result.hash}`} as INotification)
+                // console.log("voteOnBatchTask result hash: ", result)
+            }).finally(() => {
+                if (setIsloading) setIsloading(false)
+            })
+
+        // if (setIsloading) setIsloading(true)
+        // voteOnBatchTaskFilterEvent(requestState.request.selectedBatch?.pollId, authState.auth?.account)
+        //     .then((result) => {
+        //         console.log("voteOnBatchTask event: ", result)
+        //     }).finally(() => {
+        //         if (setIsloading) setIsloading(false)
+        //     })
+
+        // if(authState.auth?.batchVotingContract) {
+        //     console.log("Calling vote...")
+
+        //     if(Object.keys(requestState.request.selectedBatch).length === 0) {
+        //         console.log("Please select batch first")
+        //         return
+        //     }
+
+        //     let request = {
+        //         contract: authState.auth.batchVotingContract,
+        //         param: {
+        //             pollId: requestState.request.selectedBatch.pollId, 
+        //             batchId: requestState.request.selectedBatch.batchId,
+        //             account: authState.auth?.account
+        //         }
+        //     } as IContractRequest
+
+        //     console.log("Check request: ", request)
+        //     dispatch(pollVote(request))
+
+        //     console.log("update poll state ...")
+        // }
+    }
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -30,7 +98,7 @@ export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, submitVote }
     const handleCancel = () => {
         setIsModalOpen(false);
     };
- 
+
     const modalTitle = "Poll types"
 
     const modalContent = [
@@ -39,12 +107,12 @@ export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, submitVote }
         "- Approval polls: require multiple-choice ballots in unranked order, and determines the winning vote option by finding the one with a relative majority in MKR voting weight. When used in situations where no winner is required, an absolute majority (ie. >50% of the total participating MKR excluding abstains) victory condition may also be applied as opposed to a relative majority.",
     ] as string[]
 
+    const navigate = useNavigate();
+    const gotoDetail = (poll: IPoll) => {
+        navigate('/polling/1', {state: poll})
+    }
+
     const [tableData, setTableData] = useState([] as IBatchVote[])
-    
-    useEffect(() => {
-        if(!poll) return
-        console.log("Debug poll: ", poll)
-    }, [poll])
 
     return (
         <div className="poll">
@@ -58,7 +126,7 @@ export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, submitVote }
                             <h3>
                                 {poll?.title}
                             </h3>
-                            <p>
+                            <p className="batch-description">
                                 {poll?.description}
                             </p>
                             <p>
@@ -67,10 +135,10 @@ export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, submitVote }
                         </a>
 
                         <div className="characteristic-list">
-                            {poll?.charateristic && poll?.charateristic.map((c: ICharacteristic) => {
-                                return <>
+                            {poll?.charateristic && poll?.charateristic.map((c: ICharacteristic, index: number) => {
+                                return <div key={index}>
                                     {mapCharacterristic(c)}
-                                </>
+                                </div>
                             })}
                         </div>
 
@@ -92,50 +160,25 @@ export const PollItem: React.FC<Props> = ({ poll, handleUserChoice, submitVote }
                         <div>
                             {poll?.pollState === 0 && <span className="poll-posted">Poll not open</span>}
                             {poll?.pollState === 1 && <span className="poll-posted">You have not voted</span>}
-                            {poll?.pollState === 2 && <span className="poll-posted">Poll voted</span>}
+                            {poll?.pollState === 2 && <span className="poll-posted">Poll ended</span>}
                         </div>
-                        <div className="deposit-to-vote-btn">
-                            {/* <LightGreenButton text="Submit vote" fontWeight={600} submitVote={submitVote} pollId={poll?.pollId} optionId={Number(poll?.batchTaskId)} /> */}
-                            <DefaultButton text="View Details" fontWeight={600} />
+                        <div className="view-detail-btn">
+                            <button className="default-btn" onClick={() => gotoDetail(poll ? poll : {} as IPoll)}>
+                                View Detail
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <BatchVoteTable data={poll?.batchVotes} pollState={poll?.pollState} />
+                <BatchVoteTable data={poll?.batchVotes} pollId={poll?.pollId} pollState={poll?.pollState} />
 
                 <div className="view-detail">
                     {/* <DefaultButton text="View Details" fontWeight={600} /> */}
-                    <LightGreenButton text="Submit Vote" fontWeight={600} disable={poll?.pollState === 1 ? false : true} submitVote={submitVote} pollId={poll?.pollId} />
-                    {/* {poll?.status === 'executive' &&
-                        <div className="mkr">
-                            <p className="mkr-number">{poll.mkr}</p>
-                            <p className="mkr-label">MKR supporting</p>
-                        </div>}
-                    
-                    {poll?.status === 'active' &&
-                        <div className="plurality">
-                            <div className="plurality-info">
-                                <span>
-                                    plurality poll
-                                </span>
-                                <span className="plurality-info-icon lightgreen" onClick={showModal}><Info /></span>
-                            </div>
-                            <CustomProgress id={888} agree={poll.agreePercentage ? poll.agreePercentage : 0} disagree={poll.disagreePercentage ? poll.disagreePercentage : 0} neutral={poll.neutralPercentage ? poll.neutralPercentage : 0} />
-                        </div>} */}
+                    <button className="lightgreen-btn" onClick={submitVote}>
+                        Submit Vote
+                    </button>
                 </div>
             </div>
-            {/* <div className="poll-foot">
-                <hr className="poll-hr" />
-                <div className="poll-foot-content">
-                    <span>
-                        LEADING OPTION:&nbsp;
-                        <span className="lightgreen">{poll?.leadingOption}</span>
-                        &nbsp;WITH&nbsp;
-                        <span>{poll?.supportingMkr}</span>
-                        &nbsp;MKR SUPPORTING.
-                    </span>
-                </div>
-            </div> */}
 
             <InfoModal title={modalTitle} isOpen={isModalOpen} handleCancel={handleCancel} content={modalContent} />
         </div>
