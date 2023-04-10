@@ -43,10 +43,21 @@ export const getAllVotingPoll = async () => {
     }
 }
 
-export const openPollForVote = async () => {
+export const openPollForVote_ID1 = async () => {
     try {
         let contract = getContract('taskManger')
-        const response = await contract.openPollForVote(1, 30000)
+        const response = await contract.openPollForVote(1, 80)
+        return response 
+    } catch (error) {
+        console.log("openPollForVote error: ", error)
+        return
+    }
+}
+
+export const openPollForVote_ID2 = async () => {
+    try {
+        let contract = getContract('taskManger')
+        const response = await contract.openPollForVote(2, 80)
         return response 
     } catch (error) {
         console.log("openPollForVote error: ", error)

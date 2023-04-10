@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
 import { TypedUseSelectorHook, useDispatch } from 'react-redux'
 import authReducer from '../pages/auth/authSlice'
-import bidReducer from '../pages/bidding/bidSlice'
+import batchVoteReducer from '../pages/bidding/batchVoteSlice'
 import taskReducer from '../pages/bidding-detail/taskSlice'
 import requestReducer from '../pages/polling/requestSlice'
 import voteReducer from '../pages/polling/voteSlice'
@@ -10,7 +10,7 @@ import voteReducer from '../pages/polling/voteSlice'
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    bid: bidReducer,
+    batchVote: batchVoteReducer,
     task: taskReducer,
     request: requestReducer,
     vote: voteReducer,

@@ -4,6 +4,8 @@ import { StableLab } from "../../assets/func/img";
 import { IBatchVote } from "../../types/types";
 import { InfoModal } from "../modals/infoModal";
 import './style.css';
+import { Popover } from "antd";
+import SummaryInfo from "../table/summaryInfo";
 
 interface Props {
     batch?: IBatchVote
@@ -23,13 +25,15 @@ export const BatchItem: React.FC<Props> = ({ batch }) => {
                         <h3>Poll ID: {batch?.pollId}</h3>
                         <h3>Batch ID: {batch?.batchId}</h3>
                         <p className="batch-description">{batch?.description}</p>
-                    
-                        <div className="group-address">
+
+                        <Popover placement="topRight" content={<SummaryInfo />}>
+                        <div className="group-address" onClick={() => console.log("ABC")}>
                             <StableLab />
                             <StableLab />
                             <StableLab />
                             <span className="unit">&nbsp;+8 others</span>
                         </div>
+                        </Popover>
                     </div>
 
                     <div className="bis-right">

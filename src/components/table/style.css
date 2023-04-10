@@ -194,6 +194,11 @@
     text-decoration: underline;
 }
 
+.link-button:hover {
+    cursor: pointer;
+    color: var(--toastify-color-dark);
+}
+
 
 @media screen and (min-width: 52em) {
     .td-mkr {

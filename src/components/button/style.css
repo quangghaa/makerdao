@@ -331,6 +331,7 @@
 }
 
 .link-btn:hover {
+    cursor: pointer;
     color: var(--toastify-color-dark);
 }
 

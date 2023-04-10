@@ -77,7 +77,7 @@ export const PlaceBidModal: React.FC<Props> = ({ isOpen, selectedTask, batchId, 
                                         </Form.Item>
                                         <Form.Item style={{ display: 'none' }} name="taskId" initialValue={selectedTask.taskId} rules={[{ required: true }]}>
                                         </Form.Item>
-                                        <p className="lowest-bid">Lowest Bid: {selectedTask.lowestBidAmount + 'Tokens'}</p>
+                                        <p className="lowest-bid">Lowest Bid:&nbsp;{selectedTask.lowestBidAmount + ' Tokens'}</p>
                                         <p className="font-medium">Your Minimum Bid:</p>
                                         <div className="your-bid-input-box">
                                             <Form.Item name="yourBid" rules={[{ required: true }]}>

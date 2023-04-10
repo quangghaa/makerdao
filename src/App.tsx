@@ -8,7 +8,7 @@ import { DelegatePage } from './pages/delegate/delegatePage';
 import { ESModulePage } from './pages/es-module/eSModulePage';
 import { ExecutivePage } from './pages/executive/executivePage';
 import { LandingPage } from './pages/landing/landingPage';
-import { MetamaskTest } from './pages/metamask-test';
+import { MetamaskTest } from './pages/admin';
 import { PollingDetailPage } from './pages/polling-detail/pollingDetailPage';
 import { PollingPage } from './pages/polling/pollingPage';
 import { TestPage } from './pages/text';

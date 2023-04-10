@@ -110,26 +110,26 @@ const TaskListDetailTable: React.FC<Props> = ({ data }) => {
   })
 
   const searchByPIC = (value: string) => {
-    if(!data || data.length === 0) return
-    if(value.trim().length === 0) {
+    if (!data || data.length === 0) return
+    if (value.trim().length === 0) {
       setTaskListSearchRs({
-            isSearch: true,
-            data: data
-        })
-        return
+        isSearch: true,
+        data: data
+      })
+      return
     }
-    
+
     setIsLoading(true)
     setTimeout(() => {
-        let target = data.filter((t: ITask) => t.pic === value)
-        console.log("Check PIC response ", target)
-        setTaskListSearchRs({
-            isSearch: true,
-            data: target
-        })
-        setIsLoading(false)
+      let target = data.filter((t: ITask) => t.pic === value)
+      console.log("Check PIC response ", target)
+      setTaskListSearchRs({
+        isSearch: true,
+        data: target
+      })
+      setIsLoading(false)
     }, 500)
-}
+  }
 
   const showModal = (key: React.Key) => {
     if (!data) return
@@ -166,20 +166,20 @@ const TaskListDetailTable: React.FC<Props> = ({ data }) => {
         <Search placeholder="Search by PIC" size="large" loading={false} onSearch={searchByPIC} />
       </div>
       {isLoading && <Loading />}
-      {!taskListSearchRs.isSearch && 
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: "150%" }}
-      />}
-      {taskListSearchRs.isSearch && 
-      <Table
-        columns={columns}
-        dataSource={taskListSearchRs.data}
-        pagination={false}
-        scroll={{ x: "150%" }}
-      />}
+      {!taskListSearchRs.isSearch &&
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={false}
+          scroll={{ x: "150%" }}
+        />}
+      {taskListSearchRs.isSearch &&
+        <Table
+          columns={columns}
+          dataSource={taskListSearchRs.data}
+          pagination={false}
+          scroll={{ x: "150%" }}
+        />}
 
       <TaskDescriptionModal isModalOpen={isModalOpen} handleCancel={handleCancel} task={currentSelectedRow ? currentSelectedRow : {} as ITask} />
 
