@@ -3,7 +3,6 @@ import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { IBatchVote, ITask } from '../../types/types';
 import { useAppDispatch } from '../../redux/store';
-import { setSelectedBatch } from '../../pages/polling/requestSlice';
 import { PlaceBidModal } from '../modals/place-bid/PlaceBidModal';
 
 const columns: ColumnsType<ITask> = [
@@ -87,16 +86,16 @@ const TaskListTable: React.FC<Props> = ({data, batchId}) => {
 
   // rowSelection object indicates the need for row selection
   const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: IBatchVote[]) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    // onChange: (selectedRowKeys: React.Key[], selectedRows: IBatchVote[]) => {
+    //   console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       
-      let intKey = parseInt(selectedRowKeys[0].toString())
-      dispatch(setSelectedBatch({pollId: selectedRows[0].pollId, batchId: intKey}))
-    },
-    getCheckboxProps: (record: IBatchVote) => ({
-      disabled: false, // Column configuration not to be checked
-      // name: record.name,
-    }),
+    //   let intKey = parseInt(selectedRowKeys[0].toString())
+    //   dispatch(setSelectedBatch({pollId: selectedRows[0].pollId, batchId: intKey}))
+    // },
+    // getCheckboxProps: (record: IBatchVote) => ({
+    //   disabled: false, // Column configuration not to be checked
+    //   // name: record.name,
+    // }),
   };
 
   const [isPlaceBidModalOpen, setIsPlaceBidModalOpen] = useState(false)

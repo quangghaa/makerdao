@@ -9,7 +9,7 @@ import { voteOnBatchTaskFilterEvent } from "../../services/batchTask";
 import { getAllPoll } from "../../services/poll";
 import { IBatchVote, ICharacteristic, INotification, IPoll, ISelectedBatch, IUserVote } from "../../types/types";
 import { selectAuth } from "../auth/authSlice";
-import { setSelectedBatch } from "./voteSlice";
+import { selectSelectedBatchList, setSelectedBatchList } from "./voteSlice";
 import './style.css';
 
 interface Props {
@@ -83,6 +83,7 @@ export const PollingPage: React.FC<Props> = () => {
 
     const dispatch = useAppDispatch()
     const authState = useAppSelector(selectAuth)
+    const selectedBatchList = useAppSelector(selectSelectedBatchList)
 
     const [userVoteList, setUserVoteList] = useState([] as IUserVote[])
 
@@ -144,23 +145,8 @@ export const PollingPage: React.FC<Props> = () => {
     useEffect(() => {
         if(!authState.isLoggedIn) {
             setNotification({isShow: true, type: 'warn', message: 'Please check your wallet connect'})
+            return
         }
-
-        voteOnBatchTaskFilterEvent(undefined, authState.auth?.account)
-            .then((result) => {
-                console.log("voteOnBatchTask event: ", result)
-                if(!result) return 
-                if(result.length === 0) return
-                let event = result[result.length - 1].args
-                if(!event) return
-                
-                let ePollId = Number(event._pollId)
-                let eBatchId = Number(event.batchTaskVoted.batchTaskId)
-
-                dispatch(setSelectedBatch({pollId: ePollId, batchId: eBatchId} as ISelectedBatch))
-
-            }).finally(() => {
-            })
         
         setIsLoading(true)
         getAllPoll().then((pollList: any) => {
@@ -228,7 +214,7 @@ export const PollingPage: React.FC<Props> = () => {
                       >
                           <div className="polling-items">
                               {allPolls.map((p: IPoll) => {
-                                  return <PollItem key={p.pollId} poll={p} setNotification={setNotification}/>
+                                  return <PollItem key={p.pollId} poll={p} setNotification={setNotification} setIsloading={setIsLoading}/>
                               })}
                           </div>
                       </InfiniteScroll>}

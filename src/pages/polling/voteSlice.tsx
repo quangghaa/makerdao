@@ -1,33 +1,29 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { IContractRequest, IPoll, ISelectedBatch, IUserVote } from '../../types/types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { ISelectedBatch } from '../../types/types';
 import { RootState } from '../../redux/store';
-import { Contract } from 'ethers';
 
 export interface VoteState {
-  selectedBatch: ISelectedBatch
+  selectedBatchList: ISelectedBatch[]
 }
 
 const initialState: VoteState = {
-  selectedBatch: {
-    pollId: -1,
-    batchId: -1
-  }
+  selectedBatchList: []
 }
 
 export const voteSlice = createSlice({
   name: 'vote',
   initialState,
   reducers: {
-    setSelectedBatch: (state, action: PayloadAction<ISelectedBatch>) => {
-      state.selectedBatch = action.payload
+    setSelectedBatchList: (state, action: PayloadAction<ISelectedBatch[]>) => {
+      state.selectedBatchList = action.payload
     },
   }
 })
 
 
 // Action creators are generated for each case reducer function
-export const selectedBatch = (state: RootState) => state.vote.selectedBatch
+export const selectSelectedBatchList = (state: RootState) => state.vote.selectedBatchList
 
-export const { setSelectedBatch } = voteSlice.actions
+export const { setSelectedBatchList } = voteSlice.actions
 
 export default voteSlice.reducer

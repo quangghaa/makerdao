@@ -1,26 +1,52 @@
 import { Tabs, TabsProps } from "antd";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { StableLab } from "../../assets/func/img";
 import { Clock, GreenCheck, HeadLeft, HeadRight, HeadUpArrow, Info } from "../../assets/func/svg";
 import { mapCharacterristic } from "../../common/common";
 import { elipsisAddress } from "../../common/helper";
 import { DefaultButton } from "../../components/button/buttons";
-import { IBatchVote, ICharacteristic, IPoll } from "../../types/types";
+import { IBatchVote, ICharacteristic, INotification, IPoll, ISelectedBatch } from "../../types/types";
 import './style.css';
 import { TabContent } from "./tabContent";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { selectSelectedBatchList, setSelectedBatchList } from "../polling/voteSlice";
+import { selectRequest } from "../polling/requestSlice";
+import { selectAuth } from "../auth/authSlice";
+import { voteOnBatchTask, voteOnBatchTaskFilterEventLatestBlock } from "../../services/batchTask";
+import { Notification } from "../../components/notification/Notification";
+import { Loading } from "../../components/loading/loading";
 
 interface Props {
 
 }
 
+const pathMap = new Map<string, string>()
+pathMap.set('home', '/')
+pathMap.set('poll', '/polling')
+pathMap.set('bid', '/bidding')
+
 export const PollingDetailPage: React.FC<Props> = () => {
     const location = useLocation();
     const poll = location.state as IPoll
+    const [isLoading, setIsLoading] = useState(false)
+    const [notification, setNotification] = useState({
+        isShow: false,
+        type: 'warn',
+        message: '',
+    } as INotification)
 
     const onChangeTab = (key: string) => {
         console.log(key);
     };
+
+    const navigate = useNavigate()
+
+    const goTo = (pageName: 'home' | 'poll' | 'bid') => {
+        let path = pathMap.get(pageName)
+        if(!path) return
+        navigate(path)
+    }   
 
     const [tabObj, setTabObj] = useState<TabsProps['items']>([])
     useEffect(() => {
@@ -33,7 +59,7 @@ export const PollingDetailPage: React.FC<Props> = () => {
             let t = {
                 key: '' + b.batchId,
                 label: 'Batch ID ' + b.batchId,
-                children: <TabContent batchId={b.batchId}/>
+                children: <TabContent pollId={poll.pollId} pollState={poll.pollState} batchId={b.batchId} setIsLoading={setIsLoading} setNotification={setNotification}/>
             }
             
             if(!target) {
@@ -46,22 +72,41 @@ export const PollingDetailPage: React.FC<Props> = () => {
         setTabObj(target)
     }, [])
 
+    useEffect(() => {
+        if(!notification.isShow) return  
+        // close notification after 3 seconds
+        setTimeout(() => {
+            setNotification({...notification, isShow: false})
+        }, 3000)
+    }, [notification])
+
     const items: TabsProps['items'] = tabObj;
 
     return (
         <div>
             <div className="polling-body">
                 <div className="polling-list">
+                    {notification.isShow && <Notification type={notification.type} message={notification.message} />}
+                    {isLoading && <Loading />}
                     <div className="nav-btn-row">
-                        <a href="/polling">
-                            <DefaultButton text="Back to All Polls" fontWeight={600} icon={<HeadLeft />} />
+                        <a>
+                            <button className="default-btn" onClick={() => goTo('poll')}>
+                                <span><HeadLeft /></span>
+                                <span>Back to All Polls</span>
+                            </button>
                         </a>
                         <div className="prev-and-next">
-                            <a href="#">
-                                <DefaultButton text="Previous Poll" fontWeight={600} icon={<HeadLeft />} />
+                            <a>
+                                <button className="default-btn">
+                                    <span><HeadLeft /></span>
+                                    <span>Previous Poll</span>
+                                </button>
                             </a>
-                            <a href="#">
-                                <DefaultButton text="Next Poll" fontWeight={600} icon={<HeadRight />} iconPosition={'right'} />
+                            <a>
+                                <button className="default-btn">
+                                    <span>Next Poll</span>
+                                    <span><HeadRight /></span>
+                                </button>
                             </a>
                         </div>
                     </div>
@@ -70,7 +115,7 @@ export const PollingDetailPage: React.FC<Props> = () => {
                         <div className="dmb-head">
                             <div className="poll-posted poll-posted-detail">
                                 <div>
-                                    POSTED {poll.postedTime} | POLL ID {poll.id}
+                                    POSTED {poll.postedTime ? poll.postedTime : ''} | POLL ID {poll.id}
                                 </div>
                                 <div className="ppd-right">
                                     <div>
@@ -85,7 +130,7 @@ export const PollingDetailPage: React.FC<Props> = () => {
                                     </div>
                                 </div>
                             </div>
-                            <a href="#" className="poll-info">
+                            <a className="poll-info">
                                 <h3>
                                     {poll.title}
                                 </h3>
@@ -99,12 +144,12 @@ export const PollingDetailPage: React.FC<Props> = () => {
                                 })}
                             </div>
 
-                            <div className="mt-1rem">
+                            {/* <div className="mt-1rem">
                                 <a href="#" className="extra-link">
                                     <span>Discussion</span>
                                     <span><HeadUpArrow /></span>
                                 </a>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div style={{ padding: '0rem 2rem' }}>

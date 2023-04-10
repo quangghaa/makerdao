@@ -4,11 +4,13 @@ import { mapCharacterristic } from "../../common/common";
 import { selectAuth } from "../../pages/auth/authSlice";
 import { selectRequest } from "../../pages/polling/requestSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { voteOnBatchTask } from "../../services/batchTask";
-import { ICharacteristic, INotification, IPoll } from "../../types/types";
+import { voteOnBatchTask, voteOnBatchTaskFilterEventLatestBlock } from "../../services/batchTask";
+import { ICharacteristic, INotification, IPoll, ISelectedBatch } from "../../types/types";
 import BatchVoteTable from "../table/batchVoteTable";
 import { useNavigate } from "react-router-dom";
 import './style.css';
+import { getContract } from "../../services/poll";
+import { selectSelectedBatchList, setSelectedBatchList } from "../../pages/polling/voteSlice";
 
 interface Props {
     poll?: IPoll
@@ -20,10 +22,9 @@ export const PollItem: React.FC<Props> = ({ poll, setNotification, setIsloading 
     const requestState = useAppSelector(selectRequest)
     const dispatch = useAppDispatch()
     const authState = useAppSelector(selectAuth)
+    const selectedBatchList = useAppSelector(selectSelectedBatchList)
 
     const submitVote = () => {
-        console.log("Check request: ", requestState.request)
-
         if (!authState.isLoggedIn) {
             if (setNotification) setNotification({ isShow: true, type: 'warn', message: 'Please check your wallet connect' } as INotification)
             return
@@ -36,20 +37,57 @@ export const PollItem: React.FC<Props> = ({ poll, setNotification, setIsloading 
         if (setIsloading) setIsloading(true)
         voteOnBatchTask(requestState.request.selectedBatch.batchId, requestState.request.selectedBatch.pollId)
             .then((result) => {
-                if (!result.hash) {
-                    if (setNotification) setNotification({ isShow: true, type: 'fail', message: 'Something went wrong, please submit again' } as INotification)
+                if (result.status === 0) {
+                    if (setNotification) setNotification({ isShow: true, type: 'fail', message: `Voted failed with status ${result.status}` } as INotification)
                     return
                 }
-                if (setNotification) setNotification({ isShow: true, type: 'success', message: `Voted with transaction hash: ${result.hash}` } as INotification)
+
+                if(!poll || !authState.auth?.account) {
+                    return
+                }
+                
+                if (setNotification) setNotification({ isShow: true, type: 'success', message: `Voted with transaction hash: ${result.transactionHash}` } as INotification)
+
+                voteOnBatchTaskFilterEventLatestBlock(poll.pollId, authState.auth.account)
+                .then((event) => {
+                    if(!event) {
+                        if (setNotification) setNotification({ isShow: true, type: 'warn', message: `Voted event undefined` } as INotification)
+                        return
+                    }
+                    
+                    let ePollId = Number(event.args?._pollId)
+                    let eBatchId = Number(event.args?.batchTaskVoted.batchTaskId)
+                    let eBatch = {pollId: ePollId, batchId: eBatchId} as ISelectedBatch
+                    let newBatchList = [...selectedBatchList]
+                    
+                    let ind = selectedBatchList.findIndex((b: ISelectedBatch) => b.pollId === ePollId)
+                    if(ind === -1) {
+                        newBatchList.push(eBatch)
+                        // console.log("Add new to batch list: ", newBatchList)
+                        dispatch(setSelectedBatchList(newBatchList))
+                    } else {
+                        newBatchList.splice(ind, 1)
+                        newBatchList.push(eBatch)
+                        // console.log("Edit existed one: ", newBatchList)
+                        dispatch(setSelectedBatchList(newBatchList))
+                    }
+
+                })
+                
                 // console.log("voteOnBatchTask result hash: ", result)
             }).finally(() => {
                 if (setIsloading) setIsloading(false)
             })
+        if (!authState.auth?.account || !poll) {
+            console.log("Not have account or poll ID")
+            return
+        }
+        
     }
 
     const navigate = useNavigate();
     const gotoDetail = (poll: IPoll) => {
-        navigate('/polling/1', { state: poll })
+        navigate(`/polling/${poll.pollId}`, { state: poll })
     }
 
     return (

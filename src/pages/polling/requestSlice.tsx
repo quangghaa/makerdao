@@ -16,7 +16,7 @@ export const requestSlice = createSlice({
   name: 'request',
   initialState,
   reducers: {
-    setSelectedBatch: (state, action: PayloadAction<ISelectedBatch>) => {
+    setSelectedBatchRequest: (state, action: PayloadAction<ISelectedBatch>) => {
       state.request.selectedBatch = action.payload
     },
   }
@@ -25,6 +25,6 @@ export const requestSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const selectRequest = (state: RootState) => state.request
 
-export const { setSelectedBatch } = requestSlice.actions
+export const { setSelectedBatchRequest } = requestSlice.actions
 
 export default requestSlice.reducer

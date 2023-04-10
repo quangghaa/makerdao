@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Popover, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { IBatchVote, IDelegate } from '../../types/types';
+import { IBatchVote, IDelegate, ISelectedBatch } from '../../types/types';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
-import { setSelectedBatch } from '../../pages/polling/requestSlice';
+// import { setSelectedBatch } from '../../pages/polling/requestSlice';
 import { StableLab } from '../../assets/func/img';
 import { GreenCheck } from '../../assets/func/svg';
 import { PopoverDelegate } from '../delegate/delegate';
 import SummaryInfo from './summaryInfo';
-import { selectedBatch } from '../../pages/polling/voteSlice';
+import { selectSelectedBatchList, setSelectedBatchList } from '../../pages/polling/voteSlice';
 import { elipsisAddress } from '../../common/helper';
+import { voteOnBatchTaskFilterEventLatestBlock } from '../../services/batchTask';
+import { selectAuth } from '../../pages/auth/authSlice';
+import { setSelectedBatchRequest } from '../../pages/polling/requestSlice';
 
 const delegate = {
   img: '',
@@ -28,7 +31,7 @@ interface Props {
   pollState?: 0 | 1 | 2
 }
 
-const BatchVoteTable: React.FC<Props> = ({data, pollId, pollState}) => {
+const BatchVoteTable: React.FC<Props> = ({ data, pollId, pollState }) => {
   const columns: ColumnsType<IBatchVote> = [
     {
       title: '',
@@ -44,21 +47,21 @@ const BatchVoteTable: React.FC<Props> = ({data, pollId, pollState}) => {
       title: 'Reporter',
       dataIndex: 'reporter',
       render: (text: string) => {
-        if(text && text.length != 0) {
+        if (text && text.length != 0) {
           return <a href="#" className='address-item'>
-                  <Popover placement="bottomLeft" content={() => selectedAddress ? PopoverDelegate(selectedAddress) : <></>}>
-                  <div className="delegate-img" onMouseOver={() => hoverAddress(text)}>
-                      <StableLab />
-                      <div className="green-check-box">
-                          <GreenCheck />
-                      </div>
-                  </div>
-                  </Popover>
-                  <div className="delegate-info">
-                      <p></p>
-                      <p>{elipsisAddress(text)}</p>
-                  </div>
-            </a>
+            <Popover placement="bottomLeft" content={() => selectedAddress ? PopoverDelegate(selectedAddress) : <></>}>
+              <div className="delegate-img" onMouseOver={() => hoverAddress(text)}>
+                <StableLab />
+                <div className="green-check-box">
+                  <GreenCheck />
+                </div>
+              </div>
+            </Popover>
+            <div className="delegate-info">
+              <p></p>
+              <p>{elipsisAddress(text)}</p>
+            </div>
+          </a>
         } else {
           return <>---</>
         }
@@ -68,7 +71,7 @@ const BatchVoteTable: React.FC<Props> = ({data, pollId, pollState}) => {
       title: 'Total reward',
       dataIndex: 'totalReward',
       render: (text: number) => {
-        if(text) {
+        if (text) {
           return <span>{text} Tokens</span>
         } else {
           return <>---</>
@@ -81,7 +84,7 @@ const BatchVoteTable: React.FC<Props> = ({data, pollId, pollState}) => {
       defaultSortOrder: 'descend',
       sorter: (a, b) => a.approval - b.approval,
       render: (text: number) => {
-        if(!text) return <>---</>
+        if (!text) return <>---</>
         return <span>{text}</span>
       }
     },
@@ -110,8 +113,16 @@ const BatchVoteTable: React.FC<Props> = ({data, pollId, pollState}) => {
 
   const [selectionType, setSelectionType] = useState<'checkbox' | 'radio'>('radio');
   const dispatch = useAppDispatch()
-  const selectedBatchState = useAppSelector(selectedBatch)
+  const selectedBatchList = useAppSelector(selectSelectedBatchList)
+  const authState = useAppSelector(selectAuth)
 
+  const [selectedBatch, setSelectedBatch] = useState<ISelectedBatch>()
+
+  const getDisableState = (record: IBatchVote) => {
+    if (pollState === 0 || pollState === 2) return true
+    if (selectedBatch === undefined) return false
+    if (selectedBatch.batchId === record.batchId) return true
+  }
 
   // rowSelection object indicates the need for row selection
   const rowSelection = {
@@ -125,25 +136,35 @@ const BatchVoteTable: React.FC<Props> = ({data, pollId, pollState}) => {
         return
       }
 
-      dispatch(setSelectedBatch({pollId: pollId, batchId: intKey}))
+      dispatch(setSelectedBatchRequest({pollId: pollId, batchId: intKey}))
     },
     getCheckboxProps: (record: IBatchVote) => ({
-      disabled: pollState === 0 || pollState === 2 || (selectedBatchState.batchId === record.batchId) ? true : false, // Column configuration not to be checked
-      
+      disabled: getDisableState(record)
       // selection: 2,
       // name: pollState,
     }),
   };
 
+  useEffect(() => {
+    if (selectedBatchList.length === 0) return
+    console.log("DEBUG pollID: ", pollId)
+    let target = selectedBatchList.find((b: ISelectedBatch) => b.pollId === pollId)
+    if (!target) {
+      console.log(`Poll id ${pollId} not voted`)
+      return
+    } 
+    setSelectedBatch(target)
+  }, [selectedBatchList])
+
   return (
     <div>
       <Table
         className='table'
-        rowSelection={{type: selectionType, ...rowSelection}}
+        rowSelection={{ type: selectionType, ...rowSelection }}
         columns={columns}
         dataSource={data}
         pagination={false}
-        scroll={{x: "100%"}}
+        scroll={{ x: "100%" }}
       />
     </div>
   );

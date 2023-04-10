@@ -30,7 +30,7 @@ export const getAllVotingPoll = async () => {
     }
 }
 
-export const voteOnBatchTask = async (batchId: number, pollId: number) => {
+export const voteOnBatchTaskOrigin = async (batchId: number, pollId: number) => {
     try {
         let contract = getContract('batchVoting')
         const response = await contract.voteOnBatchTask(batchId, pollId)
@@ -39,6 +39,18 @@ export const voteOnBatchTask = async (batchId: number, pollId: number) => {
         console.log("voteOnBatchTask error: ", error)
         return
       }
+}
+
+export const voteOnBatchTask = async (batchId: number, pollId: number) => {
+  try {
+    let contract = getContract('batchVoting')
+      const p = await contract.voteOnBatchTask(batchId, pollId)
+      const response = await p.wait()
+      return response
+    } catch (error) {
+      console.log("voteOnBatchTask error: ", error)
+      return
+    }
 }
 
 export const voteOnBatchTaskFilterEvent = async (pollId?: number, address?: string) => {
@@ -54,6 +66,23 @@ export const voteOnBatchTaskFilterEvent = async (pollId?: number, address?: stri
         console.log("PollVote error: ", error)
         return
       }
+}
+
+export const voteOnBatchTaskFilterEventLatestBlock = async (pollId: number, address: string) => {
+  try {
+      let contract = getContract('batchVoting')
+      const filter = contract.filters.VoteOnBatchTask(pollId, null, null, address);
+      if(!filter) throw new Error("filter undefined");
+      let rs = {} as ethers.Event
+      await contract.queryFilter(filter).then((events) => {
+        let lastestEvent = events.pop()
+        if(lastestEvent) rs = lastestEvent
+      })
+      return rs
+    } catch (error) {
+      console.log("PollVote error: ", error)
+      return
+    }
 }
 
 export const getAllTask = async (batchId: number) => {

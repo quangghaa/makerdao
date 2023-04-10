@@ -12,6 +12,7 @@
 }
 
 .detail-main-body {
+    position: relative;
     box-sizing: border-box;
     margin: 0;
     min-width: 0;
