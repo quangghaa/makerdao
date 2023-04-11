@@ -28,7 +28,7 @@ export const BiddingDetailPage: React.FC<Props> = ({ batchId }) => {
     let path = pathMap.get(pageName)
     if(!path) return
     navigate(path)
-}   
+  }   
 
   useEffect(() => {
     if (!winList) {
@@ -86,7 +86,7 @@ export const BiddingDetailPage: React.FC<Props> = ({ batchId }) => {
           </div>
 
 
-          <TaskListTable data={currentBatch?.tasks} batchId={currentBatch?.batchId} />
+          <TaskListTable data={currentBatch?.tasks} batchId={currentBatch?.batchId} currentBatch={currentBatch} setCurrentBatch={setCurrentBatch} />
         </div>
       </div>
 

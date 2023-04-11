@@ -46,7 +46,7 @@ export const getAllVotingPoll = async () => {
 export const openPollForVote_ID1 = async () => {
     try {
         let contract = getContract('taskManger')
-        const response = await contract.openPollForVote(1, 80)
+        const response = await contract.openPollForVote(1, 30)
         return response 
     } catch (error) {
         console.log("openPollForVote error: ", error)
@@ -57,7 +57,7 @@ export const openPollForVote_ID1 = async () => {
 export const openPollForVote_ID2 = async () => {
     try {
         let contract = getContract('taskManger')
-        const response = await contract.openPollForVote(2, 80)
+        const response = await contract.openPollForVote(2, 30)
         return response 
     } catch (error) {
         console.log("openPollForVote error: ", error)
@@ -69,7 +69,7 @@ export const openPollForVoteFilterEvent = async () => {
     try {
         let contract = getContract('taskManger')
         //Filter EndVote event
-        const filter = contract.filters.OpenPollForVote(1, null, null, null, null);
+        const filter = contract.filters.OpenPollForVote(null, null, null, null, null);
         const results = await contract.queryFilter(filter);
         console.log("results: ", results)
         return results

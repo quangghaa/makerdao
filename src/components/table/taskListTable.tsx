@@ -12,6 +12,8 @@ import { Loading } from '../loading/loading';
 interface Props {
   data?: ITask[]
   batchId?: number
+  currentBatch?: IBatchVote
+  setCurrentBatch?: (v: IBatchVote) => void 
 }
 
 const TaskListTable: React.FC<Props> = ({data, batchId}) => {

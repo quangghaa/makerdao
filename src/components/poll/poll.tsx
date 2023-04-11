@@ -78,10 +78,6 @@ export const PollItem: React.FC<Props> = ({ poll, setNotification, setIsloading 
             }).finally(() => {
                 if (setIsloading) setIsloading(false)
             })
-        if (!authState.auth?.account || !poll) {
-            console.log("Not have account or poll ID")
-            return
-        }
         
     }
 

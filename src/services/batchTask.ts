@@ -144,3 +144,31 @@ export const openBatchTaskForAuctionFilterEvent = async () => {
     return
   }
 }
+
+export const placeBid = async (taskId: number, batchId: number, bidValue: number) => {
+  try {
+    let contract = getContract('auction')
+    const p = await contract.placeBid(taskId, batchId, bidValue)
+    const response = await p.wait()
+    return response
+  } catch (error) {
+    console.log("placeBid error: ", error)
+    return
+  }
+}
+
+export const placeBidFilterEventLatestBlock = async (taskId: number, batchId: number) => {
+  try {
+    let contract = getContract('auction')
+    const filter = contract.filters.PlaceBid(taskId, batchId, null, null, null);
+    let rs = {} as ethers.Event
+    await contract.queryFilter(filter).then((events) => {
+      let lastestEvent = events.pop()
+      if (lastestEvent) rs = lastestEvent
+    })
+    return rs
+  } catch (error) {
+    console.log("placeBidFilterEvent error: ", error)
+    return
+  }
+}

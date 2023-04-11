@@ -188,3 +188,10 @@ export interface INotification {
     type: 'warn' | 'success' | 'fail'
     message: string
 }
+
+export interface IYourBid {
+    taskId: number
+    batchId: number
+    value: number
+    address: string
+}

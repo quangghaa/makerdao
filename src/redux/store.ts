@@ -6,6 +6,7 @@ import batchVoteReducer from '../pages/bidding/batchVoteSlice'
 import taskReducer from '../pages/bidding-detail/taskSlice'
 import requestReducer from '../pages/polling/requestSlice'
 import voteReducer from '../pages/polling/voteSlice'
+import yourBidReducer from '../pages/bidding-detail/yourBidSlice'
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     task: taskReducer,
     request: requestReducer,
     vote: voteReducer,
+    yourBid: yourBidReducer,
   },
 })
 
